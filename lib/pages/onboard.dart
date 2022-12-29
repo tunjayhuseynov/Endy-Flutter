@@ -1,0 +1,101 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:endy/components/tools/button.dart';
+import 'package:endy/providers/UserChange.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+class Onboard extends StatefulWidget {
+  const Onboard({Key? key}) : super(key: key);
+
+  @override
+  State<Onboard> createState() => _OnboardState();
+}
+
+class _OnboardState extends State<Onboard> {
+  final controller = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final user = Provider.of<UserChange>(context);
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: Stack(alignment: AlignmentDirectional.center, children: [
+              Container(
+                padding: const EdgeInsets.only(bottom: 150),
+                child: PageView(
+                  controller: controller,
+                  children: [
+                    _page(
+                        "assets/onboard_first.png",
+                        0,
+                        "Ən Son Endirimlər",
+                        "1000-dən çox market və mağazalardakı endirimlərdən yararlanın",
+                        size),
+                    _page("assets/onboard_second.png", 1, "Bonus Kartalınız",
+                        "Bonus kartlarınız bir yerdə daha əlçatandır", size),
+                    _page("assets/onboard_third.png", 2, "Alınacaqlar Siyahısı",
+                        "Alınacaq məhsullarınız bir arada", size),
+                  ],
+                ),
+              ),
+              Positioned(
+                  bottom: 75,
+                  child: PrimaryButton(
+                      text: "Növbəti",
+                      fn: () async => {
+                            if (controller.page != null && controller.page! < 2)
+                              {
+                                await controller.nextPage(
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.ease)
+                              }
+                            else
+                              {
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(user.user?.id)
+                                    .update({
+                                  "isFirstEnter": false,
+                                }),
+                                user.setisFirstEnter(false),
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    "/home", (Route<dynamic> route) => false)
+                              }
+                          })),
+            ])));
+  }
+}
+
+Widget _page(
+    String image, double offset, String head, String subtext, Size size) {
+  return Column(children: [
+    const SizedBox(height: 75),
+    SizedBox(child: Image.asset(image)),
+    const SizedBox(height: 25),
+    Center(
+        child: SmoothIndicator(
+      offset: offset,
+      count: 3,
+      effect: const SlideEffect(dotWidth: 8, dotHeight: 8),
+    )),
+    const SizedBox(height: 35),
+    Text(head,
+        style: const TextStyle(
+            color: Colors.black87, fontSize: 28, fontWeight: FontWeight.w700)),
+    const SizedBox(height: 15),
+    SizedBox(
+      width: size.width * 0.65,
+      child: Text(subtext,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              color: Colors.black38,
+              fontSize: 14,
+              fontWeight: FontWeight.w400)),
+    )
+  ]);
+}

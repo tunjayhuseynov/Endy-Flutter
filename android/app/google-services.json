@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "780392083061",
+    "project_id": "endirimsebeti",
+    "storage_bucket": "endirimsebeti.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780392083061:android:ea0313d4cc4704044c923c",
+        "android_client_info": {
+          "package_name": "com.endy.endy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780392083061-99ggi1gh89ctac668op3idl7stslgjp7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endy.endy",
+            "certificate_hash": "880dbbf4dbf4a59ac88e0d1061dabb648f645045"
+          }
+        },
+        {
+          "client_id": "780392083061-h36uka2okrp2f9impi996jgb3tjkdgr5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endy.endy",
+            "certificate_hash": "d36b6d92f60ffe671c0478b770a762bf5d34cf4b"
+          }
+        },
+        {
+          "client_id": "780392083061-hdi6m74717od9pkcek97fbvr7efmje1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endy.endy",
+            "certificate_hash": "b3049b40b08125e7c733a8b4700c7fda381c64ee"
+          }
+        },
+        {
+          "client_id": "780392083061-kefc570fvsqg7na4e2uca7ltsp5nuged.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endy.endy",
+            "certificate_hash": "0f693f4669d64f7717e69c2456ec08b824149fb8"
+          }
+        },
+        {
+          "client_id": "780392083061-po5oo8nsaga652n62fouuj4456vd4eq3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endy.endy",
+            "certificate_hash": "0ed0fcd9f1b13f6403afaadc9bcbb42a8089d2ff"
+          }
+        },
+        {
+          "client_id": "780392083061-a6ep5871ek23b38on6hu2lanqcp8o55s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKGnXMeiotLuhZHh77ajVVNSSlYKTyZyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780392083061-a6ep5871ek23b38on6hu2lanqcp8o55s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "780392083061-gf5t27nl4ajcfgtep9ebeqnoco76h5qq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.endirimSebeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780392083061:android:5c0d69e09c0ecd844c923c",
+        "android_client_info": {
+          "package_name": "com.example.endirim_sebeti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780392083061-68kv6m1ghpkln7jfdp8a0hp6as4h7lll.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.endirim_sebeti",
+            "certificate_hash": "b3049b40b08125e7c733a8b4700c7fda381c64ee"
+          }
+        },
+        {
+          "client_id": "780392083061-ebio3i5nbkdbji3hti4vsg3h941mtfcv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.endirim_sebeti",
+            "certificate_hash": "d36b6d92f60ffe671c0478b770a762bf5d34cf4b"
+          }
+        },
+        {
+          "client_id": "780392083061-igrmbcf948ipequhhealdcr4934ve7rf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.endirim_sebeti",
+            "certificate_hash": "880dbbf4dbf4a59ac88e0d1061dabb648f645045"
+          }
+        },
+        {
+          "client_id": "780392083061-otjtc9tf4d88pnphvcrg50jfvh1j50ab.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.endirim_sebeti",
+            "certificate_hash": "0f693f4669d64f7717e69c2456ec08b824149fb8"
+          }
+        },
+        {
+          "client_id": "780392083061-a6ep5871ek23b38on6hu2lanqcp8o55s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKGnXMeiotLuhZHh77ajVVNSSlYKTyZyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780392083061-a6ep5871ek23b38on6hu2lanqcp8o55s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "780392083061-gf5t27nl4ajcfgtep9ebeqnoco76h5qq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.endirimSebeti"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
