@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
-import 'package:endy/pages/main/Setting/Profile_Bloc.dart';
+import 'package:endy/Pages/main/Setting/Profile_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,10 +1,10 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/AdSlider.dart';
-import 'package:endy/pages/main/Home/HomePage/Home_Page_Bloc.dart';
-import 'package:endy/pages/main/Home/SearchPage/Search_Page_Bloc.dart';
-import 'package:endy/pages/main/Home/HomePage/ScrollableCategoriesHome.dart';
-import 'package:endy/pages/main/Home/HomePage/HomePageGridProducts.dart';
-import 'package:endy/pages/main/Home/SearchPage/Search.dart';
+import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/HomePage/ScrollableCategoriesHome.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePageGridProducts.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
-import 'package:endy/pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
-import 'package:endy/pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
-import 'package:endy/pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';

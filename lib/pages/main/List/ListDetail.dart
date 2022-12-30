@@ -1,6 +1,6 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
-import 'package:endy/pages/main/list/List_Bloc.dart';
+import 'package:endy/Pages/main/list/List_Bloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
-import 'package:endy/pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

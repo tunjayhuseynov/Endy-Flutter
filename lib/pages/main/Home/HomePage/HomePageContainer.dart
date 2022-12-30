@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:endy/pages/main/Home/HomePage/Nav.dart';
-import 'package:endy/pages/main/bonus/bonusHome.dart';
-import 'package:endy/pages/main/favorite/FavoriteMain.dart';
-import 'package:endy/pages/main/Home/HomePage/Home_Page_Bloc.dart';
-import 'package:endy/pages/main/Home/HomePage/HomePage.dart';
-import 'package:endy/pages/main/list/ListHome.dart';
-import 'package:endy/pages/main/setting/Setting.dart';
+import 'package:endy/Pages/main/Home/HomePage/Nav.dart';
+import 'package:endy/Pages/main/bonus/bonusHome.dart';
+import 'package:endy/Pages/main/favorite/FavoriteMain.dart';
+import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
+import 'package:endy/Pages/main/list/ListHome.dart';
+import 'package:endy/Pages/main/setting/Setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

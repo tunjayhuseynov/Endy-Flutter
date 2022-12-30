@@ -1,4 +1,4 @@
-import 'package:endy/pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

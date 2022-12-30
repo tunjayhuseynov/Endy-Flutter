@@ -1,24 +1,22 @@
-import 'package:endy/pages/main/Main.dart';
-import 'package:endy/pages/main/bonus/BonusAdd.dart';
-import 'package:endy/pages/main/bonus/BonusDetail.dart';
-import 'package:endy/pages/main/bonus/CameraQrScanner.dart';
-import 'package:endy/pages/main/Home/CategorySelectionList/Categories.dart';
-import 'package:endy/pages/main/Home/CategorySelectionList/Subcategories.dart';
-import 'package:endy/pages/main/Home/DetailPage/DetailPageContainer.dart';
-import 'package:endy/pages/main/Home/FilterPage/FilterPage.dart';
-import 'package:endy/pages/main/Home/CategoryGrid/CategoryGrid.dart';
-import 'package:endy/pages/main/Home/DetailPage/Map.dart';
-import 'package:endy/pages/main/list/ListDetail.dart';
-import 'package:endy/pages/main/Setting/AboutUs.dart';
-import 'package:endy/pages/main/Setting/Notification.dart';
-import 'package:endy/pages/main/Setting/Profile.dart';
-import 'package:endy/pages/onboard.dart';
-import 'package:endy/pages/sign/forgot.dart';
-import 'package:endy/pages/sign/main.dart';
-import 'package:endy/pages/sign/newPassword.dart';
-import 'package:endy/pages/sign/otp.dart';
-import 'package:endy/pages/sign/registration.dart';
-import 'package:endy/pages/sign/signin.dart';
+import 'package:endy/Pages/main/Main.dart';
+import 'package:endy/Pages/main/bonus/BonusAdd.dart';
+import 'package:endy/Pages/main/bonus/BonusDetail.dart';
+import 'package:endy/Pages/main/bonus/CameraQrScanner.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Categories.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Subcategories.dart';
+import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
+import 'package:endy/Pages/main/Home/FilterPage/FilterPage.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGrid.dart';
+import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
+import 'package:endy/Pages/main/list/ListDetail.dart';
+import 'package:endy/Pages/main/Setting/AboutUs.dart';
+import 'package:endy/Pages/main/Setting/Notification.dart';
+import 'package:endy/Pages/main/Setting/Profile.dart';
+import 'package:endy/Pages/main/Onboard/Onboard.dart';
+import 'package:endy/Pages/sign/Main.dart';
+import 'package:endy/Pages/sign/OTP/OTP.dart';
+import 'package:endy/Pages/sign/Register/Registration.dart';
+import 'package:endy/Pages/sign/SignIn/SignIn.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/user.dart';
@@ -72,17 +70,11 @@ routerSwitch(RouteSettings setting) {
       break;
 
     case "/list/single":
-      builder = (BuildContext context) => ListDetail();
+      builder = (BuildContext context) => const ListDetail();
       break;
 
     case "/sign/main":
       builder = (BuildContext context) => const Sign();
-      break;
-    case "/sign/forgot":
-      builder = (BuildContext context) => const Forgot();
-      break;
-    case "/sign/new-password":
-      builder = (BuildContext context) => const NewPassword();
       break;
     case "/sign/signin":
       builder = (BuildContext context) => const SignIn();
@@ -97,10 +89,10 @@ routerSwitch(RouteSettings setting) {
       break;
 
     case "/setting/profile":
-      builder = (BuildContext context) => Profile();
+      builder = (BuildContext context) => const Profile();
       break;
     case "/setting/notification":
-      builder = (BuildContext context) => NotificationPage();
+      builder = (BuildContext context) => const NotificationPage();
       break;
     case "/setting/about":
       builder = (BuildContext context) => const AboutUs();

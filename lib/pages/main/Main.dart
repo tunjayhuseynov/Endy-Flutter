@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/pages/main/Home/HomePage/HomePageContainer.dart';
-import 'package:endy/pages/onboard.dart';
-import 'package:endy/pages/sign/main.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
+import 'package:endy/Pages/main/Onboard/Onboard.dart';
+import 'package:endy/Pages/sign/Main.dart';
 
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';

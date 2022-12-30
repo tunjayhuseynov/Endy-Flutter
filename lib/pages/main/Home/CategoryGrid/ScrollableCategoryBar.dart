@@ -1,6 +1,6 @@
-import 'package:endy/pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
-import 'package:endy/pages/main/Home/CategoryGrid/CategoryListItem.dart';
-import 'package:endy/pages/main/Home/CategoryGrid/Category_Grid_Cache_Bar_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/CategoryListItem.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Cache_Bar_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/cupertino.dart';

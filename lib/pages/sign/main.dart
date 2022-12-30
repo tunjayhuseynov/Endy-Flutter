@@ -40,7 +40,7 @@ class _SignState extends State<Sign> {
                     bottom: 0,
                     child: Padding(
                         padding: const EdgeInsets.only(left: 7),
-                        child: Image.asset('assets/endimart.az.png',
+                        child: Image.asset('assets/endy.az.png',
                             width: size.width * 0.3)),
                   ),
                 ],

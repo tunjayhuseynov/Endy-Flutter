@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/providers/FilterChange.dart';
 import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';

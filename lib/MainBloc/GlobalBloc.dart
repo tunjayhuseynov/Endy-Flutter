@@ -99,6 +99,10 @@ class GlobalBloc extends Parent {
     setAll();
   }
 
+  void setAuthLoading(GlobalAuthStatus status) {
+    emit(state.copyWith(authStatus: status));
+  }
+
   void setCompanies(List<Company> companies) {
     emit(state.copyWith(companies: companies));
   }
@@ -231,6 +235,13 @@ class GlobalBloc extends Parent {
         });
       }
     });
+  }
+
+  void setFirstEnter() {
+    var data = UserData.fromInstance(state.userData!);
+    data.isFirstEnter = false;
+    emit(state.copyWith(userData: data));
+    updateUser(data);
   }
 
   void resetAll() {

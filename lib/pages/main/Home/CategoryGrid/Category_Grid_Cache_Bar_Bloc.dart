@@ -1,4 +1,4 @@
-import 'package:endy/pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';

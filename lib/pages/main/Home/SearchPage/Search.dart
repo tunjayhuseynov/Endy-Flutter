@@ -1,7 +1,7 @@
 import 'package:algolia/algolia.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
-import 'package:endy/pages/main/Home/SearchPage/Search_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/types/search.dart';
 import 'package:endy/utils/index.dart';

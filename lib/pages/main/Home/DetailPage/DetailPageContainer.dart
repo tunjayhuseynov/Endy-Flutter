@@ -1,5 +1,5 @@
-import 'package:endy/pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
-import 'package:endy/pages/main/home/DetailPage/detailPage.dart';
+import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
+import 'package:endy/Pages/main/home/DetailPage/detailPage.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';

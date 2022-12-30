@@ -62,7 +62,7 @@ dependencies:
   flutter_html: ^3.0.0-alpha.5
   url_launcher: ^6.1.4
   image_cropper: ^3.0.1
-  flutter_native_splash: ^2.2.8
+  flutter_native_splash: ^2.2.16
   mask_text_input_formatter: ^2.3.0
   email_validator: ^2.0.1
   badges: ^2.0.3
@@ -80,6 +80,7 @@ dependencies:
   firebase_performance: ^0.9.0+8
   flutter_bloc: ^8.1.1
   flutter_dotenv: ^5.0.2
+  intl_phone_field: ^3.1.0
   # firebase_performance: ^0.9.0+8
 
 dev_dependencies:
@@ -116,7 +117,7 @@ flutter:
     - .env
     - assets/sign.png
     - assets/logo_title.png
-    - assets/endimart.az.png
+    - assets/endy.az.png
     - assets/logo_title_blue.png
     - assets/onboard_first.png
     - assets/onboard_second.png
@@ -133,6 +134,7 @@ flutter:
     - assets/icons/navbar/dots.png
     - assets/icons/navbar/list.png
     - assets/android/background.png
+    - assets/android/background_red.png
     - assets/icons/info.png
     - assets/map.json
 
