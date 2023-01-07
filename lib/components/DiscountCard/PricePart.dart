@@ -13,6 +13,7 @@ class PricePart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Row(
       children: [
         Expanded(
@@ -52,32 +53,35 @@ class PricePart extends StatelessWidget {
             children: [
               SizedBox(
                 height: 15,
-                width: 100,
-                child: AutoSizeText(
-                  minFontSize: 12,
-                  maxFontSize: 18,
-                  wrapWords: false,
-                  "${widget.product.price.toStringAsFixed(2)} AZN",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      // decorationColor: Colors.red[800],
-                      overflow: TextOverflow.ellipsis,
-                      decorationThickness: 1,
-                      decoration: TextDecoration.lineThrough),
+                width: w * 0.25,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: AutoSizeText(
+                    presetFontSizes: [14, 12, 10, 8],
+                    wrapWords: false,
+                    "${widget.product.price.toStringAsFixed(2)} AZN",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        // decorationColor: Colors.red[800],
+                        overflow: TextOverflow.ellipsis,
+                        decorationThickness: 1,
+                        decoration: TextDecoration.lineThrough),
+                  ),
                 ),
               ),
               SizedBox(
                 height: 20,
-                width: 100,
-                child: AutoSizeText(
-                  minFontSize: 12,
-                  maxFontSize: 18,
-                  wrapWords: false,
-                  "${widget.product.discountedPrice.toStringAsFixed(2)} AZN",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 18),
+                width: w * 0.25,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: AutoSizeText(
+                    presetFontSizes: [18, 16, 14, 12],
+                    maxLines: 1,
+                    "${widget.product.discountedPrice.toStringAsFixed(2)} AZN",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               )
             ],

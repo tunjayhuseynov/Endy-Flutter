@@ -11,6 +11,14 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
+  late FilterPageState selectedInput;
+
+  @override
+  void initState() {
+    selectedInput = context.read<FilterPageBloc>().state;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FilterPageBloc, FilterPageState>(
@@ -22,6 +30,7 @@ class _FilterPageState extends State<FilterPage> {
               toolbarHeight: 80,
               leading: IconButton(
                   onPressed: () {
+                    // Navigator.pushNamedAndRemoveUntil(context, "/home/main/all", (route) => false);
                     Navigator.pop(context);
                   },
                   icon: const Icon(Icons.arrow_back_ios)),
@@ -58,16 +67,16 @@ class _FilterPageState extends State<FilterPage> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       onChanged: (res) {
                         if (res != null && res) {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.lastDay);
+                          setState(() {
+                            selectedInput = FilterPageState.lastDay;
+                          });
                         } else {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.none);
+                          setState(() {
+                            selectedInput = FilterPageState.none;
+                          });
                         }
                       },
-                      value: state == FilterPageState.lastDay,
+                      value: selectedInput == FilterPageState.lastDay,
                       title: const Text("Son bir gün",
                           style: TextStyle(fontSize: 18)),
                     ),
@@ -79,16 +88,16 @@ class _FilterPageState extends State<FilterPage> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       onChanged: (res) {
                         if (res != null && res) {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.moreThan20);
+                          setState(() {
+                            selectedInput = FilterPageState.moreThan20;
+                          });
                         } else {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.none);
+                          setState(() {
+                            selectedInput = FilterPageState.none;
+                          });
                         }
                       },
-                      value: state == FilterPageState.moreThan20,
+                      value: selectedInput == FilterPageState.moreThan20,
                       title: const Text("20%-dən çox endirim",
                           style: TextStyle(fontSize: 18)),
                     ),
@@ -100,16 +109,16 @@ class _FilterPageState extends State<FilterPage> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       onChanged: (res) {
                         if (res != null && res) {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.lastAdded);
+                          setState(() {
+                            selectedInput = FilterPageState.lastAdded;
+                          });
                         } else {
-                          context
-                              .read<FilterPageBloc>()
-                              .changeFilter(FilterPageState.none);
+                          setState(() {
+                            selectedInput = FilterPageState.none;
+                          });
                         }
                       },
-                      value: state == FilterPageState.lastAdded,
+                      value: selectedInput == FilterPageState.lastAdded,
                       title: const Text("Ən son əlavə olunanlar",
                           style: TextStyle(fontSize: 18)),
                     ),
@@ -127,6 +136,21 @@ class _FilterPageState extends State<FilterPage> {
                     //       style: TextStyle(fontSize: 18)),
                     // ),
                     // const Divider(thickness: 1),
+                    if (selectedInput != state)
+                      Container(
+                        padding: const EdgeInsets.only(top: 15),
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                            onPressed: () {
+                              context
+                                  .read<FilterPageBloc>()
+                                  .changeFilter(selectedInput);
+                              Navigator.pop(context);
+                            },
+                            child: Text("Təsdiqlə",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Color(mainColor)))),
+                      )
                   ],
                 ),
               )

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.1+5
+version: 0.1.1+6
 
 environment:
   sdk: ">=2.17.1 <3.0.0"
@@ -81,11 +81,31 @@ dependencies:
   flutter_bloc: ^8.1.1
   flutter_dotenv: ^5.0.2
   intl_phone_field: ^3.1.0
+  typesense: ^0.3.0
   # firebase_performance: ^0.9.0+8
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.11.0
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/endy.az_back_white.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/endy.az_back_white.png"
+    background_color: "#FFFFFF"
+    theme_color: "#f03034"
+  # windows:
+  #   generate: true
+  #   image_path: "path/to/image.png"
+  #   icon_size: 48 # min:48, max:256, default: 48
+  # macos:
+  #   generate: true
+  #   image_path: "path/to/image.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -116,16 +136,17 @@ flutter:
   assets:
     - .env
     - assets/sign.png
-    - assets/logo_title.png
+    # - assets/logo_title.png
     - assets/endy.az.png
-    - assets/logo_title_blue.png
+    - assets/endy.az_back_white.png
+    # - assets/logo_title_blue.png
     - assets/onboard_first.png
     - assets/onboard_second.png
     - assets/onboard_third.png
-    - assets/noimage.jpg
-    - assets/brand.png
-    - assets/android/logo.png
-    - assets/android/logo4.png
+    # - assets/noimage.jpg
+    # - assets/brand.png
+    # - assets/android/logo.png
+    # - assets/android/logo4.png
     - assets/icons/brand.png
     - assets/icons/category.png
     - assets/icons/filter.png
@@ -133,8 +154,8 @@ flutter:
     - assets/icons/navbar/card.png
     - assets/icons/navbar/dots.png
     - assets/icons/navbar/list.png
-    - assets/android/background.png
-    - assets/android/background_red.png
+    # - assets/android/background.png
+    # - assets/android/background_red.png
     - assets/icons/info.png
     - assets/map.json
 

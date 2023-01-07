@@ -14,7 +14,6 @@ class HomePageGridProducts extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     final categories = context.read<GlobalBloc>().state.categories;
@@ -150,20 +149,25 @@ class ProductListFourGrid extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const ScrollPhysics(),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: (250 / 430),
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 15),
-                  itemCount: data[index].length,
-                  itemBuilder: (context, i) => DiscountCard(
-                    product: data[index][i],
-                  ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio:
+                              constraints.maxWidth * 0.66 / 430, //(250 / 430),
+                          mainAxisSpacing: 15,
+                          crossAxisSpacing: 15),
+                      itemCount: data[index].length,
+                      itemBuilder: (context, i) => DiscountCard(
+                        product: data[index][i],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

@@ -9,7 +9,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextInputFormatter? inputFormatter;
   final String? initValue;
-  bool? isDisabled = false;
+  final bool? isEnabled;
 
   CustomTextField(
       {Key? key,
@@ -19,7 +19,7 @@ class CustomTextField extends StatefulWidget {
       this.keyboardType,
       this.inputFormatter,
       this.error,
-      this.isDisabled,
+      this.isEnabled = true,
       this.errorText = "Düzgün deyil"})
       : super(key: key);
 
@@ -47,7 +47,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      enabled: widget.isDisabled,
+      enabled: widget.isEnabled,
       controller: widget.controller ?? controller,
       keyboardType: widget.keyboardType,
       focusNode: focusNode,

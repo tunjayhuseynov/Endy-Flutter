@@ -28,6 +28,7 @@ class HyperlinkWidget extends StatelessWidget {
                 mode: LaunchMode.externalApplication)) {
               showTopSnackBar(
                   Overlay.of(context)!,
+                  displayDuration: const Duration(milliseconds: 1000),
                   const CustomSnackBar.error(
                     message:
                         "Linkə daxil olarkən xəta baş verdi. Xahiş edirik yenidən cəhd edin.",

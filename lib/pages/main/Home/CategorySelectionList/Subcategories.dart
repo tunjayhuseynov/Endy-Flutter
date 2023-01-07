@@ -112,59 +112,12 @@ class _SubcategoryListState extends State<SubcategoryList> {
                                   );
                                 }),
                           )
-                        : Expanded(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state.categories.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CategoryItem(
-                                    category: state.categories[index],
-                                  );
-                                }),
-                          ),
+                        : Container()
               ],
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class CategoryItem extends StatelessWidget {
-  final Category category;
-  const CategoryItem({Key? key, required this.category}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final productAmount = category.subcategory.map((e) => e.products.length);
-    final amountOfSub = productAmount.isNotEmpty
-        ? productAmount.reduce((value, element) => value + element)
-        : 0;
-
-    return GestureDetector(
-      onTap: () {
-        context.read<CategorySelectionListBloc>().setTypeAndList(
-            category, false, false, true, [], [], category.subcategory);
-        Navigator.pushNamed(context, '/home/category');
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 15),
-              width: 45,
-              height: 45,
-              child: CachedNetworkImage(imageUrl: category.logo),
-            ),
-            Expanded(flex: 2, child: Text(category.name)),
-            Text(amountOfSub.toString(),
-                style: const TextStyle(fontWeight: FontWeight.w500)),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -180,7 +133,7 @@ class CompanyItem extends StatelessWidget {
       onTap: () {
         context
             .read<CategoryGridBloc>()
-            .set(company: company, category: null, subcategory: null);
+            .set(company: company, category: null, subcategory: null, id: "");
         Navigator.pushNamed(context, '/home/main/all', arguments: false);
       },
       child: Padding(
@@ -221,6 +174,7 @@ class SubcategoryItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         context.read<CategoryGridBloc>().set(
+            id: selectAll == true ? "" : subcategory.id,
             company: null,
             category: category,
             subcategory: selectAll == true ? null : subcategory);

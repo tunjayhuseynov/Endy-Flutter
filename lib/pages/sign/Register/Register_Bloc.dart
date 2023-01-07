@@ -8,6 +8,8 @@ class RegisterState {
   DateTime? selectedDate;
   bool isLoading = false;
   String phone;
+  String name;
+  String? mail;
 
   bool isPrivacyChecked = false;
 
@@ -15,18 +17,24 @@ class RegisterState {
       {this.selectedDate,
       this.isLoading = false,
       this.phone = "",
+      this.name = "",
+      this.mail,
       this.isPrivacyChecked = false});
 
   RegisterState copyWith(
       {DateTime? selectedDate,
       bool? isLoading,
       bool? isPrivacyChecked,
+      String? name,
+      String? mail,
       String? phone}) {
     return RegisterState(
       selectedDate: selectedDate ?? this.selectedDate,
       isLoading: isLoading ?? this.isLoading,
       phone: phone ?? this.phone,
       isPrivacyChecked: isPrivacyChecked ?? this.isPrivacyChecked,
+      name: name ?? this.name,
+      mail: mail ?? this.mail,
     );
   }
 }
@@ -50,6 +58,14 @@ class RegisterBloc extends Cubit<RegisterState> {
     emit(state.copyWith(phone: phone));
   }
 
+  void setName(String name) {
+    emit(state.copyWith(name: name));
+  }
+
+  void setMail(String mail) {
+    emit(state.copyWith(mail: mail));
+  }
+
   void setDatePicker(BuildContext context) {
     DatePicker.showDatePicker(context,
         showTitleActions: true,
@@ -68,6 +84,13 @@ class RegisterBloc extends Cubit<RegisterState> {
         state.isPrivacyChecked != true ||
         !RegExp(r'(^(?:[+0])?[0-9]{10,12}$)').hasMatch(state.phone)) {
       throw Exception("Zəhmət olmasa bütün xanaları doldurun");
+    }
+
+    if (state.mail != null &&
+        state.mail!.isNotEmpty &&
+        !RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+            .hasMatch(state.mail!)) {
+      throw Exception("Zəhmət olmasa doğru mail daxil edin");
     }
 
     if (state.selectedDate == null) {

@@ -52,9 +52,14 @@ class SignIn extends StatelessWidget {
                               ),
                             ),
                           ),
+                          disableLengthCheck: true,
+                          style: TextStyle(fontSize: 15),
                           decoration: InputDecoration(
                             filled: true,
-                            hintText: "Telefon nömrəsi",
+                            helperText: "Misal: 50 765 43 21",
+                            hintText: "Nömrənizi daxil edin",
+                            hintStyle: TextStyle(fontSize: 15),
+                            labelStyle: TextStyle(fontSize: 15),
                             fillColor: Colors.grey[200],
                             border: const OutlineInputBorder(
                               borderRadius:
@@ -68,9 +73,10 @@ class SignIn extends StatelessWidget {
                           initialCountryCode: 'AZ',
                           invalidNumberMessage: 'Nömrə düzgün deyil',
                           onChanged: (phone) {
-                            context
-                                .read<SigninBloc>()
-                                .setPhone(phone.completeNumber);
+                            context.read<SigninBloc>().setPhone(phone.number
+                                    .startsWith("0")
+                                ? phone.countryCode + phone.number.substring(1)
+                                : phone.completeNumber);
                           },
                         ),
                         state.error
@@ -97,6 +103,8 @@ class SignIn extends StatelessWidget {
                             } catch (e) {
                               showTopSnackBar(
                                 Overlay.of(context)!,
+                                displayDuration:
+                                    const Duration(milliseconds: 1000),
                                 CustomSnackBar.error(
                                   message: e
                                       .toString()

@@ -11,7 +11,6 @@ import 'package:endy/types/panel.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/types/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum GlobalStatus { loading, loaded, error }
 

@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
@@ -48,7 +47,7 @@ class ImagePart extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: CachedNetworkImage(
                             imageUrl: i,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                           )),
                     );
                   },

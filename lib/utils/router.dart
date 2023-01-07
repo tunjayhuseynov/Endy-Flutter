@@ -1,3 +1,5 @@
+import 'package:endy/Pages/Sign/Register/RegistrationContainer.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart';
 import 'package:endy/Pages/main/Main.dart';
 import 'package:endy/Pages/main/bonus/BonusAdd.dart';
 import 'package:endy/Pages/main/bonus/BonusDetail.dart';
@@ -6,7 +8,6 @@ import 'package:endy/Pages/main/Home/CategorySelectionList/Categories.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Subcategories.dart';
 import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
 import 'package:endy/Pages/main/Home/FilterPage/FilterPage.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGrid.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
 import 'package:endy/Pages/main/list/ListDetail.dart';
 import 'package:endy/Pages/main/Setting/AboutUs.dart';
@@ -15,7 +16,6 @@ import 'package:endy/Pages/main/Setting/Profile.dart';
 import 'package:endy/Pages/main/Onboard/Onboard.dart';
 import 'package:endy/Pages/sign/Main.dart';
 import 'package:endy/Pages/sign/OTP/OTP.dart';
-import 'package:endy/Pages/sign/Register/Registration.dart';
 import 'package:endy/Pages/sign/SignIn/SignIn.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
@@ -38,7 +38,7 @@ routerSwitch(RouteSettings setting) {
           );
       break;
     case "/home/main/all":
-      builder = (BuildContext context) => const CategoryGrid();
+      builder = (BuildContext context) => const CategoryBlocProvider();
       break;
     case "/home/detail":
       builder = (BuildContext context) => DetailPageContainer(
@@ -80,7 +80,7 @@ routerSwitch(RouteSettings setting) {
       builder = (BuildContext context) => const SignIn();
       break;
     case "/sign/registration":
-      builder = (BuildContext context) => const Registration();
+      builder = (BuildContext context) => const RegistrationContainer();
       break;
     case "/sign/otp":
       builder = (BuildContext context) => OTP(

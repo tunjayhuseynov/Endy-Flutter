@@ -4,15 +4,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OTPState {
-  String errorMessage = "";
-  String code = "";
+  String errorMessage;
+  String code;
+  bool isFinised;
+  int timer;
 
-  OTPState({this.errorMessage = "", this.code = ""});
+  OTPState(
+      {this.errorMessage = "",
+      this.code = "",
+      this.isFinised = false,
+      this.timer = 60});
 
-  OTPState copyWith({String? errorMessage, String? code}) {
+  OTPState copyWith(
+      {String? errorMessage, String? code, bool? isFinished, int? timer}) {
     return OTPState(
       errorMessage: errorMessage ?? this.errorMessage,
       code: code ?? this.code,
+      isFinised: isFinished ?? this.isFinised,
+      timer: timer ?? this.timer,
     );
   }
 }
@@ -28,7 +37,15 @@ class OTPBloc extends Cubit<OTPState> {
     emit(state.copyWith(code: code));
   }
 
-  Future<bool> verify(String sms, String code, DateTime? selectedDate,
+  void setFinished(bool isFinished) {
+    emit(state.copyWith(isFinished: isFinished));
+  }
+
+  void setTimer(int timer) {
+    emit(state.copyWith(timer: timer));
+  }
+
+  Future<UserData?> verify(String sms, String code, DateTime? selectedDate,
       String? name, String phone, String? mail) async {
     try {
       PhoneAuthCredential credential =
@@ -49,8 +66,8 @@ class OTPBloc extends Cubit<OTPState> {
         throw Exception("İstifadəçi tapılmadı");
       }
 
+      UserData? newUser;
       if (user.user?.uid != null) {
-        UserData newUser;
         if (selectedDate != null && name != null && mail != null) {
           newUser = UserData(
             id: user.user!.uid,
@@ -82,7 +99,7 @@ class OTPBloc extends Cubit<OTPState> {
               .data()!);
         }
       }
-      return true;
+      return newUser;
     } catch (e) {
       if (e.toString().contains("firebase_auth/invalid-verification")) {
         throw Exception("Kod yanlışdır");

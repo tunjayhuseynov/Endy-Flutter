@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
-import 'package:endy/providers/FilterChange.dart';
 import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';
 import 'package:endy/streams/places.dart';
@@ -11,15 +10,18 @@ import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
 
 class ProductsCrud {
-  static Future<List<Product>> getProducts(
-      [DateTime? from,
-      int? limit,
-      Category? category,
-      Subcategory? subcategory,
-      FilterPageState? mode,
-      Company? company,
-      String? text]) async {
+  static Future<List<Product>> getProducts([
+    DateTime? from,
+    int? limit,
+    Category? category,
+    Subcategory? subcategory,
+    FilterPageState? mode,
+    Company? company,
+    bool? getLastSnap,
+    DocumentSnapshot? lastProduct,
+  ]) async {
     try {
+      // DocumentSnapshot? lastSnap;
       QuerySnapshot<Map<String, dynamic>> products;
 
       final subcategoryRes = subcategory != null
@@ -46,9 +48,9 @@ class ProductsCrud {
       final lastAdded =
           mode != null && mode == FilterPageState.lastAdded ? true : null;
 
-      List<Object?> values = [
-        (DateTime.now().millisecondsSinceEpoch.toInt() / 1000).round()
-      ];
+      int currentTime =
+          (DateTime.now().millisecondsSinceEpoch.toInt() / 1000).round();
+
       Query<Map<String, dynamic>> query =
           FirebaseFirestore.instance.collection('products');
 
@@ -56,67 +58,99 @@ class ProductsCrud {
         query = query.where('category', isEqualTo: categoryRes);
       }
 
-      if (text != null) {
-        query = query.where('name', isGreaterThanOrEqualTo: text);
-      }
-
       if (company != null) {
         query = query.where("companyId", isEqualTo: company.id);
       }
 
+      // More than 20 Filter
+      // More than 20 Filter
+      // More than 20 Filter
       if (more20Percent != null) {
-        query = query
-            // .where("discount", isGreaterThan: more20Percent)
-            // .where("isPrime", isEqualTo: true)
-            // .where("isPrime", isNotEqualTo: null)
-            // .where("discount", isGreaterThan: more20Percent)
-            .orderBy("isPrime", descending: true)
-            .orderBy("discount", descending: true)
-            .orderBy("deadline", descending: true)
-            .orderBy("created_at", descending: true)
-            .startAt([false, 100]).endAt([false, more20Percent]);
+        var startArr = [
+          false,
+          // (lastProduct?.discount ?? 100) >= more20Percent
+          //     ? (lastProduct?.discount ?? 100)
+          //     : more20Percent
+        ];
+        var endArr = [false, more20Percent];
 
-        // values.add(more20Percent);
-      }
-      if (lastDayTime != null) {
+        // if (lastProduct != null) {
+        //   startArr.addAll([lastProduct.deadline, lastProduct.createdAt]);
+        // }
+
         query = query
-            // .where("deadline",
-            //     isLessThanOrEqualTo: lastDayTime,
-            //     isGreaterThanOrEqualTo: values[0])
             .orderBy("isPrime", descending: true)
-            .orderBy("deadline", descending: true)
+            .orderBy("discount", descending: true)
+            .orderBy("deadline", descending: false)
+            .orderBy("created_at", descending: true)
+            .startAt(startArr)
+            .endAt(endArr);
+      }
+
+      // Last Day Filter
+      // Last Day Filter
+      // Last Day Filter
+      if (lastDayTime != null) {
+        var startArr = [false, currentTime];
+        var endArr = [false, lastDayTime];
+
+        // if (lastProduct != null) {
+        //   startArr.addAll([lastProduct.discount, lastProduct.createdAt]);
+        // }
+
+        query = query
+            .orderBy("isPrime", descending: true)
+            .orderBy("deadline", descending: false)
             .orderBy("discount", descending: true)
             .orderBy("created_at", descending: true)
-            .startAt([false, lastDayTime]).endAt([false, values[0]]);
+            .startAt(startArr)
+            .endAt(endArr);
       }
+
+      // Last Add Day Filter
+      // Last Add Day Filter
+      // Last Add Day Filter
       if (lastAdded != null) {
         query = query
             .orderBy("isPrime", descending: true)
             .orderBy("created_at", descending: true)
-            .orderBy("deadline", descending: true);
+            .orderBy("deadline", descending: false);
       }
+
       if (subcategoryRes != null) {
         query = query.where('subcategory', isEqualTo: subcategoryRes);
       }
+
+      // Without Filter
+      // Without Filter
+      // Without Filter
       if (more20Percent == null && lastDayTime == null && lastAdded == null) {
-        query = query.orderBy("isPrime", descending: true);
+        List<dynamic> startAt = [true];
+        // if (lastProduct != null) {
+        //   startAt.addAll([lastProduct.deadline, lastProduct.createdAt]);
+        // }
+        query = query
+            .orderBy("isPrime", descending: true)
+            .orderBy("deadline", descending: false)
+            .orderBy("created_at", descending: true)
+            .startAt(startAt);
+        // .endAt([false, oneYearTime]);
+
+        if (lastProduct != null) {
+          query.startAfterDocument(lastProduct);
+        }
       }
 
       if (limit != null) {
         query = query.limit(limit);
       }
-      // .orderBy("discount", descending: true)
-      // .where("discount", isGreaterThanOrEqualTo: more20Percent)
-      // .where('subcategory', isEqualTo: subcategoryRes)
-      //     .startAt([
-      //   from != null
-      //       ? (from.millisecondsSinceEpoch.toInt() / 1000).round()
-      //       : (DateTime.now().millisecondsSinceEpoch.toInt() / 1000).round(),
-      // ])
 
       products = await query.get();
       List<Product> myProducts = [];
 
+      // More than 20 Filter Addition
+      // More than 20 Filter Addition
+      // More than 20 Filter Addition
       if (more20Percent != null && category != null) {
         var snaps = FirebaseFirestore.instance
             .collection('products')
@@ -125,26 +159,45 @@ class ProductsCrud {
         if (company != null) {
           snaps = snaps.where("companyId", isEqualTo: company.id);
         }
-        if (subcategoryRes != null) {
-          snaps = snaps.where('subcategory', isEqualTo: subcategoryRes);
-        }
+
+        var startArr = [
+          true,
+          // (lastProduct?.discount ?? 100) >= more20Percent
+          //     ? (lastProduct?.discount ?? 100)
+          //     : more20Percent
+        ];
+        var endArr = [true, more20Percent];
+
+        // if (lastProduct != null) {
+        //   startArr.addAll([lastProduct.deadline, lastProduct.createdAt]);
+        // }
 
         snaps = snaps
             .orderBy("isPrime", descending: true)
             .orderBy("discount", descending: true)
-            .orderBy("deadline", descending: true)
+            .orderBy("deadline", descending: false)
             .orderBy("created_at", descending: true)
-            .startAt([true, 100]).endAt([true, more20Percent]);
+            .startAt(startArr)
+            .endAt(endArr);
+
+        if (subcategoryRes != null) {
+          snaps = snaps.where('subcategory', isEqualTo: subcategoryRes);
+        }
 
         if (limit != null) {
           snaps = snaps.limit(limit);
         }
+        final fetchedSnaps = await snaps.get();
+        final allSnaps = await Future.wait(
+          fetchedSnaps.docs.map((e) => renderProduct(e.data())),
+        );
 
-        for (var element in (await snaps.get()).docs) {
-          myProducts.add((await renderProduct(element.data())));
-        }
+        myProducts.addAll(allSnaps);
       }
 
+      // Last Day Filter Addition
+      // Last Day Filter Addition
+      // Last Day Filter Addition
       if (lastDayTime != null && category != null) {
         var snaps = FirebaseFirestore.instance
             .collection('products')
@@ -157,19 +210,27 @@ class ProductsCrud {
           snaps = snaps.where("companyId", isEqualTo: company.id);
         }
 
+        var startArr = [true, currentTime];
+        var endArr = [true, lastDayTime];
+
+        // if (lastProduct != null) {
+        //   startArr.addAll([lastProduct.discount, lastProduct.createdAt]);
+        // }
+
         snaps = snaps
             .orderBy("isPrime", descending: true)
-            .orderBy("deadline", descending: true)
+            .orderBy("deadline", descending: false)
             .orderBy("discount", descending: true)
             .orderBy("created_at", descending: true)
-            .startAt([true, lastDayTime]).endAt([true, values[0]]);
+            .startAt(startArr)
+            .endAt(endArr);
 
         if (limit != null) {
           snaps = snaps.limit(limit);
         }
 
         var fetchedSnaps = await snaps.get();
-
+        // lastSnap = fetchedSnaps.docs.last;
         var allSnaps = await Future.wait(
             fetchedSnaps.docs.map((e) => renderProduct(e.data())));
         myProducts.addAll(allSnaps);
@@ -180,20 +241,17 @@ class ProductsCrud {
         if (limit != null) {
           docs = docs.take((myProducts.length - limit).abs()).toList();
         }
-
+        // lastSnap = docs.last;
         var rendered =
             await Future.wait(docs.map((e) => renderProduct(e.data())));
         myProducts.addAll(rendered);
-        // myProducts.sort((a, b) => a.isPrime == b.isPrime
-        //     ? 0
-        //     : a.isPrime
-        //         ? -1
-        //         : 1);
       }
-
+      // if (getLastSnap == true) {
+      //   return [myProducts, products.docs.last];
+      // }
       return myProducts;
     } catch (e) {
-      throw Error();
+      throw Exception(e);
     }
   }
 
@@ -217,8 +275,9 @@ class ProductsCrud {
   static Future<Product> renderProduct(Map<String, dynamic> element) async {
     final product = Product.fromJson(element);
 
-    product.availablePlaces = await Future.wait(
-        product.availablePlaces.map((e) => PlaceCrud.getPlace(e.id)));
+    product.availablePlaces = await Future.wait(product.availablePlaces.map(
+        (e) => PlaceCrud.getPlace(
+            e.runtimeType == String ? e.toString().split("/")[1] : e.id)));
 
     // for (var i = 0; i < product.availablePlaces.length; i++) {
     //   DocumentReference element = product.availablePlaces[i];
@@ -226,11 +285,19 @@ class ProductsCrud {
     //   product.availablePlaces[i] = place;
     // }
 
-    product.company = await CompanyCrud.getCompanyPure(product.company.id);
+    product.company = await CompanyCrud.getCompanyPure(
+        product.company.runtimeType == String
+            ? product.company.toString().split("/")[1]
+            : product.company.id);
 
-    product.category = await CategoryCrud.getCategory(product.category.id);
-    product.subcategory =
-        await SubcategoryCrud.getSubcategory(product.subcategory.id);
+    product.category = await CategoryCrud.getCategory(
+        product.category.runtimeType == String
+            ? product.category.toString().split("/")[1]
+            : product.category.id);
+    product.subcategory = await SubcategoryCrud.getSubcategory(
+        product.subcategory.runtimeType == String
+            ? product.subcategory.toString().split("/")[1]
+            : product.subcategory.id);
 
     return product;
   }

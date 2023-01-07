@@ -1,7 +1,6 @@
 import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -46,6 +45,7 @@ class MapWidget extends StatelessWidget {
               if (res != PermissionStatus.granted) {
                 return showTopSnackBar(
                   Overlay.of(context)!,
+                  displayDuration: const Duration(milliseconds: 1000),
                   const CustomSnackBar.error(
                     message: "Zəhmət olmasa lokasyon servisini aktivləşdirin",
                   ),
@@ -59,6 +59,7 @@ class MapWidget extends StatelessWidget {
               if (!serviceEnabled) {
                 return showTopSnackBar(
                   Overlay.of(context)!,
+                  displayDuration: const Duration(milliseconds: 1000),
                   const CustomSnackBar.error(
                     message: "Zəhmət olmasa lokasyon servisini aktivləşdirin",
                   ),

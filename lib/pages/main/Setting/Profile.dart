@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
@@ -9,7 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+
+extension E on String {
+  String lastChars(int n) => substring(length - n);
+}
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -20,55 +23,33 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   TextEditingController name = TextEditingController();
-  TextEditingController phoneEditing = TextEditingController();
-  MaskTextInputFormatter phone = MaskTextInputFormatter(
-      mask: "#### ## ###-##-##",
-      filter: {"#": RegExp(r'[0-9 +]')},
-      initialText: "+994",
-      type: MaskAutoCompletionType.lazy);
+
   TextEditingController mail = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController repeatPass = TextEditingController();
+
+  TextEditingController phone = TextEditingController();
 
   @override
   void initState() {
     final user = context.read<GlobalBloc>().state.userData;
     if (user != null) {
       name.text = user.name;
-      phoneEditing.text = phone.maskText(user.phone);
       mail.text = user.mail;
+      phone.text = user.phone.lastChars(9);
     }
     super.initState();
   }
 
   @override
+  void dispose() {
+    name.dispose();
+    mail.dispose();
+    phone.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    List<Map<String, dynamic>> textFields = [
-      {
-        "hintText": "Ad",
-        "controller": name,
-        "error": validationWithEmpty(name.text),
-        "errorText": "Minimum 3 hərf lazımdır",
-        "isVisible": true
-      },
-      {
-        "hintText": "Mobil nömrə",
-        "inputFormatter": phone,
-        "controller": phoneEditing,
-        "initValue": "+994",
-        "keyboardType": TextInputType.phone,
-        "errorText": "Minimum 3 hərf lazımdır",
-        "isVisible": true
-      },
-      {
-        "hintText": "E-mail",
-        "controller": mail,
-        "keyboardType": TextInputType.emailAddress,
-        "errorText": "Düzgün e-mail daxil edin",
-        "isVisible": true
-      },
-    ];
 
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (globalContext, globalState) {
@@ -80,7 +61,8 @@ class _ProfileState extends State<Profile> {
                 "https://firebasestorage.googleapis.com/v0/b/endirimsebeti.appspot.com/o/noimage.jpg?alt=media&token=14382611-4d06-4301-baf0-a4a9da0f2ecd");
 
         return BlocProvider(
-          create: (context) => ProfileBloc(globalState.userData!),
+          create: (context) => ProfileBloc(globalState.userData!)
+            ..setPhoneNumber(globalState.userData!.phone),
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               return Scaffold(
@@ -214,30 +196,73 @@ class _ProfileState extends State<Profile> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 10),
-                                  ...textFields.map((item) {
-                                    return item["isVisible"]
-                                        ? Column(
-                                            children: [
-                                              const SizedBox(
-                                                height: 15,
-                                              ),
-                                              CustomTextField(
-                                                hintText: item["hintText"],
-                                                controller: item["controller"],
-                                                initValue: item["initValue"],
-                                                inputFormatter:
-                                                    item["inputFormatter"],
-                                                keyboardType:
-                                                    item["keyboardType"],
-                                                error: item["error"],
-                                                errorText: item["errorText"],
-                                                isDisabled: state.editEnabled,
-                                              )
-                                            ],
-                                          )
-                                        : Container();
-                                  }),
+                                  const SizedBox(height: 15),
+                                  CustomTextField(
+                                    isEnabled: state.editEnabled,
+                                    hintText: "Ad",
+                                    controller: name,
+                                    error: validationWithEmpty(name.text),
+                                    errorText: "Minimum 3 hərf lazımdır",
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  IntlPhoneField(
+                                    flagsButtonPadding:
+                                        const EdgeInsets.only(left: 20),
+                                    disableLengthCheck: true,
+                                    enabled: state.editEnabled,
+                                    controller: phone,
+                                    // showCountryFlag: false,
+                                    pickerDialogStyle: PickerDialogStyle(
+                                      searchFieldInputDecoration:
+                                          const InputDecoration(
+                                        hintText: "Axtarış",
+                                        hintStyle: TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    style: TextStyle(fontSize: 15),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      helperText: "Misal: 50 765 43 21",
+                                      hintText: "Nömrənizi daxil edin",
+                                      hintStyle: TextStyle(fontSize: 15),
+                                      labelStyle: TextStyle(fontSize: 15),
+                                      fillColor: Colors.grey[200],
+                                      border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(50)),
+                                        borderSide: BorderSide(
+                                          width: 0,
+                                          style: BorderStyle.none,
+                                        ),
+                                      ),
+                                    ),
+                                    initialCountryCode: 'AZ',
+                                    invalidNumberMessage: 'Nömrə düzgün deyil',
+                                    onChanged: (phone) {
+                                      context
+                                          .read<ProfileBloc>()
+                                          .setPhoneNumber(
+                                              phone.number.startsWith("0")
+                                                  ? phone.countryCode +
+                                                      phone.number.substring(1)
+                                                  : phone.completeNumber);
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  CustomTextField(
+                                    isEnabled: state.editEnabled,
+                                    hintText: "E-mail",
+                                    controller: mail,
+                                    keyboardType: TextInputType.emailAddress,
+                                    error: validationWithEmpty(name.text),
+                                    errorText: "Düzgün e-mail daxil edin",
+                                  ),
                                   const SizedBox(
                                     height: 15,
                                   ),
@@ -307,10 +332,6 @@ class _ProfileState extends State<Profile> {
                                                   .saveChanges(
                                                       globalState.userData!,
                                                       name.text,
-                                                      phoneEditing.text
-                                                          .replaceAll(
-                                                              RegExp(r'[\s-]'),
-                                                              ""),
                                                       mail.text);
                                               if (!mounted) return;
                                               context

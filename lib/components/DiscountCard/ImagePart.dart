@@ -5,7 +5,6 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/utils/index.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -61,7 +60,7 @@ class _ImagePartState extends State<ImagePart> {
                           color: Color(mainColor),
                         ))))),
         Positioned(
-            right: 5,
+            right: 0,
             top: 0,
             child: BlocBuilder<GlobalBloc, GlobalState>(
               builder: (context, state) {

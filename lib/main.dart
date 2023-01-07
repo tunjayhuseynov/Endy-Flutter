@@ -1,3 +1,4 @@
+import 'package:endy/FirebaseMessaging.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
@@ -7,10 +8,6 @@ import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/firebase_options.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
-import 'package:endy/providers/FilterChange.dart';
-import 'package:endy/providers/ListChange.dart';
-import 'package:endy/providers/PanelChange.dart';
-import 'package:endy/providers/UserChange.dart';
 import 'package:endy/utils/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,90 +16,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:typesense/typesense.dart';
 
-Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  await setupFlutterNotifications();
-  showFlutterNotification(message);
-}
-
-late AndroidNotificationChannel channel;
-bool isFlutterLocalNotificationsInitialized = false;
-
-Future<void> setupFlutterNotifications() async {
-  if (isFlutterLocalNotificationsInitialized) {
-    return;
-  }
-  channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.high,
-  );
-
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  /// Create an Android Notification Channel.
-  ///
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
-  /// Update the iOS foreground notification presentation options to allow
-  /// heads up notifications.
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  isFlutterLocalNotificationsInitialized = true;
-}
-
-void showFlutterNotification(RemoteMessage message) {
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
-  if (notification != null && android != null && !kIsWeb) {
-    flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            icon: 'launch_background',
-          ),
-        ),
-        payload: message.data["onClick"]);
-  }
-}
-
-late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+final typesenseConfig = Configuration(
+  // Replace with your configuration
+  dotenv.env['TYPESENSE_API_KEY']!,
+  nodes: {
+    Node(
+      Protocol.https,
+      "9ia1pbszodc3l2xwp-1.a1.typesense.net",
+      port: 443,
+    ),
+  },
+  numRetries: 3, // A total of 4 tries (1 original try + 3 retries)
+  connectionTimeout: const Duration(seconds: 2),
+);
 
 void main() async {
   await dotenv.load(fileName: ".env");
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+      
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
+  FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      sound: true,
+      badge: true,
+      announcement: true,
+      criticalAlert: true);
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   // FirebaseAuth.instance.signOut();
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
 
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
-  // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const MyApp());
 }
 
@@ -116,29 +72,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    super.initState();
+    FirebaseMessaging.instance.getInitialMessage();
 
-    FirebaseMessaging.instance.getInitialMessage().then((message) => {
-          print(message?.data),
-          if (message != null && message.data["onClick"] != null)
-            {
-              Navigator.of(context).pushNamed("main/home/detail",
-                  arguments: message.data["onClick"])
-            }
-        });
-
-    FirebaseMessaging.onMessage.listen(showFlutterNotification);
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("Daxil oldu");
-      print(message.data["onClick"]);
-      if (message.data["onClick"] != null) {
-        Navigator.of(context)
-            .pushNamed("main/home/detail", arguments: message.data["onClick"]);
-      }
+    FirebaseMessaging.onMessage.listen((message) async {
+      // await setupFlutterNotifications();
+      showFlutterNotification(message);
     });
-
     FirebaseMessaging.instance.subscribeToTopic('all');
+    super.initState();
   }
 
   @override

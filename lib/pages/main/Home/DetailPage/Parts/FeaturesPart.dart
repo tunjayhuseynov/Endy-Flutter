@@ -18,9 +18,8 @@ class FeatuersWidget extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          const Text("Xüsusiyyətlər:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           Html(
+            shrinkWrap: true,
             data: product?.description,
             style: {
               "p": Style(

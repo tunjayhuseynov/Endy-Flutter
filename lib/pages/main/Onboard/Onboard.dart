@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class _OnboardState extends State<Onboard> {
                         _page(
                             "assets/onboard_second.png",
                             1,
-                            "Bonus Kartalınız",
+                            "Bonus Kartlarınız",
                             "Bonus kartlarınız bir yerdə daha əlçatandır",
                             size),
                         _page(

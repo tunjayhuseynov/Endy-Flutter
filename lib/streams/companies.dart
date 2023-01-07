@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/providers/CompanyChange.dart';
 import 'package:endy/streams/places.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
-import 'package:provider/provider.dart';
 
 class CompanyCrud {
   static Future<Company> getCompany(String id) async {

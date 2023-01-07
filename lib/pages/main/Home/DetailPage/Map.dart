@@ -180,6 +180,8 @@ class _MapPageState extends State<MapPage> {
                                 } catch (e) {
                                   showTopSnackBar(
                                     Overlay.of(context)!,
+                                    displayDuration:
+                                        const Duration(milliseconds: 1000),
                                     const CustomSnackBar.error(
                                       message:
                                           "Xəritəyə qoşulurken xəta baş verdi",

@@ -175,6 +175,8 @@ class _BonusAddState extends State<BonusAdd>
                                     } catch (e) {
                                       showTopSnackBar(
                                         Overlay.of(context)!,
+                                        displayDuration:
+                                            const Duration(milliseconds: 1000),
                                         CustomSnackBar.error(
                                           message: e
                                               .toString()

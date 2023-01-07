@@ -1,9 +1,13 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
+import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpParams {
@@ -31,18 +35,26 @@ class OTP extends StatefulWidget {
 }
 
 class _OTPState extends State<OTP> {
+  final TextEditingController _smsController = TextEditingController();
+  late CountdownTimerController _controller;
+
   @override
   void initState() {
     super.initState();
     context.read<OTPBloc>().setErrorMessage("");
     resend(widget.params.phone);
-  }
 
-  final TextEditingController _smsController = TextEditingController();
+    _controller = CountdownTimerController(
+      onEnd: () {
+        context.read<OTPBloc>().setFinished(true);
+      },
+      endTime: DateTime.now().millisecondsSinceEpoch + 61000,
+    );
+  }
 
   resend(String phone) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      timeout: const Duration(seconds: 120),
+      timeout: const Duration(seconds: 60),
       phoneNumber: phone,
       verificationCompleted: (PhoneAuthCredential credential) async {},
       verificationFailed: (FirebaseAuthException e) {},
@@ -51,6 +63,13 @@ class _OTPState extends State<OTP> {
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
+  }
+
+  @override
+  void dispose() {
+    _smsController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -157,16 +176,39 @@ class _OTPState extends State<OTP> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Kodu almadınız?",
-                          style: TextStyle(color: Colors.grey[700])),
-                      TextButton(
-                          onPressed: () => {
-                                resend(widget.params.phone),
-                                context.read<OTPBloc>().setErrorMessage(""),
-                                _smsController.clear()
-                              },
-                          child: const Text("Yenidən göndər",
-                              style: TextStyle(color: Color(mainColor))))
+                      if (!state.isFinised)
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Text("Kodu gözləyin",
+                              style: TextStyle(color: Colors.grey[700])),
+                        ),
+                      if (!state.isFinised)
+                        CountdownTimer(
+                          controller: _controller,
+                          widgetBuilder: (context, time) {
+                            if (time == null) {
+                              return Text("00:00",
+                                  style: TextStyle(color: Colors.grey[700]));
+                            }
+                            final minutes = time.min ?? 0;
+                            final seconds = time.sec ?? 0;
+                            return Text(
+                                "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
+                                style: TextStyle(color: Colors.grey[700]));
+                          },
+                        ),
+                      if (state.isFinised)
+                        Text("Şifrəni almadınız?",
+                            style: TextStyle(color: Colors.grey[700])),
+                      if (state.isFinised)
+                        TextButton(
+                            onPressed: () => {
+                                  resend(widget.params.phone),
+                                  context.read<OTPBloc>().setErrorMessage(""),
+                                  _smsController.clear()
+                                },
+                            child: const Text("Yenidən göndər",
+                                style: TextStyle(color: Color(mainColor))))
                     ],
                   )
                 ],

@@ -1,127 +1,123 @@
-import 'package:algolia/algolia.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
+import 'package:endy/types/category.dart';
+import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
-import 'package:endy/types/search.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:typesense/typesense.dart';
 
-class SearchPage extends StatelessWidget {
-  final Algolia _algoliaClient = Algolia.init(
-      applicationId: "N7B70FFDHT",
-      apiKey: dotenv.env['ALGOLIA_API_KEY'] as String);
+class SearchPage extends StatefulWidget {
+  final Category? category;
+  final Subcategory? subcategory;
+  final Company? company;
+  final Client client;
 
-  SearchPage({super.key});
+  SearchPage({
+    super.key,
+    this.category,
+    this.subcategory,
+    this.company,
+    required this.client,
+  });
 
-  Future<List<SearchHit>> _getSearchResult(
-      BuildContext context, SearchPageState state) async {
-    if (state.search == '') return [];
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
 
-    try {
-      AlgoliaQuery algoliaQuery =
-          _algoliaClient.instance.index("endirim_sebeti").query(state.search);
-      if (state.category != null) {
-        algoliaQuery = algoliaQuery
-            .facetFilter('category:categories/${state.category?.id}');
-      }
-      if (state.company != null) {
-        algoliaQuery =
-            algoliaQuery.facetFilter('company:companies/${state.company?.id}');
-      }
-      if (state.subcategory != null) {
-        algoliaQuery = algoliaQuery
-            .facetFilter('subcategory:subcategories/${state.subcategory?.id}');
-      }
-      AlgoliaQuerySnapshot snapshot = await algoliaQuery.getObjects();
-      if (snapshot.empty) {
-        return [];
-      }
-      final rawHits = snapshot.toMap()['hits'] as List;
-      final hits =
-          List<SearchHit>.from(rawHits.map((hit) => SearchHit.fromJson(hit)));
-      return hits;
-    } catch (e) {
-      throw Exception(e);
-    }
+class _SearchPageState extends State<SearchPage> {
+  // final client = Client(typesenseConfig);
+
+  @override
+  void dispose() {
+    context.read<SearchPageBloc>().setClose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<SearchPageBloc>().getSearchResult(
+        widget.category, widget.company, widget.subcategory, widget.client);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchPageBloc, SearchPageState>(
-      builder: (context, state) {
-        return FutureBuilder<List<SearchHit>>(
-            future: _getSearchResult(context, state),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator(
-                  color: Color(mainColor),
-                ));
-              }
-              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                return ListView(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+    return Container(
+      child: BlocConsumer<SearchPageBloc, SearchPageState>(
+        listener: (context, state) {
+          if (state.search.isNotEmpty && state.isSearching == true) {
+            context.read<SearchPageBloc>().getSearchResult(widget.category,
+                widget.company, widget.subcategory, widget.client);
+          }
+        },
+        builder: (context, state) {
+          if (state.isSearching) {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Color(mainColor),
+            ));
+          }
+          return LayoutBuilder(builder: (context, constraints) {
+            return Column(
+              children: [
+                GridView.builder(
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
-                  children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: (250 / 400),
-                              mainAxisSpacing: 15,
-                              crossAxisSpacing: 15),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final data = snapshot.data![index];
-                        return DiscountCard(
-                            product: Product(
-                                availablePlaces: [],
-                                category: context
-                                    .read<GlobalBloc>()
-                                    .state
-                                    .categories
-                                    .where((element) =>
-                                        "categories/${element.id}" ==
-                                        data.category)
-                                    .first,
-                                company: context
-                                    .read<GlobalBloc>()
-                                    .state
-                                    .companies
-                                    .where((element) =>
-                                        "companies/${element.id}" ==
-                                        data.company)
-                                    .first,
-                                createdAt: data.created_at,
-                                deadline: data.deadline,
-                                isPrime: false,
-                                discount: (data.discount as num).toDouble(),
-                                discountedPrice:
-                                    (data.discountedPrice as num).toDouble(),
-                                id: data.objectID,
-                                images: [],
-                                primaryImage: data.primaryImage,
-                                name: data.name,
-                                price: (data.price as num).toDouble(),
-                                subcategory: null,
-                                link: null));
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                  ],
-                );
-              }
-              return const Text('Məlumat tapılmadı');
-            });
-      },
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: constraints.maxWidth * 0.66 / 430,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15),
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) {
+                    final data = state.products[index];
+                    return DiscountCard(
+                        product: Product(
+                            availablePlaces: [],
+                            category: context
+                                .read<GlobalBloc>()
+                                .state
+                                .categories
+                                .where((element) =>
+                                    "categories/${element.id}" == data.category)
+                                .first,
+                            company: context
+                                .read<GlobalBloc>()
+                                .state
+                                .companies
+                                .where((element) =>
+                                    "companies/${element.id}" == data.company)
+                                .first,
+                            createdAt: data.createdAt,
+                            deadline: data.deadline,
+                            isPrime: false,
+                            discount: data.discount,
+                            discountedPrice: data.discountedPrice,
+                            id: data.id,
+                            images: [],
+                            primaryImage: data.primaryImage,
+                            name: data.name,
+                            price: data.price,
+                            subcategory: null,
+                            link: null));
+                  },
+                ),
+                if (state.products.isNotEmpty && !state.isLastPage)
+                  const Center(
+                      child: CircularProgressIndicator(
+                    color: Color(mainColor),
+                  )),
+                const SizedBox(height: 120)
+              ],
+            );
+          });
+        },
+      ),
     );
   }
 }

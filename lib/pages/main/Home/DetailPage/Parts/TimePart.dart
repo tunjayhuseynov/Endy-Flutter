@@ -1,14 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:endy/components/tools/button.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TimePart extends StatelessWidget {
   const TimePart({
