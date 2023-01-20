@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/FeaturesPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/HyperlinkPart.dart';
@@ -29,55 +30,61 @@ class DetailState extends State<DetailPage> {
     if (product == null) return const Text("Məlumat yoxdur");
     List<String> images = [product.primaryImage, ...product.images];
 
-    return BlocBuilder<DetailPageBloc, DetailPageState>(
-      builder: (context, state) {
-        return ListView(
-          physics: const ScrollPhysics(),
-          children: [
-            ImagePart(
-                buttonCarouselController: buttonCarouselController,
-                size: size,
-                images: images,
-                product: product),
-            Container(
-              margin: const EdgeInsets.only(top: 15),
-              height: 13,
-              width: size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: images
-                    .asMap()
-                    .entries
-                    .map((e) => Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 13,
-                          height: 13,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: state.current == e.key
-                                  ? const Color(mainColor)
-                                  : Colors.grey[300]),
-                        ))
-                    .toList(),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              height: 15,
-              width: size.width,
-              child: Center(
-                  child: Text("${(state.current ?? 0) + 1}/${images.length}")),
-            ),
-            const SizedBox(height: 10),
-            PricePart(product: product),
-            TimePart(product: product),
-            MapWidget(mounted: mounted, product: product),
-            const SizedBox(height: 20),
-            FeatuersWidget(product: product),
-            const SizedBox(height: 20),
-            HyperlinkWidget(product: product),
-            const SizedBox(height: 30),
-          ],
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (globalContext, globalState) {
+        return BlocBuilder<DetailPageBloc, DetailPageState>(
+          builder: (context, state) {
+            return ListView(
+              physics: const ScrollPhysics(),
+              children: [
+                ImagePart(
+                    buttonCarouselController: buttonCarouselController,
+                    size: size,
+                    images: images,
+                    product: product),
+                Container(
+                  margin: const EdgeInsets.only(top: 15),
+                  height: 13,
+                  width: size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: images
+                        .asMap()
+                        .entries
+                        .map((e) => Container(
+                              margin: const EdgeInsets.only(right: 5),
+                              width: 13,
+                              height: 13,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: state.current == e.key
+                                      ? const Color(mainColor)
+                                      : Colors.grey[300]),
+                            ))
+                        .toList(),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  height: 15,
+                  width: size.width,
+                  child: Center(
+                      child:
+                          Text("${(state.current ?? 0) + 1}/${images.length}")),
+                ),
+                const SizedBox(height: 10),
+                PricePart(product: product),
+                TimePart(product: product),
+                if (globalState.isMapDisabled == false)
+                  MapWidget(mounted: mounted, product: product),
+                const SizedBox(height: 20),
+                FeatuersWidget(product: product),
+                const SizedBox(height: 20),
+                HyperlinkWidget(product: product),
+                const SizedBox(height: 30),
+              ],
+            );
+          },
         );
       },
     );

@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                                         .state
                                         .categories)),
                             // const Padding(padding: EdgeInsets.only(top: 15)),
-                            const HomePageGridProducts()
+                            HomePageGridProducts()
                           ],
                         )
                 ],

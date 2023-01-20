@@ -86,6 +86,20 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
+                            Navigator.pushNamed(context, '/list');
+                          },
+                          contentPadding: const EdgeInsets.all(0),
+                          minLeadingWidth: 5,
+                          leading: Icon(Icons.list, color: Colors.grey[800]),
+                          title: const Text("Alış-veriş siyahım",
+                              style: TextStyle(letterSpacing: .75)),
+                        ),
+                      ),
+                      const Divider(thickness: 1),
+                      SizedBox(
+                        height: 45,
+                        child: ListTile(
+                          onTap: () {
                             Navigator.pushNamed(
                                 context, '/setting/notification');
                           },

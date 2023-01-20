@@ -19,56 +19,63 @@ class _ListHomeState extends State<ListHome> {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Stack(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height - 100,
-                child: ListView(shrinkWrap: true, children: [
-                  const Text("List",
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 20),
-                  SingleChildScrollView(
-                    child: ListView.builder(
-                      physics: const ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.userData?.list.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child:
-                              ListItem(detail: state.userData!.list[index]),
-                        );
-                      },
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            leading: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back_ios)),
+            title: const Text("List",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600)),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: ListView(shrinkWrap: true, children: [
+                    // const SizedBox(height: 20),
+                    SingleChildScrollView(
+                      child: ListView.builder(
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: state.userData?.list.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child:
+                                ListItem(detail: state.userData!.list[index]),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ]),
-              ),
-              Positioned(
-                right: 0,
-                bottom: 20,
-                child: FloatingActionButton(
-                  heroTag: "addList",
-                  backgroundColor: const Color(mainColor),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  onPressed: () async {
-                    final response = await _showInputDialog();
-                    if (response != null) {
-                      final String text = response as String;
-                      if (!mounted) return;
-                      context.read<GlobalBloc>().addList(UserList(
-                          id: Xid().toString(), name: text, details: []));
-                    }
-                  },
-                  child: const Icon(Icons.add, size: 32),
+                  ]),
                 ),
-              ),
-            ],
+                Positioned(
+                  right: 0,
+                  bottom: 20,
+                  child: FloatingActionButton(
+                    heroTag: "addList",
+                    backgroundColor: const Color(mainColor),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    onPressed: () async {
+                      final response = await _showInputDialog();
+                      if (response != null) {
+                        final String text = response as String;
+                        if (!mounted) return;
+                        context.read<GlobalBloc>().addList(UserList(
+                            id: Xid().toString(), name: text, details: []));
+                      }
+                    },
+                    child: const Icon(Icons.add, size: 32),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

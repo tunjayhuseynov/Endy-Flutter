@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/Parent.dart';
+import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';
 import 'package:endy/streams/notifications.dart';
 import 'package:endy/streams/panel.dart';
+import 'package:endy/types/catalog.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/notification.dart';
@@ -23,6 +25,8 @@ class GlobalState {
   final int? reset;
   final String aboutApp;
 
+  final bool isMapDisabled;
+  final bool isMostViewedDisabled;
   final GlobalStatus packageStatus;
   final List<NotificationMessage> notifications;
   final int unseenNotificationCount;
@@ -30,12 +34,14 @@ class GlobalState {
   final List<Category> categories;
   final List<Subcategory> subcategories;
   final List<Panel> panels;
+  final List<Catalog> catalogs;
 
   GlobalState({
     this.authStatus = GlobalAuthStatus.loading,
     this.userData,
     this.reset,
     this.user,
+    this.isMapDisabled = false,
     this.packageStatus = GlobalStatus.loading,
     this.categories = const [],
     this.notifications = const [],
@@ -43,7 +49,9 @@ class GlobalState {
     this.subcategories = const [],
     this.companies = const [],
     this.panels = const [],
+    this.catalogs = const [],
     this.aboutApp = "",
+    this.isMostViewedDisabled = false,
   });
 
   GlobalState copyWith({
@@ -58,7 +66,10 @@ class GlobalState {
     List<Category>? categories,
     List<Subcategory>? subcategories,
     List<Panel>? panels,
+    List<Catalog>? catalogs,
     String? aboutApp,
+    bool? isMapDisabled,
+    bool? isMostViewedDisabled
   }) {
     return GlobalState(
       packageStatus: packageStatus ?? this.packageStatus,
@@ -69,11 +80,14 @@ class GlobalState {
       unseenNotificationCount:
           unseenNotificationCount ?? this.unseenNotificationCount,
       companies: companies ?? this.companies,
+      catalogs: catalogs ?? this.catalogs,
       categories: categories ?? this.categories,
       subcategories: subcategories ?? this.subcategories,
       panels: panels ?? this.panels,
       reset: reset ?? this.reset,
       aboutApp: aboutApp ?? this.aboutApp,
+      isMapDisabled: isMapDisabled ?? this.isMapDisabled,
+      isMostViewedDisabled: isMostViewedDisabled ?? this.isMostViewedDisabled,
     );
   }
 
@@ -86,10 +100,13 @@ class GlobalState {
         userData,
         authStatus,
         notifications,
+        catalogs,
         unseenNotificationCount,
         packageStatus,
         reset,
+        isMapDisabled,
         aboutApp,
+        isMostViewedDisabled
       ];
 }
 
@@ -100,6 +117,23 @@ class GlobalBloc extends Parent {
 
   void setAuthLoading(GlobalAuthStatus status) {
     emit(state.copyWith(authStatus: status));
+  }
+
+  void loadUtils() {
+    FirebaseFirestore.instance
+        .collection("utils")
+        .doc("isMapDisabled")
+        .get()
+        .then((doc) {
+      emit(state.copyWith(isMapDisabled: doc.data()?["value"] ?? false));
+    });
+    FirebaseFirestore.instance
+        .collection("utils")
+        .doc("isMostViewedDisabled")
+        .get()
+        .then((doc) {
+      emit(state.copyWith(isMostViewedDisabled: doc.data()?["value"] ?? false));
+    });
   }
 
   void setCompanies(List<Company> companies) {
@@ -192,7 +226,8 @@ class GlobalBloc extends Parent {
       CompanyCrud.getCompanies(),
       CategoryCrud.getCategories(),
       PanelCrud.getPanels(),
-      PanelCrud.getAbout()
+      PanelCrud.getAbout(),
+      CatalogsCrud.getCatalogs()
       // SubcategoryCrud.getSubcategories(),
     ]).then((value) {
       emit(state.copyWith(
@@ -201,6 +236,7 @@ class GlobalBloc extends Parent {
         categories: value[1] as List<Category>,
         panels: value[2] as List<Panel>,
         aboutApp: value[3] as String,
+        catalogs: value[4] as List<Catalog>,
         // subcategories: value[2] as List<Subcategory>,
       ));
     });

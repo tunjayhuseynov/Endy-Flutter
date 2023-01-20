@@ -4,87 +4,91 @@ import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/types/category.dart';
+// import 'package:endy/main.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:typesense/typesense.dart';
 
-class HomePageGridProducts extends StatelessWidget {
-  const HomePageGridProducts({
+class HomePageGridProducts extends StatefulWidget {
+  HomePageGridProducts({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<HomePageGridProducts> createState() => _HomePageGridProductsState();
+}
+
+class _HomePageGridProductsState extends State<HomePageGridProducts> {
+  // final client = Client(typesenseConfig);
+  List<Category> categories = [];
+
+  @override
+  void initState() {
+    categories = [...context.read<GlobalBloc>().state.categories];
+    context
+        .read<HomePageCacheBloc>()
+        .getMostViewedProducts(categories, FilterPageState.none);
+
+    context
+        .read<HomePageCacheBloc>()
+        .getProducts(categories, FilterPageState.none);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final categories = context.read<GlobalBloc>().state.categories;
-
     categories.sort((a, b) => a.order.compareTo(b.order));
-    return BlocBuilder<HomePageCacheBloc, HomePageCacheState>(
-      builder: (context, state) {
-        return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: ListView(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              children: [
-                FutureBuilder<List<Product>>(
-                    future: context
-                        .read<HomePageCacheBloc>()
-                        .getMostViewedProducts(
-                            categories, FilterPageState.none),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container();
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.done &&
-                          snapshot.data != null) {
-                        return MostViwed(snap: snapshot);
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.done &&
-                          snapshot.data == null) {
-                        return Container();
-                      }
-                      return const Center(
-                        child: Text("Yüklənir..."),
-                      );
-                    }),
-                FutureBuilder<List<List<Product>>>(
-                    future: context
-                        .read<HomePageCacheBloc>()
-                        .getProducts(categories, FilterPageState.none),
-                    // Future.wait(categories.map((e) =>
-                    //     ProductsCrud.getProducts(
-                    //         null, 4, e, null, filter.mode, null))),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                            child: CircularProgressIndicator(
-                          color: Color(mainColor),
-                        ));
-                      }
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (globalContext, globalState) {
+        return BlocConsumer<HomePageCacheBloc, HomePageCacheState>(
+          listener: (context, state) {
+            if (state.mainProductsConnectionStatus ==
+                    ConnectionStatus.Loading &&
+                state.mostViewedConnectionStatus == ConnectionStatus.Loading) {
+              context
+                  .read<HomePageCacheBloc>()
+                  .getMostViewedProducts(categories, FilterPageState.none);
 
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          snapshot.hasData) {
-                        final data = snapshot.data!
-                            .where((element) => element.isNotEmpty)
-                            .toList();
-
-                        return ProductListFourGrid(data: data);
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.done &&
-                          !snapshot.hasData) {
-                        return const Center(
-                          child: Text("Məhsul Yoxdur"),
-                        );
-                      }
-
-                      return const Center(
+              context
+                  .read<HomePageCacheBloc>()
+                  .getProducts(categories, FilterPageState.none);
+            }
+          },
+          builder: (context, state) {
+            return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  children: [
+                    if (state.mostViewedConnectionStatus ==
+                            ConnectionStatus.Loading ||
+                        state.mainProductsConnectionStatus ==
+                            ConnectionStatus.Loading)
+                      const Center(
                           child: CircularProgressIndicator(
                         color: Color(mainColor),
-                      ));
-                    }),
-              ],
-            ));
+                      )),
+                    if (state.mostViewedConnectionStatus ==
+                            ConnectionStatus.Connected &&
+                        state.mainProductsConnectionStatus ==
+                            ConnectionStatus.Connected && globalState.isMostViewedDisabled == false)
+                      MostViwed(snap: state.mostViewedProducts),
+                    if (state.mainProductsConnectionStatus ==
+                            ConnectionStatus.Connected &&
+                        state.mostViewedConnectionStatus ==
+                            ConnectionStatus.Connected)
+                      ProductListFourGrid(
+                          data: state.products
+                              .where((e) => e.isNotEmpty)
+                              .toList()),
+                  ],
+                ));
+          },
+        );
       },
     );
   }
@@ -177,7 +181,7 @@ class ProductListFourGrid extends StatelessWidget {
 }
 
 class MostViwed extends StatelessWidget {
-  final AsyncSnapshot<List<Product>> snap;
+  final List<Product> snap;
   const MostViwed({
     Key? key,
     required this.snap,
@@ -225,7 +229,7 @@ class MostViwed extends StatelessWidget {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              children: snap.data!
+              children: snap
                   .map((e) => Container(
                         width: 200,
                         // height: 290,

@@ -28,7 +28,7 @@ class ImagePart extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 25.0),
+            padding: const EdgeInsets.only(top: 45.0),
             child: CarouselSlider(
               carouselController: buttonCarouselController,
               options: CarouselOptions(
@@ -36,7 +36,7 @@ class ImagePart extends StatelessWidget {
                     context.read<DetailPageBloc>().changeCurrent(index);
                   },
                   viewportFraction: 1,
-                  height: size.height * 0.33),
+                  height: size.height * 0.4),
               items: images.map((i) {
                 return Builder(
                   builder: (BuildContext context) {
@@ -66,7 +66,7 @@ class ImagePart extends StatelessWidget {
           ),
           Positioned(
               right: 25,
-              top: 0,
+              top: 7.5,
               child: SizedBox(
                 width: 35,
                 height: 35,
@@ -77,27 +77,39 @@ class ImagePart extends StatelessWidget {
                             .instance
                             .collection('products')
                             .doc(product!.id));
-                    return IconButton(
-                        iconSize: 30,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onPressed: () => {
-                              if (!isLiked)
-                                {
-                                  context
-                                      .read<GlobalBloc>()
-                                      .addFavorite(product!)
-                                }
-                              else
-                                {
-                                  context
-                                      .read<GlobalBloc>()
-                                      .removeFavorite(product!)
-                                }
-                            },
-                        icon: isLiked
-                            ? const Icon(Icons.favorite, color: Colors.red)
-                            : const Icon(Icons.favorite_border_sharp));
+                    return GestureDetector(
+                      onTap: () => {
+                        if (!isLiked)
+                          {context.read<GlobalBloc>().addFavorite(product!)}
+                        else
+                          {context.read<GlobalBloc>().removeFavorite(product!)}
+                      },
+                      child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              // box shadow
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: const Offset(1, 2),
+                                  blurRadius: 5,
+                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.2),
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(50)),
+                          child: isLiked
+                              ? const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                  size: 25,
+                                )
+                              : const Icon(
+                                  Icons.favorite_border,
+                                  size: 25,
+                                )),
+                    );
                   },
                 ),
               ))

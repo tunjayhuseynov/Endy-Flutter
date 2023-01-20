@@ -15,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:typesense/typesense.dart';
 
@@ -30,7 +29,7 @@ final typesenseConfig = Configuration(
     ),
   },
   numRetries: 3, // A total of 4 tries (1 original try + 3 retries)
-  connectionTimeout: const Duration(seconds: 2),
+  connectionTimeout: const Duration(seconds: 10),
 );
 
 void main() async {
@@ -39,7 +38,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-      
+
   // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
   //   alert: true,
   //   badge: true,
@@ -58,7 +57,7 @@ void main() async {
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
-
+  
   runApp(const MyApp());
 }
 
@@ -72,13 +71,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    FirebaseMessaging.instance.getInitialMessage();
+    if (!kIsWeb) {
+      FirebaseMessaging.instance.getInitialMessage();
 
-    FirebaseMessaging.onMessage.listen((message) async {
-      // await setupFlutterNotifications();
-      showFlutterNotification(message);
-    });
-    FirebaseMessaging.instance.subscribeToTopic('all');
+      FirebaseMessaging.onMessage.listen((message) async {
+        // await setupFlutterNotifications();
+        showFlutterNotification(message);
+      });
+      FirebaseMessaging.instance.subscribeToTopic('all');
+    }
     super.initState();
   }
 

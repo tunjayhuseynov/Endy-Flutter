@@ -52,7 +52,7 @@ class FavoriteMain extends StatelessWidget {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: (250 / 430),
-                                mainAxisSpacing: 5,
+                                mainAxisSpacing: 15,
                                 crossAxisSpacing: 15),
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) => DiscountCard(
@@ -62,6 +62,7 @@ class FavoriteMain extends StatelessWidget {
                     }
                     return const Text('Məlumat tapılmadı');
                   })),
+          const SizedBox(height: 25),
         ],
       ),
     );

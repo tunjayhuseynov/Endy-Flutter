@@ -26,7 +26,7 @@ Future<void> setupFlutterNotifications() async {
 
   //Initialization Settings for Android
   final AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('ic_launcher');
+      AndroidInitializationSettings('android12splash');
 
   //InitializationSettings for initializing settings for both platforms (Android & iOS)
   final InitializationSettings initializationSettings =

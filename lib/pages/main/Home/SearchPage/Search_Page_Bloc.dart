@@ -78,7 +78,7 @@ class SearchPageBloc extends Cubit<SearchPageState> {
     if (state.search == '') return [];
     String q = state.search;
     String sort = "deadline:asc";
-    String filter = '';
+    String filter = 'status:=approved';
 
     if (state.isLastPage) {
       setIsSearching(false);
@@ -86,6 +86,7 @@ class SearchPageBloc extends Cubit<SearchPageState> {
     }
     
     if (category != null) {
+      if (filter.isNotEmpty) filter += '&&';
       filter += 'category:=categories/${category.id}';
     }
     if (company != null) {

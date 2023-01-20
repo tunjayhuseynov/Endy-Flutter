@@ -59,10 +59,10 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   @override
   void dispose() {
+    // context.read<CategoryCacheBloc>().setClose();
     editingController.dispose();
     scrollController.dispose();
     focusNode.dispose();
-    context.read<CategoryCacheBloc>().setClose();
     super.dispose();
   }
 

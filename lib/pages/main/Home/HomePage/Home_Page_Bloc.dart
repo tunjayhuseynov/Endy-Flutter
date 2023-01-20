@@ -12,26 +12,42 @@ class HomePageNavBloc extends Cubit<int> {
   void setIndex(int index) => emit(index);
 }
 
+enum ConnectionStatus {
+  Loading,
+  Connected,
+  Disconnected,
+}
+
 class HomePageCacheState {
   final List<List<Product>> products;
   final List<Product> mostViewedProducts;
   final bool isClosed;
+  final ConnectionStatus mainProductsConnectionStatus;
+  final ConnectionStatus mostViewedConnectionStatus;
 
   HomePageCacheState({
     this.products = const [],
     this.isClosed = false,
     this.mostViewedProducts = const [],
+    this.mainProductsConnectionStatus = ConnectionStatus.Loading,
+    this.mostViewedConnectionStatus = ConnectionStatus.Loading,
   });
 
   HomePageCacheState copyWith({
     List<List<Product>>? products,
     List<Product>? mostViewedProducts,
     bool? isClosed,
+    ConnectionStatus? mainProductsConnectionStatus,
+    ConnectionStatus? mostViewedConnectionStatus,
   }) {
     return HomePageCacheState(
       products: products ?? this.products,
       mostViewedProducts: mostViewedProducts ?? this.mostViewedProducts,
       isClosed: isClosed ?? this.isClosed,
+      mainProductsConnectionStatus:
+          mainProductsConnectionStatus ?? this.mainProductsConnectionStatus,
+      mostViewedConnectionStatus:
+          mostViewedConnectionStatus ?? this.mostViewedConnectionStatus,
     );
   }
 }
@@ -51,7 +67,9 @@ class HomePageCacheBloc extends Cubit<HomePageCacheState> {
     var data = await Future.wait(categories.map(
         (e) => ProductsCrud.getProducts(null, 4, e, null, filterState, null)));
     if (state.isClosed) return Future.value([]);
-    emit(state.copyWith(products: data));
+    emit(state.copyWith(
+        products: data,
+        mainProductsConnectionStatus: ConnectionStatus.Connected));
     return data;
   }
 
@@ -62,7 +80,9 @@ class HomePageCacheBloc extends Cubit<HomePageCacheState> {
     }
     var values = await ProductsCrud.getMostViewedProducts();
     if (state.isClosed) return Future.value([]);
-    emit(state.copyWith(mostViewedProducts: values));
+    emit(state.copyWith(
+        mostViewedProducts: values,
+        mostViewedConnectionStatus: ConnectionStatus.Connected));
     return values;
   }
 }

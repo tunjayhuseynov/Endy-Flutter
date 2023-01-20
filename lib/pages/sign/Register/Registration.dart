@@ -10,6 +10,7 @@ import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -157,9 +158,17 @@ class _RegistrationState extends State<Registration> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Text(
-                            "Gizlilik müqaviləsi",
-                            style: TextStyle(color: Colors.black54),
+                          GestureDetector(
+                            onTap: () async {
+                              print(state.docLink);
+                              await launchUrl(Uri.parse(state.docLink), mode: LaunchMode.externalApplication);
+                            },
+                            child: Text(
+                              "Gizlilik müqaviləsi",
+                              style: TextStyle(
+                                  color: Colors.blue[300],
+                                  decoration: TextDecoration.underline),
+                            ),
                           ),
                           Checkbox(
                             value: state.isPrivacyChecked,

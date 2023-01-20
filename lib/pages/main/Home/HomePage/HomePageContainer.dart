@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:endy/Pages/main/Catalog/CatalogMain.dart';
 import 'package:endy/Pages/main/Home/HomePage/Nav.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/Pages/main/bonus/bonusHome.dart';
@@ -23,7 +24,8 @@ class _MainContainerState extends State<MainContainer> {
   static final _children = [
     HomePage(),
     BonusHome(),
-    ListHome(),
+    CatalogMain(),
+    // ListHome(),
     Setting(),
     FavoriteMain()
   ];

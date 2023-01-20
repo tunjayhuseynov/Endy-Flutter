@@ -10,6 +10,7 @@ class RegisterState {
   String phone;
   String name;
   String? mail;
+  String docLink;
 
   bool isPrivacyChecked = false;
 
@@ -19,6 +20,7 @@ class RegisterState {
       this.phone = "",
       this.name = "",
       this.mail,
+      this.docLink = "",
       this.isPrivacyChecked = false});
 
   RegisterState copyWith(
@@ -27,6 +29,7 @@ class RegisterState {
       bool? isPrivacyChecked,
       String? name,
       String? mail,
+      String? docLink,
       String? phone}) {
     return RegisterState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -34,6 +37,7 @@ class RegisterState {
       phone: phone ?? this.phone,
       isPrivacyChecked: isPrivacyChecked ?? this.isPrivacyChecked,
       name: name ?? this.name,
+      docLink: docLink ?? this.docLink,
       mail: mail ?? this.mail,
     );
   }
@@ -41,6 +45,19 @@ class RegisterState {
 
 class RegisterBloc extends Cubit<RegisterState> {
   RegisterBloc() : super(RegisterState());
+
+  void setDocLink(String docLink) {
+    emit(state.copyWith(docLink: docLink));
+  }
+
+  void loadDocLink() async {
+    var linkDoc = await FirebaseFirestore.instance
+        .collection("utils")
+        .doc("privacyLink")
+        .get();
+    var link = linkDoc.data()?["value"];
+    setDocLink(link);
+  }
 
   void setSelectedDate(DateTime selectedDate) {
     emit(state.copyWith(selectedDate: selectedDate));
@@ -69,8 +86,8 @@ class RegisterBloc extends Cubit<RegisterState> {
   void setDatePicker(BuildContext context) {
     DatePicker.showDatePicker(context,
         showTitleActions: true,
-        minTime: DateTime(1950, 1, 1),
-        maxTime: DateTime(2050, 12, 31),
+        minTime: DateTime(1940, 1, 1),
+        maxTime: DateTime.now().add(Duration(days: 365 * -13)),
         onChanged: (date) {}, onConfirm: (date) {
       setSelectedDate(date);
     },

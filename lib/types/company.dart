@@ -9,6 +9,7 @@ class Company {
   late List<dynamic> places;
   late List<dynamic> products;
   List<Subcategory> subcategories = [];
+  List<dynamic> catalogs = [];
   late int createdAt;
   late bool isCustomPassword;
 
@@ -16,6 +17,7 @@ class Company {
       {required this.id,
       required this.role,
       required this.name,
+      required this.catalogs,
       required this.logo,
       required this.createdAt,
       required this.isCustomPassword});
@@ -23,6 +25,7 @@ class Company {
   Company.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     role = json['role'];
+    catalogs = json['catalogs'];
     name = json['name'];
     logo = json['logo'];
     places = json['places'];
@@ -35,6 +38,7 @@ class Company {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['role'] = role;
+    data['catalogs'] = catalogs;
     data['name'] = name;
     data['logo'] = logo;
     data['places'] = places;

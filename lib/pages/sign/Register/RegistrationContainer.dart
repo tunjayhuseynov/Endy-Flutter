@@ -10,7 +10,7 @@ class RegistrationContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RegisterBloc(),
+      create: (context) => RegisterBloc()..loadDocLink(),
       child: Registration(),
     );
   }

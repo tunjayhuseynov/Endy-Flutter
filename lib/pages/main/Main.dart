@@ -37,6 +37,7 @@ class _MainProviderState extends State<MainProvider> {
             previous.authStatus != current.authStatus,
         listener: (context, state) {
           if (state.userData != null &&
+              !kIsWeb &&
               state.userData!.subscribedCompanies.length > 0) {
             for (var sub in state.userData!.subscribedCompanies) {
               FirebaseMessaging.instance.subscribeToTopic(sub);

@@ -45,6 +45,12 @@ class CategoryCacheState {
 class CategoryCacheBloc extends Cubit<CategoryCacheState> {
   CategoryCacheBloc() : super(CategoryCacheState());
 
+  @override
+  Future<void> close() async {
+    emit(state.copyWith(isClosed: true));
+    return super.close();
+  }
+
   void set() {
     emit(state.copyWith(
         currentPage: 1, isLastPage: false, products: [], isSearching: true));
@@ -62,7 +68,7 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
       {FilterPageState mode = FilterPageState.none}) async {
     String q = "";
     String sort = "deadline:asc";
-    String filter = '';
+    String filter = 'status:=approved';
 
     if (state.isLastPage) {
       setSearching(false);
@@ -70,6 +76,7 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
     }
 
     if (category != null) {
+      if (filter.isNotEmpty) filter += '&&';
       filter += 'category:=categories/${category.id}';
     }
     if (company != null) {

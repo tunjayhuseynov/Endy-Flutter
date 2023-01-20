@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/places.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/company.dart';
@@ -41,30 +42,14 @@ class CompanyCrud {
         .orderBy('name')
         .get();
 
-
     List<Company> myCompanies = [];
     for (var i = 0; i < companies.docs.length; i++) {
       var company = Company.fromJson(companies.docs[i].data());
       company.places = await Future.wait(
           company.places.map((e) => PlaceCrud.getPlace(e.id)));
-      // company.products = await Future.wait(
-      //     company.products.map((e) => ProductsCrud.getProduct(e.id)));
+      company.catalogs = await Future.wait(
+          company.catalogs.map((e) => CatalogsCrud.getCatalog(e.id)));
 
-      // for (var q = 0; q < company.places.length; q++) {
-      //   DocumentReference element = company.places[q];
-      //   Place place = await PlaceCrud.getPlace(element.id);
-      //   company.places[q] = place;
-      // }
-
-      // for (var q = 0; q < company.products.length; q++) {
-      //   // DocumentReference element = company.products[q];
-      //   // Product product = await ProductsCrud.getProduct(element.id);
-      //   // company.products[q] = product;
-      //   if (!company.subcategories.any(
-      //       (element) => element.id == company.products[q].subcategory.id)) {
-      //     company.subcategories.add(company.products[q].subcategory);
-      //   }
-      // }
       myCompanies.add(company);
     }
 

@@ -23,9 +23,11 @@ class PricePart extends StatelessWidget {
         ),
       ),
       height: 80,
-      child: Row(
+      child: Flex(
+        direction: Axis.horizontal,
         children: [
           Expanded(
+            flex: 2,
             child: Row(
               children: [
                 Expanded(
@@ -80,7 +82,7 @@ class PricePart extends StatelessWidget {
                       ),
                       SizedBox(
                         height: 20,
-                        width: 100,
+                        // width: 100,
                         child: Text(
                           "${product?.discountedPrice.toStringAsFixed(2)} AZN",
                           overflow: TextOverflow.ellipsis,
@@ -95,6 +97,7 @@ class PricePart extends StatelessWidget {
             ),
           ),
           Expanded(
+            flex: 1,
             child: AutoSizeText(product!.name,
                 textAlign: TextAlign.center,
                 style:

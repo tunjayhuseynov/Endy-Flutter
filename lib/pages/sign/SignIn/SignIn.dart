@@ -56,7 +56,7 @@ class SignIn extends StatelessWidget {
                           style: TextStyle(fontSize: 15),
                           decoration: InputDecoration(
                             filled: true,
-                            helperText: "Misal: 50 765 43 21",
+                            helperText: "Misal: 77 123 45 67",
                             hintText: "Nömrənizi daxil edin",
                             hintStyle: TextStyle(fontSize: 15),
                             labelStyle: TextStyle(fontSize: 15),

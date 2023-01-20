@@ -1,5 +1,8 @@
 import 'package:endy/Pages/Sign/Register/RegistrationContainer.dart';
+import 'package:endy/Pages/main/Catalog/CatalogDetail.dart';
+import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart';
+import 'package:endy/Pages/main/List/ListHome.dart';
 import 'package:endy/Pages/main/Main.dart';
 import 'package:endy/Pages/main/bonus/BonusAdd.dart';
 import 'package:endy/Pages/main/bonus/BonusDetail.dart';
@@ -17,6 +20,7 @@ import 'package:endy/Pages/main/Onboard/Onboard.dart';
 import 'package:endy/Pages/sign/Main.dart';
 import 'package:endy/Pages/sign/OTP/OTP.dart';
 import 'package:endy/Pages/sign/SignIn/SignIn.dart';
+import 'package:endy/types/catalog.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/user.dart';
@@ -72,6 +76,9 @@ routerSwitch(RouteSettings setting) {
     case "/list/single":
       builder = (BuildContext context) => const ListDetail();
       break;
+    case "/list":
+      builder = (BuildContext context) => const ListHome();
+      break;
 
     case "/sign/main":
       builder = (BuildContext context) => const Sign();
@@ -96,6 +103,17 @@ routerSwitch(RouteSettings setting) {
       break;
     case "/setting/about":
       builder = (BuildContext context) => const AboutUs();
+      break;
+
+    case "/catalog/detail":
+      builder = (BuildContext context) => CatalogDetail(
+            company: (setting.arguments as Company),
+          );
+      break;
+    case "/catalog/single":
+      builder = (BuildContext context) => CatalogSingle(
+            catalog: (setting.arguments as Catalog),
+          );
       break;
     default:
       builder = (context) => const MainProvider();

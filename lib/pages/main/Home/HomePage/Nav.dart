@@ -23,9 +23,9 @@ class Nav extends StatelessWidget {
 
   final iconsRight = <Map>[
     {
-      "icon": const AssetImage("assets/icons/navbar/list.png"),
+      "icon": const AssetImage("assets/icons/navbar/catalog.png"),
       "index": 2,
-      "title": "List"
+      "title": "Kataloq"
     },
     {
       "icon": const AssetImage("assets/icons/navbar/dots.png"),
@@ -48,42 +48,46 @@ class Nav extends StatelessWidget {
             },
             child: BlocBuilder<HomePageNavBloc, int>(
               builder: (navContext, navState) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    e["badge"] != null && state.unseenNotificationCount > 0
-                        ? Badge(
-                            badgeContent: Text(
-                                state.unseenNotificationCount.toString(),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400)),
-                            toAnimate: true,
-                            animationDuration:
-                                const Duration(milliseconds: 500),
-                            animationType: BadgeAnimationType.scale,
-                            badgeColor: const Color(mainColor),
-                            child: ImageIcon(
+                return Container(
+                  // color: Colors.yellow,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      e["badge"] != null && state.unseenNotificationCount > 0
+                          ? Badge(
+                              badgeContent: Text(
+                                  state.unseenNotificationCount.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400)),
+                              toAnimate: true,
+                              animationDuration:
+                                  const Duration(milliseconds: 500),
+                              animationType: BadgeAnimationType.scale,
+                              badgeColor: const Color(mainColor),
+                              child: ImageIcon(
+                                e["icon"],
+                                color: navState == e["index"]
+                                    ? const Color(mainColor)
+                                    : Colors.grey.shade400,
+                              ))
+                          : ImageIcon(
                               e["icon"],
                               color: navState == e["index"]
                                   ? const Color(mainColor)
                                   : Colors.grey.shade400,
-                            ))
-                        : ImageIcon(
-                            e["icon"],
+                            ),
+                      Text(e["title"],
+                          style: TextStyle(
+                            fontSize: 11,
                             color: navState == e["index"]
                                 ? const Color(mainColor)
                                 : Colors.grey.shade400,
-                          ),
-                    Text(e["title"],
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: navState == e["index"]
-                              ? const Color(mainColor)
-                              : Colors.grey.shade400,
-                        ))
-                  ],
+                          ))
+                    ],
+                  ),
                 );
               },
             ),

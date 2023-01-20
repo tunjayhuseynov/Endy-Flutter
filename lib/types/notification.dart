@@ -4,12 +4,14 @@ class NotificationMessage {
   late String icon;
   late String topic;
   late int createdAt;
+  late String? onClick;
 
   NotificationMessage(
       {required this.title,
       required this.body,
       required this.icon,
       required this.topic,
+      this.onClick,
       required this.createdAt});
 
   NotificationMessage.fromJson(Map<String, dynamic> json) {
@@ -18,5 +20,6 @@ class NotificationMessage {
     icon = json['icon'];
     topic = json['topic'];
     createdAt = json['createdAt'];
+    onClick = json['onClick'];
   }
 }

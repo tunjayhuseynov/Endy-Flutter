@@ -6,6 +6,7 @@ import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
+import 'package:async/async.dart';
 
 class CategoryGridLayout extends StatefulWidget {
   final Client client;
@@ -17,14 +18,24 @@ class CategoryGridLayout extends StatefulWidget {
 }
 
 class _CategoryGridLayoutState extends State<CategoryGridLayout> {
+  late CancelableOperation<void> cancellableOperation;
+
   @override
   void initState() {
     super.initState();
     var state = context.read<CategoryGridBloc>().state;
     var filterState = context.read<FilterPageBloc>().state;
-    context.read<CategoryCacheBloc>().getResult(
-        state.category, state.company, state.subcategory, widget.client,
-        mode: filterState);
+    cancellableOperation = CancelableOperation.fromFuture(context
+        .read<CategoryCacheBloc>()
+        .getResult(
+            state.category, state.company, state.subcategory, widget.client,
+            mode: filterState));
+  }
+
+  @override
+  void dispose() {
+    cancellableOperation.cancel();
+    super.dispose();
   }
 
   @override

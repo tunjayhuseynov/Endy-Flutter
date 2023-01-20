@@ -1,4 +1,3 @@
-// ignore: must_be_immutable
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
@@ -31,8 +30,9 @@ class _ImagePartState extends State<ImagePart> {
         Center(
           child: Container(
             height: 190,
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
+            padding: const EdgeInsets.only(left: 0, right: 0, top: 40),
             child: CachedNetworkImage(
+              fit: BoxFit.contain,
               imageUrl: widget.widget.product.primaryImage,
               placeholder: (context, url) => const Center(
                   child: SizedBox(
@@ -48,8 +48,8 @@ class _ImagePartState extends State<ImagePart> {
         Positioned(
             left: 0,
             top: 0,
-            width: 40,
-            height: 40,
+            width: 35,
+            height: 35,
             child: CachedNetworkImage(
                 imageUrl: (widget.widget.product.company as Company).logo,
                 placeholder: (context, url) => const Center(
