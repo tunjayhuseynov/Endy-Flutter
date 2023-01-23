@@ -75,7 +75,8 @@ class DetailState extends State<DetailPage> {
                 const SizedBox(height: 10),
                 PricePart(product: product),
                 TimePart(product: product),
-                if (globalState.isMapDisabled == false)
+                if (globalState.isMapDisabled == false &&
+                    product.availablePlaces.length > 0)
                   MapWidget(mounted: mounted, product: product),
                 const SizedBox(height: 20),
                 FeatuersWidget(product: product),

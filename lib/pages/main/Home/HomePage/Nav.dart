@@ -12,7 +12,7 @@ class Nav extends StatelessWidget {
     {
       "icon": const AssetImage("assets/icons/navbar/home.png"),
       "index": 0,
-      "title": "Ana Səhfə"
+      "title": "Ana Səhifə"
     },
     {
       "icon": const AssetImage("assets/icons/navbar/card.png"),

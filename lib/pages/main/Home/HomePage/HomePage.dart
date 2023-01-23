@@ -61,6 +61,8 @@ class _HomePageState extends State<HomePage> {
       },
       buildWhen: (previous, current) => previous.search != current.search,
       builder: (context, state) {
+        var categories = context.read<GlobalBloc>().state.categories;
+        categories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
         return Scaffold(
           backgroundColor: Colors.white,
           body: RefreshIndicator(
@@ -88,11 +90,8 @@ class _HomePageState extends State<HomePage> {
                             Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 0),
-                                child: ScrollableCategoriesHome(
-                                    list: context
-                                        .read<GlobalBloc>()
-                                        .state
-                                        .categories)),
+                                child:
+                                    ScrollableCategoriesHome(list: categories)),
                             // const Padding(padding: EdgeInsets.only(top: 15)),
                             HomePageGridProducts()
                           ],

@@ -54,23 +54,22 @@ class GlobalState {
     this.isMostViewedDisabled = false,
   });
 
-  GlobalState copyWith({
-    GlobalAuthStatus? authStatus,
-    GlobalStatus? packageStatus,
-    User? user,
-    UserData? userData,
-    int? reset,
-    List<Company>? companies,
-    List<NotificationMessage>? notifications,
-    int? unseenNotificationCount,
-    List<Category>? categories,
-    List<Subcategory>? subcategories,
-    List<Panel>? panels,
-    List<Catalog>? catalogs,
-    String? aboutApp,
-    bool? isMapDisabled,
-    bool? isMostViewedDisabled
-  }) {
+  GlobalState copyWith(
+      {GlobalAuthStatus? authStatus,
+      GlobalStatus? packageStatus,
+      User? user,
+      UserData? userData,
+      int? reset,
+      List<Company>? companies,
+      List<NotificationMessage>? notifications,
+      int? unseenNotificationCount,
+      List<Category>? categories,
+      List<Subcategory>? subcategories,
+      List<Panel>? panels,
+      List<Catalog>? catalogs,
+      String? aboutApp,
+      bool? isMapDisabled,
+      bool? isMostViewedDisabled}) {
     return GlobalState(
       packageStatus: packageStatus ?? this.packageStatus,
       authStatus: authStatus ?? this.authStatus,
@@ -253,7 +252,8 @@ class GlobalBloc extends Parent {
             .then((value) {
           if (value.exists && value.data() != null) {
             var data = UserData.fromJson(value.data()!);
-            NotificationCrud.getNotifications(data.subscribedCompanies)
+            NotificationCrud.getNotifications(
+                    data.subscribedCompanies, data.createdAt)
                 .then((notifications) {
               int count = notifications
                   .where((element) =>

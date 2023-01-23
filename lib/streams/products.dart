@@ -105,19 +105,23 @@ class ProductsCrud {
     //   product.availablePlaces[i] = place;
     // }
 
-    product.company = await CompanyCrud.getCompanyPure(
-        product.company.runtimeType == String
-            ? product.company.toString().split("/")[1]
-            : product.company.id);
+    if (product.company != null || product.company != "") {
+      product.company = await CompanyCrud.getCompanyPure(
+          product.company.runtimeType == String
+              ? product.company.toString().split("/")[1]
+              : product.company.id);
+    }
 
     product.category = await CategoryCrud.getCategory(
         product.category.runtimeType == String
             ? product.category.toString().split("/")[1]
             : product.category.id);
-    product.subcategory = await SubcategoryCrud.getSubcategory(
-        product.subcategory.runtimeType == String
-            ? product.subcategory.toString().split("/")[1]
-            : product.subcategory.id);
+    if (product.subcategory != null) {
+      product.subcategory = await SubcategoryCrud.getSubcategory(
+          product.subcategory.runtimeType == String
+              ? product.subcategory.toString().split("/")[1]
+              : product.subcategory.id);
+    }
 
     return product;
   }
@@ -130,12 +134,22 @@ class ProductsCrud {
         .then((snapshot) => Product.fromJson(snapshot.data() ?? {}));
   }
 
+  static Future<Product?> getNullableProduct(String id) async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('products').doc(id).get();
+
+    final data = snapshot.data();
+    if (data == null || !snapshot.exists) return null;
+
+    return await renderProduct(data);
+  }
+
   static Future<Product> getProduct(String id) async {
     final snapshot =
         await FirebaseFirestore.instance.collection('products').doc(id).get();
 
     final data = snapshot.data();
-    if (data == null) throw Exception('Product not found');
+    if (data == null) throw Exception("Product not found");
 
     return await renderProduct(data);
   }
@@ -143,10 +157,13 @@ class ProductsCrud {
   static Future<List<Product>> getSpecificProducts(List<String> ids) async {
     try {
       List<Product> products = [];
-      products = await Future.wait(ids.map((e) => getProduct(e)));
-
+      products = (await Future.wait(ids.map((e) => getNullableProduct(e))))
+          .where((element) => element != null)
+          .toList().cast<Product>();
+      print(products);
       return products;
     } catch (e) {
+      print(e);
       throw Exception("Products not found");
     }
   }

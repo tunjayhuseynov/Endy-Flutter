@@ -27,96 +27,102 @@ import 'package:endy/types/user.dart';
 import 'package:flutter/cupertino.dart';
 
 routerSwitch(RouteSettings setting) {
-  late WidgetBuilder builder;
+  late Widget widget;
+
   switch (setting.name) {
     case '/onboard':
-      builder = (context) => const Onboard();
+      widget = const Onboard();
       break;
     case '/home':
-      builder = (context) => const MainProvider();
+      widget = const MainProvider();
       break;
     case "/home/map":
-      builder = (BuildContext context) => MapPage(
-            places: (setting.arguments as List)[0] as List<Place>,
-            company: (setting.arguments as List)[1] as Company,
-          );
+      widget = MapPage(
+        places: (setting.arguments as List)[0] as List<Place>,
+        company: (setting.arguments as List)[1] as Company,
+      );
       break;
     case "/home/main/all":
-      builder = (BuildContext context) => const CategoryBlocProvider();
+      widget = const CategoryBlocProvider();
       break;
     case "/home/detail":
-      builder = (BuildContext context) => DetailPageContainer(
-            id: setting.arguments as String,
-          );
+      widget = DetailPageContainer(
+        id: setting.arguments as String,
+      );
       break;
     case "/home/category":
-      builder = (BuildContext context) => const SubcategoryList();
+      widget = const SubcategoryList();
       break;
     case "/home/category/all":
-      builder = (BuildContext context) => const CategoryList();
+      widget = const CategoryList();
       break;
     case "/home/filter":
-      builder = (BuildContext context) => const FilterPage();
+      widget = const FilterPage();
       break;
 
     case "/bonus/detail":
-      builder = (BuildContext context) => BonusDetailPage(
-            card: setting.arguments as BonusCard,
-          );
+      widget = BonusDetailPage(
+        card: setting.arguments as BonusCard,
+      );
       break;
     case "/bonus/camera":
-      builder = (BuildContext context) => const Camera();
+      widget = const Camera();
       break;
     case "/bonus/add":
-      builder = (BuildContext context) => BonusAdd(
-            code: setting.arguments as String?,
-          );
+      widget = BonusAdd(
+        code: setting.arguments as String?,
+      );
       break;
 
     case "/list/single":
-      builder = (BuildContext context) => const ListDetail();
+      widget = const ListDetail();
       break;
     case "/list":
-      builder = (BuildContext context) => const ListHome();
+      widget = const ListHome();
       break;
 
     case "/sign/main":
-      builder = (BuildContext context) => const Sign();
+      widget = const Sign();
       break;
     case "/sign/signin":
-      builder = (BuildContext context) => const SignIn();
+      widget = const SignIn();
       break;
     case "/sign/registration":
-      builder = (BuildContext context) => const RegistrationContainer();
+      widget = const RegistrationContainer();
       break;
     case "/sign/otp":
-      builder = (BuildContext context) => OTP(
-            params: setting.arguments as OtpParams,
-          );
+      widget = OTP(
+        params: setting.arguments as OtpParams,
+      );
       break;
 
     case "/setting/profile":
-      builder = (BuildContext context) => const Profile();
+      widget = const Profile();
       break;
     case "/setting/notification":
-      builder = (BuildContext context) => const NotificationPage();
+      widget = const NotificationPage();
       break;
     case "/setting/about":
-      builder = (BuildContext context) => const AboutUs();
+      widget = const AboutUs();
       break;
 
     case "/catalog/detail":
-      builder = (BuildContext context) => CatalogDetail(
-            company: (setting.arguments as Company),
-          );
+      widget = CatalogDetail(
+        company: (setting.arguments as Company),
+      );
       break;
     case "/catalog/single":
-      builder = (BuildContext context) => CatalogSingle(
-            catalog: (setting.arguments as Catalog),
-          );
+      widget = CatalogSingle(
+        catalog: (setting.arguments as Catalog),
+      );
       break;
     default:
-      builder = (context) => const MainProvider();
+      widget = const MainProvider();
   }
-  return builder;
+
+  return (BuildContext context) {
+    return MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        child: widget);
+  };
 }

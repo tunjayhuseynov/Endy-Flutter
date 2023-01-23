@@ -7,6 +7,7 @@ class CategoryCrud {
     try {
       final categories = await FirebaseFirestore.instance
           .collection('categories')
+          .where('isInvisible', isEqualTo: false)
           .orderBy('created_at')
           .get();
 
@@ -15,8 +16,8 @@ class CategoryCrud {
         final element = categories.docs[i].data();
 
         final category = Category.fromJson(element);
-        category.subcategory = await Future.wait(
-            category.subcategory.map((e) => SubcategoryCrud.getSubcategoryPure(e.id)));
+        category.subcategory = await Future.wait(category.subcategory
+            .map((e) => SubcategoryCrud.getSubcategoryPure(e.id)));
 
         // for (var i = 0; i < category.subcategory.length; i++) {
         //   DocumentReference element = category.subcategory[i];

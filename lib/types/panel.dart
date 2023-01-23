@@ -3,6 +3,7 @@ class Panel {
   late String name;
   late String photo;
   late int createdAt;
+  late int order;
 
   Panel({
     required this.id,
@@ -16,6 +17,7 @@ class Panel {
     name = json['name'];
     photo = json['image'];
     createdAt = json['created_at'];
+    order = json['order'];
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +25,8 @@ class Panel {
     data['id'] = id;
     data['name'] = name;
     data['created_at'] = createdAt;
+    data['image'] = photo;
+    data['order'] = order;
     return data;
   }
 }

@@ -1,4 +1,3 @@
-
 class Category {
   late String id;
   late String name;
@@ -7,8 +6,10 @@ class Category {
   late int productCount;
   late int createdAt;
   late int order;
+  late int iconOrder;
   bool isAllCategories = false;
   bool isAllBrands = false;
+  bool isInvisible = false;
 
   Category(
       {required this.id,
@@ -27,6 +28,8 @@ class Category {
     productCount = json['productCount'];
     createdAt = json['created_at'];
     order = json['order'];
+    iconOrder = json['iconOrder'];
+    isInvisible = json['isInvisible'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +40,8 @@ class Category {
     data['productCount'] = productCount;
     data['created_at'] = createdAt;
     data['order'] = order;
+    data['iconOrder'] = iconOrder;
+    data['isInvisible'] = isInvisible;
     return data;
   }
 }

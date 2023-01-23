@@ -14,14 +14,18 @@ class PanelCrud {
   }
 
   static Future<List<Panel>> getPanels() async {
-    final panels = await FirebaseFirestore.instance
+    final raws = await FirebaseFirestore.instance
         .collection('panels')
         .orderBy('name')
         .get();
-    return panels.docs.map((doc) {
+    var panels = raws.docs.map((doc) {
       final panel = Panel.fromJson(doc.data());
       return panel;
     }).toList();
+
+    panels.sort((a, b) => a.order.compareTo(b.order));
+
+    return panels;
   }
 
   static Future<String> getAbout() async {

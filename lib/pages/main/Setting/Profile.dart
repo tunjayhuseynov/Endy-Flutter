@@ -173,9 +173,6 @@ class _ProfileState extends State<Profile> {
                                                 size: 18,
                                                 color: Color(mainColor),
                                               ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
                                               Text("Düzəliş et",
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -194,6 +191,16 @@ class _ProfileState extends State<Profile> {
                                             .textTheme
                                             .headline6,
                                       ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      // User name
+                                      Text(
+                                        globalState.userData!.phone,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600]),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 15),
@@ -207,54 +214,54 @@ class _ProfileState extends State<Profile> {
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                  IntlPhoneField(
-                                    flagsButtonPadding:
-                                        const EdgeInsets.only(left: 20),
-                                    disableLengthCheck: true,
-                                    enabled: state.editEnabled,
-                                    controller: phone,
-                                    // showCountryFlag: false,
-                                    pickerDialogStyle: PickerDialogStyle(
-                                      searchFieldInputDecoration:
-                                          const InputDecoration(
-                                        hintText: "Axtarış",
-                                        hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                    style: TextStyle(fontSize: 15),
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      helperText: "Misal: 50 765 43 21",
-                                      hintText: "Nömrənizi daxil edin",
-                                      hintStyle: TextStyle(fontSize: 15),
-                                      labelStyle: TextStyle(fontSize: 15),
-                                      fillColor: Colors.grey[200],
-                                      border: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(50)),
-                                        borderSide: BorderSide(
-                                          width: 0,
-                                          style: BorderStyle.none,
-                                        ),
-                                      ),
-                                    ),
-                                    initialCountryCode: 'AZ',
-                                    invalidNumberMessage: 'Nömrə düzgün deyil',
-                                    onChanged: (phone) {
-                                      context
-                                          .read<ProfileBloc>()
-                                          .setPhoneNumber(
-                                              phone.number.startsWith("0")
-                                                  ? phone.countryCode +
-                                                      phone.number.substring(1)
-                                                  : phone.completeNumber);
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
+                                  // IntlPhoneField(
+                                  //   flagsButtonPadding:
+                                  //       const EdgeInsets.only(left: 20),
+                                  //   disableLengthCheck: true,
+                                  //   enabled: false,
+                                  //   controller: phone,
+                                  //   // showCountryFlag: false,
+                                  //   pickerDialogStyle: PickerDialogStyle(
+                                  //     searchFieldInputDecoration:
+                                  //         const InputDecoration(
+                                  //       hintText: "Axtarış",
+                                  //       hintStyle: TextStyle(
+                                  //         color: Colors.grey,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  //   style: TextStyle(fontSize: 15),
+                                  //   decoration: InputDecoration(
+                                  //     filled: true,
+                                  //     helperText: "Misal: 50 765 43 21",
+                                  //     hintText: "Nömrənizi daxil edin",
+                                  //     hintStyle: TextStyle(fontSize: 15),
+                                  //     labelStyle: TextStyle(fontSize: 15),
+                                  //     fillColor: Colors.grey[200],
+                                  //     border: const OutlineInputBorder(
+                                  //       borderRadius: BorderRadius.all(
+                                  //           Radius.circular(50)),
+                                  //       borderSide: BorderSide(
+                                  //         width: 0,
+                                  //         style: BorderStyle.none,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  //   initialCountryCode: 'AZ',
+                                  //   invalidNumberMessage: 'Nömrə düzgün deyil',
+                                  //   onChanged: (phone) {
+                                  //     context
+                                  //         .read<ProfileBloc>()
+                                  //         .setPhoneNumber(
+                                  //             phone.number.startsWith("0")
+                                  //                 ? phone.countryCode +
+                                  //                     phone.number.substring(1)
+                                  //                 : phone.completeNumber);
+                                  //   },
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 15,
+                                  // ),
                                   CustomTextField(
                                     isEnabled: state.editEnabled,
                                     hintText: "E-mail",

@@ -27,7 +27,7 @@ class _CatalogSingleState extends State<CatalogSingle> {
                 margin: const EdgeInsets.only(right: 20),
                 child: Center(
                     child: Text(
-                        "${currentPage + 1}/${widget.catalog.images.length} səhfə")))
+                        "${currentPage + 1}/${widget.catalog.images.length} səhifə")))
           ],
         ),
         body: LayoutBuilder(builder: (context, constraints) {

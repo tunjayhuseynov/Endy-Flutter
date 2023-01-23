@@ -181,18 +181,19 @@ class SubcategoryItem extends StatelessWidget {
         Navigator.pushNamed(context, '/home/main/all');
       },
       child: Container(
+        height: 45,
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              margin: const EdgeInsets.only(right: 15),
-              width: 45,
-              height: 45,
-              child: selectAll != true && subcategory.logo != null
-                  ? CachedNetworkImage(imageUrl: subcategory.logo!)
-                  : Container(),
-            ),
+            // Container(
+            //   margin: const EdgeInsets.only(right: 15),
+            //   width: 45,
+            //   height: 45,
+            //   child: selectAll != true && subcategory.logo != null
+            //       ? CachedNetworkImage(imageUrl: subcategory.logo!)
+            //       : Container(),
+            // ),
             Expanded(
                 flex: 2,
                 child: Text(selectAll == true ? "Hamısı" : subcategory.name)),

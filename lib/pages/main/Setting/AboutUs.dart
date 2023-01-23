@@ -12,6 +12,7 @@ class AboutUs extends StatelessWidget {
       buildWhen: (previous, current) => previous.aboutApp != current.aboutApp,
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             toolbarHeight: 80,
             leading: IconButton(
@@ -22,13 +23,17 @@ class AboutUs extends StatelessWidget {
             title: const Text('Haqqımızda',
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
           ),
-          body: Html(
-            data: state.aboutApp,
-            style: {
-              "p": Style(
-                margin: Margins.only(bottom: 10),
-              )
-            },
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Html(
+              shrinkWrap: true,
+              data: state.aboutApp,
+              style: {
+                "p": Style(
+                  margin: Margins.only(bottom: 10),
+                )
+              },
+            ),
           ),
         );
       },

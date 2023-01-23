@@ -57,7 +57,7 @@ void main() async {
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
-  
+
   runApp(const MyApp());
 }
 
@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
         providers: [
           BlocProvider<GlobalBloc>(
-              lazy: false, create: (context) => GlobalBloc()),
+              lazy: false, create: (context) => GlobalBloc()..loadUtils()),
           BlocProvider<HomePageNavBloc>(create: (context) => HomePageNavBloc()),
           BlocProvider<OTPBloc>(create: (context) => OTPBloc()),
           BlocProvider<CategoryGridBloc>(
@@ -116,7 +116,8 @@ class _MyAppState extends State<MyApp> {
             initialRoute: '/home',
             onGenerateRoute: (RouteSettings setting) {
               return MaterialPageRoute(
-                  builder: routerSwitch(setting), settings: setting);
+                  builder:  routerSwitch(setting),
+                  settings: setting);
             }));
   }
 }

@@ -25,8 +25,6 @@ class MapWidget extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
               color: Colors.grey, width: 1, style: BorderStyle.solid),
-          top: BorderSide(
-              color: Colors.grey, width: 1, style: BorderStyle.solid),
         ),
       ),
       child: Row(

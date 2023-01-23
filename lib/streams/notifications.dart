@@ -16,10 +16,11 @@ class NotificationCrud {
   }
 
   static Future<List<NotificationMessage>> getNotifications(
-      List<String> topics) async {
+      List<String> topics, int date) async {
     final notifications = await FirebaseFirestore.instance
         .collection('notifications')
         .orderBy('createdAt', descending: true)
+        .where("createdAt", isGreaterThanOrEqualTo: date)
         .where("topic", whereIn: [...topics, "all"]).get();
     return notifications.docs.map((doc) {
       final notification = NotificationMessage.fromJson(doc.data());

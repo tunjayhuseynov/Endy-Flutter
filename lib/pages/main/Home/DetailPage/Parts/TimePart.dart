@@ -15,7 +15,13 @@ class TimePart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+              color: Colors.grey, width: 1, style: BorderStyle.solid),
+        ),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,4 +67,3 @@ class TimePart extends StatelessWidget {
     );
   }
 }
-
