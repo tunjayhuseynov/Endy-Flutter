@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:endy/Pages/Sign/Register/RegistrationContainer.dart';
 import 'package:endy/Pages/main/Catalog/CatalogDetail.dart';
 import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
@@ -24,7 +25,10 @@ import 'package:endy/types/catalog.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/user.dart';
+import 'package:endy/utils/connection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 routerSwitch(RouteSettings setting) {
   late Widget widget;
@@ -125,4 +129,66 @@ routerSwitch(RouteSettings setting) {
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
         child: widget);
   };
+}
+
+class GlobalWidget extends StatefulWidget {
+  final Widget child;
+  const GlobalWidget({super.key, required this.child});
+
+  @override
+  State<GlobalWidget> createState() => _GlobalWidgetState();
+}
+
+class _GlobalWidgetState extends State<GlobalWidget> {
+  Map _source = {ConnectivityResult.none: false};
+  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
+  String string = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _networkConnectivity.initialise();
+    _networkConnectivity.myStream.listen((source) {
+      _source = source;
+
+      switch (_source.keys.toList()[0]) {
+        case ConnectivityResult.mobile:
+          string = _source.values.toList()[0] ? '' : 'Mobile: Offline';
+          break;
+        case ConnectivityResult.wifi:
+          string = _source.values.toList()[0] ? '' : 'WiFi: Offline';
+          break;
+        case ConnectivityResult.none:
+          string = 'Offline';
+          break;
+        default:
+          string = 'Offline';
+      }
+
+      setState(() {});
+
+      final state = Overlay.of(context);
+      if (state == null) return;
+      if (string.isNotEmpty) {
+        showTopSnackBar(
+          state,
+          displayDuration: const Duration(milliseconds: 1000),
+          const CustomSnackBar.error(
+            message: "Internet əlaqəsi yoxdur",
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _networkConnectivity.disposeStream();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
 }
