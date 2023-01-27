@@ -88,7 +88,7 @@ class ProductsCrud {
       return myProducts;
     } catch (e) {
       print(e);
-      throw Error();
+      throw Exception(e);
     }
   }
 
@@ -160,7 +160,6 @@ class ProductsCrud {
       products = (await Future.wait(ids.map((e) => getNullableProduct(e))))
           .where((element) => element != null)
           .toList().cast<Product>();
-      print(products);
       return products;
     } catch (e) {
       print(e);

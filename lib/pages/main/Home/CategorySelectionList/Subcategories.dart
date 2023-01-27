@@ -25,6 +25,7 @@ class _SubcategoryListState extends State<SubcategoryList> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return BlocSelector<CategorySelectionListBloc, CategorySelectionListState,
         CategorySelectionListState>(
       selector: (state) {
@@ -71,49 +72,53 @@ class _SubcategoryListState extends State<SubcategoryList> {
                   style: const TextStyle(
                       fontSize: 25, fontWeight: FontWeight.w500)),
             ),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoSearchTextField(
-                    placeholder: "Axtarış",
-                    onChanged: (value) {
-                      context.read<CategorySelectionListBloc>().search(value);
-                    },
-                    controller: editingController,
-                    prefixInsets: const EdgeInsets.only(left: 20),
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+            body: Container(
+              padding: w < 768 ? null : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
+              child: Column(
+                children: [
+                  Container(
+                    width: w < 768 ? null : 300,
+                    padding: const EdgeInsets.all(8.0),
+                    child: CupertinoSearchTextField(
+                      placeholder: "Axtarış",
+                      onChanged: (value) {
+                        context.read<CategorySelectionListBloc>().search(value);
+                      },
+                      controller: editingController,
+                      prefixInsets: const EdgeInsets.only(left: 20),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
                   ),
-                ),
-                state.isSubcategory
-                    ? Expanded(
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: state.subcategories.isNotEmpty
-                                ? state.subcategories.length + 1
-                                : 0,
-                            itemBuilder: (BuildContext context, int index) {
-                              return SubcategoryItem(
-                                selectAll: index == 0,
-                                subcategory: state.subcategories[
-                                    index > 0 ? index - 1 : index],
-                                category: state.selectedCategory!,
-                              );
-                            }),
-                      )
-                    : state.isBrand
-                        ? Expanded(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state.companies.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CompanyItem(
-                                    company: state.companies[index],
-                                  );
-                                }),
-                          )
-                        : Container()
-              ],
+                  state.isSubcategory
+                      ? Expanded(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state.subcategories.isNotEmpty
+                                  ? state.subcategories.length + 1
+                                  : 0,
+                              itemBuilder: (BuildContext context, int index) {
+                                return SubcategoryItem(
+                                  selectAll: index == 0,
+                                  subcategory: state.subcategories[
+                                      index > 0 ? index - 1 : index],
+                                  category: state.selectedCategory!,
+                                );
+                              }),
+                        )
+                      : state.isBrand
+                          ? Expanded(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: state.companies.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return CompanyItem(
+                                      company: state.companies[index],
+                                    );
+                                  }),
+                            )
+                          : Container()
+                ],
+              ),
             ),
           ),
         );
@@ -129,7 +134,8 @@ class CompanyItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final amountOfSub = company.products.length;
-    return GestureDetector(
+    return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () {
         context
             .read<CategoryGridBloc>()
@@ -170,8 +176,8 @@ class SubcategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () async {
         context.read<CategoryGridBloc>().set(
             id: selectAll == true ? "" : subcategory.id,
@@ -196,7 +202,10 @@ class SubcategoryItem extends StatelessWidget {
             // ),
             Expanded(
                 flex: 2,
-                child: Text(selectAll == true ? "Hamısı" : subcategory.name)),
+                child: Text(
+                  selectAll == true ? "Hamısı" : subcategory.name,
+                  style: TextStyle(fontSize: 16),
+                )),
             Text(
                 selectAll == true ? "" : subcategory.products.length.toString(),
                 style: const TextStyle(fontWeight: FontWeight.w500)),

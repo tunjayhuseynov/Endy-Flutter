@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
@@ -55,7 +55,7 @@ class Nav extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       e["badge"] != null && state.unseenNotificationCount > 0
-                          ? Badge(
+                          ? badges.Badge(
                               badgeContent: Text(
                                   state.unseenNotificationCount.toString(),
                                   style: const TextStyle(
@@ -65,7 +65,7 @@ class Nav extends StatelessWidget {
                               toAnimate: true,
                               animationDuration:
                                   const Duration(milliseconds: 500),
-                              animationType: BadgeAnimationType.scale,
+                              animationType: badges.BadgeAnimationType.scale,
                               badgeColor: const Color(mainColor),
                               child: ImageIcon(
                                 e["icon"],

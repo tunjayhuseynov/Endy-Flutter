@@ -1,9 +1,7 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
-import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
@@ -159,7 +157,7 @@ class _OTPState extends State<OTP> {
                         if (!mounted) return;
                         context.read<GlobalBloc>().setAll();
                         await Navigator.pushNamedAndRemoveUntil(
-                            context, "/home", (route) => false);
+                            context, "/", (route) => false);
                       } catch (e) {
                         context
                             .read<GlobalBloc>()
@@ -167,6 +165,7 @@ class _OTPState extends State<OTP> {
                         if (!mounted) return;
                         context.read<OTPBloc>().setErrorMessage(
                             e.toString().replaceAll("Exception: ", ""));
+                        _smsController.clear();
                       }
                     },
                   ),

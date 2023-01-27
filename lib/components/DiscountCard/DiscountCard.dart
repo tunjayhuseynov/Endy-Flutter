@@ -14,13 +14,21 @@ class DiscountCard extends StatefulWidget {
 }
 
 class _DiscountCardState extends State<DiscountCard> {
+  double spread = 1.0;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
+    return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () {
         Navigator.pushNamed(context, '/home/detail',
             arguments: widget.product.id);
+      },
+      onHover: (value) {
+        setState(() {
+          spread = value ? 2.25 : 1.0;
+        });
       },
       child: Container(
         padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
@@ -31,7 +39,7 @@ class _DiscountCardState extends State<DiscountCard> {
             BoxShadow(
               offset: const Offset(1, 2),
               blurRadius: 5,
-              spreadRadius: 1,
+              spreadRadius: spread,
               color: Colors.black.withOpacity(0.2),
             ),
           ],

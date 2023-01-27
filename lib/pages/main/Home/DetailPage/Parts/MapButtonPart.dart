@@ -38,30 +38,14 @@ class MapWidget extends StatelessWidget {
             onTap: () async {
               bool serviceEnabled;
               final res = await Permission.locationWhenInUse.request();
-              if (!mounted) return;
-
-              if (res != PermissionStatus.granted) {
-                return showTopSnackBar(
-                  Overlay.of(context)!,
-                  displayDuration: const Duration(milliseconds: 1000),
-                  const CustomSnackBar.error(
-                    message: "Zəhmət olmasa lokasyon servisini aktivləşdirin",
-                  ),
-                );
-              }
-
-              // Test if location services are enabled.
               serviceEnabled = await Geolocator.isLocationServiceEnabled();
               if (!mounted) return;
 
-              if (!serviceEnabled) {
-                return showTopSnackBar(
-                  Overlay.of(context)!,
-                  displayDuration: const Duration(milliseconds: 1000),
-                  const CustomSnackBar.error(
-                    message: "Zəhmət olmasa lokasyon servisini aktivləşdirin",
-                  ),
-                );
+              if (res != PermissionStatus.granted || !serviceEnabled) {
+                return ShowTopSnackBar(
+                    error: true,
+                    context,
+                    "Zəhmət olmasa lokasyon servisini aktivləşdirin");
               }
 
               Navigator.pushNamed(context, '/home/map', arguments: [

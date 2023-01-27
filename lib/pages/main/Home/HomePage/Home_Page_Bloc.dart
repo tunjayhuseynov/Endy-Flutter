@@ -62,10 +62,10 @@ class HomePageCacheBloc extends Cubit<HomePageCacheState> {
   void setClose() => emit(state.copyWith(isClosed: true));
 
   Future<List<List<Product>>> getProducts(
-      List<Category> categories, FilterPageState filterState) async {
+      List<Category> categories, FilterPageState filterState, {int limit = 4}) async {
     if (state.products.isNotEmpty) return Future.value(state.products);
     var data = await Future.wait(categories.map(
-        (e) => ProductsCrud.getProducts(null, 4, e, null, filterState, null)));
+        (e) => ProductsCrud.getProducts(null, limit, e, null, filterState, null)));
     if (state.isClosed) return Future.value([]);
     emit(state.copyWith(
         products: data,

@@ -1,43 +1,44 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:endy/Pages/Sign/Register/RegistrationContainer.dart';
-import 'package:endy/Pages/main/Catalog/CatalogDetail.dart';
-import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart';
-import 'package:endy/Pages/main/List/ListHome.dart';
-import 'package:endy/Pages/main/Main.dart';
-import 'package:endy/Pages/main/bonus/BonusAdd.dart';
-import 'package:endy/Pages/main/bonus/BonusDetail.dart';
-import 'package:endy/Pages/main/bonus/CameraQrScanner.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Categories.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Subcategories.dart';
-import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
-import 'package:endy/Pages/main/Home/FilterPage/FilterPage.dart';
-import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
-import 'package:endy/Pages/main/list/ListDetail.dart';
-import 'package:endy/Pages/main/Setting/AboutUs.dart';
-import 'package:endy/Pages/main/Setting/Notification.dart';
-import 'package:endy/Pages/main/Setting/Profile.dart';
-import 'package:endy/Pages/main/Onboard/Onboard.dart';
-import 'package:endy/Pages/sign/Main.dart';
-import 'package:endy/Pages/sign/OTP/OTP.dart';
-import 'package:endy/Pages/sign/SignIn/SignIn.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/user.dart';
-import 'package:endy/utils/connection.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:endy/utils/index.dart';
+import 'package:endy/Pages/Sign/OTP/OTP.dart';
+import 'package:endy/Pages/Sign/Register/RegistrationContainer.dart';
+import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart';
+import 'package:endy/Pages/main/Home/FilterPage/FilterPageScaffold.dart';
+import 'package:endy/Pages/main/bonus/BonusAdd.dart';
+import 'package:endy/Pages/main/bonus/BonusDetail.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Categories.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Subcategories.dart';
+import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
+import 'package:endy/Pages/main/list/ListDetail.dart';
+import 'package:endy/Pages/main/Setting/AboutUs.dart';
+import 'package:endy/Pages/main/Setting/Notification.dart';
+import 'package:endy/Pages/main/Setting/Profile.dart';
+import 'package:endy/Pages/main/Catalog/CatalogDetail.dart';
+import 'package:endy/Pages/main/List/ListHome.dart';
+import 'package:endy/Pages/main/Main.dart';
+import 'package:endy/Pages/main/NeedRegister/index.dart';
+import 'package:endy/Pages/main/bonus/CameraQrScanner.dart';
+import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
+import 'package:endy/Pages/main/Onboard/Onboard.dart';
+import 'package:endy/Pages/sign/Main.dart';
+import 'package:endy/Pages/sign/SignIn/SignIn.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-routerSwitch(RouteSettings setting) {
+Widget Function(BuildContext context) routerSwitch(RouteSettings setting) {
   late Widget widget;
+  bool disallowAnonym = false;
 
   switch (setting.name) {
     case '/onboard':
       widget = const Onboard();
       break;
-    case '/home':
+    case '/':
       widget = const MainProvider();
       break;
     case "/home/map":
@@ -45,6 +46,7 @@ routerSwitch(RouteSettings setting) {
         places: (setting.arguments as List)[0] as List<Place>,
         company: (setting.arguments as List)[1] as Company,
       );
+      disallowAnonym = true;
       break;
     case "/home/main/all":
       widget = const CategoryBlocProvider();
@@ -61,28 +63,37 @@ routerSwitch(RouteSettings setting) {
       widget = const CategoryList();
       break;
     case "/home/filter":
-      widget = const FilterPage();
+      widget = const FilterPageScaffold();
       break;
 
     case "/bonus/detail":
       widget = BonusDetailPage(
         card: setting.arguments as BonusCard,
       );
+      disallowAnonym = true;
       break;
     case "/bonus/camera":
       widget = const Camera();
+      disallowAnonym = true;
       break;
     case "/bonus/add":
       widget = BonusAdd(
         code: setting.arguments as String?,
       );
+      disallowAnonym = true;
+      break;
+
+    case "/needregister":
+      widget = NeedRegister(activeTab: setting.arguments as bool?);
       break;
 
     case "/list/single":
       widget = const ListDetail();
+      disallowAnonym = true;
       break;
     case "/list":
       widget = const ListHome();
+      disallowAnonym = true;
       break;
 
     case "/sign/main":
@@ -102,9 +113,11 @@ routerSwitch(RouteSettings setting) {
 
     case "/setting/profile":
       widget = const Profile();
+      disallowAnonym = true;
       break;
     case "/setting/notification":
       widget = const NotificationPage();
+      disallowAnonym = true;
       break;
     case "/setting/about":
       widget = const AboutUs();
@@ -127,68 +140,49 @@ routerSwitch(RouteSettings setting) {
   return (BuildContext context) {
     return MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-        child: widget);
+        child: GlobalWidget(
+          child: widget,
+          disallowAnonym: disallowAnonym,
+        ));
   };
 }
 
 class GlobalWidget extends StatefulWidget {
   final Widget child;
-  const GlobalWidget({super.key, required this.child});
+  final bool disallowAnonym;
+  const GlobalWidget(
+      {super.key, required this.child, required this.disallowAnonym});
 
   @override
   State<GlobalWidget> createState() => _GlobalWidgetState();
 }
 
 class _GlobalWidgetState extends State<GlobalWidget> {
-  Map _source = {ConnectivityResult.none: false};
-  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
-  String string = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _networkConnectivity.initialise();
-    _networkConnectivity.myStream.listen((source) {
-      _source = source;
-
-      switch (_source.keys.toList()[0]) {
-        case ConnectivityResult.mobile:
-          string = _source.values.toList()[0] ? '' : 'Mobile: Offline';
-          break;
-        case ConnectivityResult.wifi:
-          string = _source.values.toList()[0] ? '' : 'WiFi: Offline';
-          break;
-        case ConnectivityResult.none:
-          string = 'Offline';
-          break;
-        default:
-          string = 'Offline';
-      }
-
-      setState(() {});
-
-      final state = Overlay.of(context);
-      if (state == null) return;
-      if (string.isNotEmpty) {
-        showTopSnackBar(
-          state,
-          displayDuration: const Duration(milliseconds: 1000),
-          const CustomSnackBar.error(
-            message: "Internet əlaqəsi yoxdur",
-          ),
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _networkConnectivity.disposeStream();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return BlocConsumer<GlobalBloc, GlobalState>(
+      listener: (context, state) {
+        ShowTopSnackBar(
+            context,
+            error: state.internetConnectionLost,
+            info: !state.internetConnectionLost,
+            state.internetConnectionLost == true
+                ? "Internet əlaqəsi yoxdur"
+                : "Internet əlaqəsi quruldu");
+      },
+      listenWhen: (previous, current) =>
+          previous.internetConnectionLost != current.internetConnectionLost,
+      buildWhen: (previous, current) =>
+          current.authStatus == GlobalAuthStatus.loggedIn,
+      builder: (context, state) {
+        return state.authStatus == GlobalAuthStatus.loggedIn &&
+                state.userData == null &&
+                widget.disallowAnonym
+            ? NeedRegister(
+                activeTab: true,
+              )
+            : widget.child;
+      },
+    );
   }
 }

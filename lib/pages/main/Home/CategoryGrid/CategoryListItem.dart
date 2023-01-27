@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class CategoryFilterItem extends StatelessWidget {
   final Subcategory subcategory;
   final bool isSelected;
-  final void Function(Subcategory category) fn;
+  final Future<void> Function(Subcategory category) fn;
   const CategoryFilterItem(
       {Key? key,
       required this.subcategory,
@@ -18,8 +18,8 @@ class CategoryFilterItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(right: 5, left: 5),
       child: ElevatedButton(
-          onPressed: () {
-            fn(subcategory);
+          onPressed: () async {
+            await fn(subcategory);
           },
           style: ButtonStyle(
             surfaceTintColor: MaterialStateProperty.all<Color>(Colors.white),

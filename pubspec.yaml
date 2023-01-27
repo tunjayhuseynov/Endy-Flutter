@@ -100,7 +100,7 @@ flutter_icons:
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/endy.az_back_white.png"
+    image_path: "assets/logos/logoweb.png"
     background_color: "#FFFFFF"
     theme_color: "#f03034"
   # windows:
@@ -121,11 +121,11 @@ flutter_icons:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_native_splash:
-  color: "#035C96"
-  image: assets/android/logo.png
+  color: "#f03034"
+  image: assets/logos/logod.png
   android_12:
-    color: "#035C96"
-    image: assets/android/logo.png
+    color: "#f03034"
+    image: assets/logos/logod.png
   android: true
   ios: true
 # The following section is specific to Flutter packages.
@@ -141,7 +141,10 @@ flutter:
     - .env
     - assets/sign.png
     # - assets/logo_title.png
-    - assets/endy.az.png
+    #- assets/endy.az.png
+    - assets/logos/logod.png
+    - assets/logos/12.png
+    - assets/logos/logoweb.png
     # - assets/endy.az_back_white.png
     # - assets/logo_title_blue.png
     - assets/onboard_first.png

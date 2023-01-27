@@ -15,7 +15,7 @@ import flutter_local_notifications
 import geolocator_apple
 import maps_launcher
 import mobile_scanner
-import path_provider_macos
+import path_provider_foundation
 import share_plus
 import smart_auth
 import sqflite

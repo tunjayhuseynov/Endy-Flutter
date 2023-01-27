@@ -45,79 +45,80 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: BlocConsumer<SearchPageBloc, SearchPageState>(
-        listener: (context, state) {
-          if (state.search.isNotEmpty && state.isSearching == true) {
-            context.read<SearchPageBloc>().getSearchResult(widget.category,
-                widget.company, widget.subcategory, widget.client);
-          }
-        },
-        builder: (context, state) {
-          if (state.isSearching) {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Color(mainColor),
-            ));
-          }
-          return LayoutBuilder(builder: (context, constraints) {
-            return Column(
-              children: [
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const ScrollPhysics(),
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, bottom: 20),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: constraints.maxWidth * 0.66 / 430,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 15),
-                  itemCount: state.products.length,
-                  itemBuilder: (context, index) {
-                    final data = state.products[index];
-                    return DiscountCard(
-                        product: Product(
-                            availablePlaces: [],
-                            category: context
-                                .read<GlobalBloc>()
-                                .state
-                                .categories
-                                .where((element) =>
-                                    "categories/${element.id}" == data.category)
-                                .first,
-                            company: context
-                                .read<GlobalBloc>()
-                                .state
-                                .companies
-                                .where((element) =>
-                                    "companies/${element.id}" == data.company)
-                                .first,
-                            createdAt: data.createdAt,
-                            deadline: data.deadline,
-                            isPrime: false,
-                            discount: data.discount,
-                            discountedPrice: data.discountedPrice,
-                            id: data.id,
-                            images: [],
-                            primaryImage: data.primaryImage,
-                            name: data.name,
-                            price: data.price,
-                            subcategory: null,
-                            link: null));
-                  },
-                ),
-                if (state.products.isNotEmpty && !state.isLastPage)
-                  const Center(
-                      child: CircularProgressIndicator(
-                    color: Color(mainColor),
-                  )),
-                const SizedBox(height: 120)
-              ],
-            );
-          });
-        },
-      ),
+    final w = MediaQuery.of(context).size.width;
+    final gridCount = w < 768 ? 2 :  w < 1124  ? 4 : w < 1526 ? 6 : 8;
+    final gridRatio = w < 768 ? w * 0.66 / 450 : w < 1124 ? w * 0.33 / 460 :w < 1526 ? w * 0.33 / 670 : w * 0.33 / 890;
+    return BlocConsumer<SearchPageBloc, SearchPageState>(
+      listener: (context, state) {
+        if (state.search.isNotEmpty && state.isSearching == true) {
+          context.read<SearchPageBloc>().getSearchResult(widget.category,
+              widget.company, widget.subcategory, widget.client);
+        }
+      },
+      builder: (context, state) {
+        if (state.isSearching) {
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Color(mainColor),
+          ));
+        }
+        return LayoutBuilder(builder: (context, constraints) {
+          return Column(
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                padding:
+                    const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: gridCount,
+                    childAspectRatio: gridRatio,
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 15),
+                itemCount: state.products.length,
+                itemBuilder: (context, index) {
+                  final data = state.products[index];
+                  return DiscountCard(
+                      product: Product(
+                          availablePlaces: [],
+                          category: context
+                              .read<GlobalBloc>()
+                              .state
+                              .categories
+                              .where((element) =>
+                                  "categories/${element.id}" == data.category)
+                              .first,
+                          company: context
+                              .read<GlobalBloc>()
+                              .state
+                              .companies
+                              .where((element) =>
+                                  "companies/${element.id}" == data.company)
+                              .first,
+                          createdAt: data.createdAt,
+                          deadline: data.deadline,
+                          isPrime: false,
+                          discount: data.discount,
+                          discountedPrice: data.discountedPrice,
+                          id: data.id,
+                          images: [],
+                          primaryImage: data.primaryImage,
+                          name: data.name,
+                          price: data.price,
+                          subcategory: null,
+                          link: null));
+                },
+              ),
+              if (state.products.isNotEmpty && !state.isLastPage)
+                const Center(
+                    child: CircularProgressIndicator(
+                  color: Color(mainColor),
+                )),
+              const SizedBox(height: 120)
+            ],
+          );
+        });
+      },
     );
   }
 }

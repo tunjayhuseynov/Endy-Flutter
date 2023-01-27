@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGridLayout.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Cache_Bloc.dart';
@@ -44,17 +45,44 @@ class _CategoryGridState extends State<CategoryGrid> {
                 state.category, state.company, state.subcategory, client);
           }
         } else {
-          var cacheState = context.read<CategoryCacheBloc>().state;
+          var ctx = context.read<CategoryCacheBloc>();
+          var cacheState = ctx.state;
           if (!cacheState.isSearching && !cacheState.isLastPage) {
             var filterState = context.read<FilterPageBloc>().state;
-            context.read<CategoryCacheBloc>().setSearching(true);
-            context.read<CategoryCacheBloc>().getResult(
+            ctx.setSearching(true);
+            var c = CancelableOperation.fromFuture(ctx.getResult(
                 state.category, state.company, state.subcategory, client,
-                mode: filterState);
+                mode: filterState));
+            ctx.setCancelableoperation(c);
+            c.value.then((value) {
+              if (value != null) {
+                ctx.setState(value);
+              }
+            });
           }
         }
       }
     });
+  }
+
+  Future<void> filterClick(CategoryGridState state) async {
+    await Navigator.pushNamed(context, "/home/filter");
+
+    var filterState = context.read<FilterPageBloc>().state;
+    if (state != FilterPageState.none) {
+      final ctx = context.read<CategoryCacheBloc>();
+      ctx.reset();
+
+      var c = CancelableOperation.fromFuture(ctx.getResult(
+          state.category, state.company, state.subcategory, client,
+          mode: filterState));
+      ctx.setCancelableoperation(c);
+
+      final newState = await c.value;
+      if (newState != null) {
+        ctx.setState(newState);
+      }
+    }
   }
 
   @override
@@ -68,6 +96,7 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return BlocBuilder<SearchPageBloc, SearchPageState>(
       buildWhen: (previous, current) => previous.search != current.search,
       builder: (searchContext, searchState) {
@@ -87,6 +116,7 @@ class _CategoryGridState extends State<CategoryGrid> {
                         onPressed: () {
                           Navigator.pop(context);
                         }),
+                    centerTitle: true,
                     title:
                         BlocBuilder<CategoryGridBarBloc, CategoryGridBarState>(
                       builder: (cacheContext, cacheState) {
@@ -102,7 +132,24 @@ class _CategoryGridState extends State<CategoryGrid> {
                     actions: <Widget>[
                       AnimatedSearchBox(
                           focusNode: focusNode,
-                          editingController: editingController)
+                          editingController: editingController),
+                      if (w > 1024)
+                        InkWell(
+                          mouseCursor: SystemMouseCursors.click,
+                          hoverColor: Colors.transparent,
+                          onTap: () {
+                            filterClick(state);
+                          },
+                          child: Image.asset(
+                            "assets/icons/filter.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+                      if (w > 1024)
+                        SizedBox(
+                          width: w / 2 - 150,
+                        )
                     ],
                   ),
                   body: searchState.search.isNotEmpty
@@ -134,19 +181,6 @@ class _CategoryGridState extends State<CategoryGrid> {
                                           .setSelectedId(selectedId);
                                     },
                                   )),
-                              // Visibility(
-                              //     visible: state.company != null,
-                              //     child: ScrollableCategory(
-                              //       company: state.company,
-                              //       subcategory: state.subcategory,
-                              //       selectedId: state.selectedId,
-                              //       category: state.category,
-                              //       fnSetState: (String selectedId) {
-                              //         context
-                              //             .read<CategoryGridBloc>()
-                              //             .setSelectedId(selectedId);
-                              //       },
-                              //     )),
                               const Padding(padding: EdgeInsets.only(top: 20)),
                               Padding(
                                 padding:
@@ -173,41 +207,22 @@ class _CategoryGridState extends State<CategoryGrid> {
                                                   ? Container()
                                                   : CachedNetworkImage(
                                                       imageUrl:
-                                                          state.company!.logo,
+                                                          state.company?.logo ??
+                                                              "",
                                                       width: 40,
                                                     ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pushNamed(context,
-                                                          "/home/filter")
-                                                      .then((value) {
-                                                    var filterState = context
-                                                        .read<FilterPageBloc>()
-                                                        .state;
-                                                    if (state !=
-                                                        FilterPageState.none) {
-                                                      context
-                                                          .read<
-                                                              CategoryCacheBloc>()
-                                                          .reset();
-                                                      context
-                                                          .read<
-                                                              CategoryCacheBloc>()
-                                                          .getResult(
-                                                              state.category,
-                                                              state.company,
-                                                              state.subcategory,
-                                                              client,
-                                                              mode:
-                                                                  filterState);
-                                                    }
-                                                  });
-                                                },
-                                                child: Image.asset(
-                                                  "assets/icons/filter.png",
-                                                  height: 20,
-                                                ),
-                                              )
+                                              if (w < 1024)
+                                                InkWell(
+                                                  mouseCursor:
+                                                      SystemMouseCursors.click,
+                                                  onTap: () {
+                                                    filterClick(state);
+                                                  },
+                                                  child: Image.asset(
+                                                    "assets/icons/filter.png",
+                                                    height: 20,
+                                                  ),
+                                                )
                                             ],
                                           ),
                                         )
@@ -242,6 +257,7 @@ class AnimatedSearchBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return BlocBuilder<CategoryGridBarBloc, CategoryGridBarState>(
       builder: (context, state) {
         return AnimatedContainer(
@@ -249,14 +265,16 @@ class AnimatedSearchBox extends StatelessWidget {
             if (!state.isClosing) {
               context.read<CategoryGridBarBloc>().setSuffixMode(true);
             } else {
-              context.read<CategoryGridBarBloc>().changeTitleStatus(true);
+              if (w < 768) {
+                context.read<CategoryGridBarBloc>().changeTitleStatus(true);
+              }
             }
           },
           curve: Curves.fastOutSlowIn,
           duration: const Duration(milliseconds: 1000),
           padding: EdgeInsets.only(
               top: 20, left: state.isClosing ? 20 : 0, right: 20, bottom: 20),
-          width: state.searchWidth,
+          width: w < 768 ? state.searchWidth : 300,
           height: 80,
           color: Colors.white,
           child: SizedBox(
@@ -269,7 +287,11 @@ class AnimatedSearchBox extends StatelessWidget {
                   context.read<CategoryGridBarBloc>().set(
                       width: MediaQuery.of(context).size.width - 57,
                       isClosing: false);
-                  context.read<CategoryGridBarBloc>().changeTitleStatus(false);
+                  if (w < 768) {
+                    context
+                        .read<CategoryGridBarBloc>()
+                        .changeTitleStatus(false);
+                  }
                 }
               },
               suffixIcon: const Icon(Icons.close),

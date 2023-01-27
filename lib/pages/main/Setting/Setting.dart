@@ -46,7 +46,7 @@ class Setting extends StatelessWidget {
                       // User name
                       Text(
                         state.userData?.name ?? "İstifadəçi",
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       SizedBox(
                           height: 35,
@@ -62,7 +62,9 @@ class Setting extends StatelessWidget {
                                     MaterialStateProperty.all(Colors.grey[500]),
                                 overlayColor: MaterialStateProperty.all<Color?>(
                                     Colors.transparent)),
-                            child: const Text("Hesabdan çıxış"),
+                            child: Text(state.userData != null
+                                ? "Hesabdan çıxış"
+                                : "Daxil ol"),
                           ))
                     ],
                   ),

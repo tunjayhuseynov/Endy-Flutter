@@ -69,7 +69,7 @@ class _OnboardState extends State<Onboard> {
                                     context.read<GlobalBloc>().setFirstEnter(),
                                     Navigator.pushNamedAndRemoveUntil(
                                         context,
-                                        "/home",
+                                        "/",
                                         (Route<dynamic> route) => false)
                                   }
                               })),

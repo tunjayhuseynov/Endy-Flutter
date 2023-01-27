@@ -1,6 +1,7 @@
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
+import 'package:flutter/foundation.dart' as f;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 
@@ -20,7 +21,7 @@ class SearchPageState {
       this.isLastPage = false,
       this.isSearching = true,
       this.isClosed = false,
-      this.per_page = 5});
+      this.per_page = f.kIsWeb ? 32 : 5});
 
   SearchPageState copyWith({
     String? search,
@@ -84,7 +85,7 @@ class SearchPageBloc extends Cubit<SearchPageState> {
       setIsSearching(false);
       return [];
     }
-    
+
     if (category != null) {
       if (filter.isNotEmpty) filter += '&&';
       filter += 'category:=categories/${category.id}';
@@ -117,7 +118,8 @@ class SearchPageBloc extends Cubit<SearchPageState> {
       List<Product> hits = rawHits['hits']
           .map<Product>((e) => Product.fromJson(e["document"]))
           .toList();
-
+      print((rawHits['found']).ceil());
+      print(state.currentPage);
       emit(state.copyWith(
         products: [...state.products, ...hits],
         currentPage: state.currentPage + 1,

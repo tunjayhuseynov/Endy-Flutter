@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/AdSlider.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
@@ -26,11 +28,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         var state = context.read<SearchPageBloc>().state;
+        print("Done");
         if (state.search.isNotEmpty &&
             !state.isLastPage &&
             !state.isSearching) {
@@ -41,6 +43,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     });
+    super.initState();
   }
 
   @override
@@ -106,8 +109,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class TopBar extends StatelessWidget {
-  const TopBar({
+class TopBar extends StatefulWidget {
+  TopBar({
     Key? key,
     required this.size,
     required this.editingController,
@@ -117,24 +120,46 @@ class TopBar extends StatelessWidget {
   final TextEditingController editingController;
 
   @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
-      width: size.width,
-      height: 80,
-      // color: Colors.white,
-      child: SizedBox(
-        height: 40,
-        child: CupertinoSearchTextField(
-          placeholder: "Axtarış",
-          onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
-          onSubmitted: (value) =>
-              context.read<SearchPageBloc>().setSearch(value),
-          controller: editingController,
-          prefixInsets: const EdgeInsets.only(left: 10),
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
+    return LayoutBuilder(builder: (context, c) {
+      return Container(
+        padding:
+            const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
+        width: c.maxWidth < 708 ? widget.size.width : 300,
+        height: 80,
+        // color: Colors.white,
+        child: SizedBox(
+          height: 40,
+          child: CupertinoSearchTextField(
+            placeholder: "Axtarış",
+            onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
+            onChanged: (value) {
+              if (_debounce != null || _debounce?.isActive == true) {
+                _debounce?.cancel();
+              }
+              _debounce = Timer(const Duration(milliseconds: 800), () {
+                context.read<SearchPageBloc>().setSearch(value);
+              });
+            },
+            controller: widget.editingController,
+            prefixInsets: const EdgeInsets.only(left: 10),
+            borderRadius: const BorderRadius.all(Radius.circular(50)),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

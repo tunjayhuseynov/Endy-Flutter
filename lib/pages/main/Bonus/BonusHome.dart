@@ -38,17 +38,18 @@ class _BonusHomeState extends State<BonusHome> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ListView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: state.userData?.bonusCard.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Bonus(
-                            card: state.userData!.bonusCard[index],
-                          ));
-                    }),
+                if (state.userData != null)
+                  ListView.builder(
+                      physics: const ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: state.userData?.bonusCard.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Bonus(
+                              card: state.userData!.bonusCard[index],
+                            ));
+                      }),
                 const SizedBox(height: 120),
               ],
             ),

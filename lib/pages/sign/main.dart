@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/utils/index.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Sign extends StatefulWidget {
@@ -11,6 +12,22 @@ class Sign extends StatefulWidget {
 }
 
 class _SignState extends State<Sign> {
+  anonymSignIn() async {
+    try {
+      await FirebaseAuth.instance.signInAnonymously();
+      print("Signed in with temporary account.");
+      Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "operation-not-allowed":
+          print("Anonymous auth hasn't been enabled for this project.");
+          break;
+        default:
+          print("Unknown error.");
+      }
+    }
+  }
+
   String label =
       "1000-dən çox market və mağazalardakı endirimlərdən yararlanın";
   @override
@@ -23,30 +40,31 @@ class _SignState extends State<Sign> {
         child: Column(
           children: [
             SizedBox(
-              height: size.height * 0.60,
+              height: size.width < 768 ? size.height * 0.55 : size.height * 0.35,
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: AlignmentDirectional.center,
                 children: [
-                  Positioned(
-                      top: -100,
-                      width: size.width,
-                      height: size.height * 0.65,
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        child: Image.asset('assets/sign.png'),
-                      )),
+                  if (size.width < 768)
+                    Positioned(
+                        top: -100,
+                        width: size.width,
+                        height: size.height * 0.60,
+                        child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/sign.png'),
+                        )),
                   Positioned(
                     bottom: 0,
                     child: Padding(
                         padding: const EdgeInsets.only(left: 7),
-                        child: Image.asset('assets/endy.az.png',
+                        child: Image.asset('assets/logos/logod.png',
                             width: size.width * 0.3)),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             SizedBox(
               width: (size.width * 0.75),
               child: AutoSizeText(
@@ -60,15 +78,21 @@ class _SignState extends State<Sign> {
             ),
             const SizedBox(height: 20),
             PrimaryButton(
-              width: size.width * 0.75,
+              width: size.width < 768 ? size.width * 0.75 : null,
               text: "Daxil ol",
               fn: () => {Navigator.pushNamed(context, '/sign/signin')},
             ),
             const SizedBox(height: 20),
             SecondaryButton(
                 text: "Hesab aç",
-                width: size.width * 0.75,
+                width: size.width < 768 ? size.width * 0.75 : null,
                 fn: () => {Navigator.pushNamed(context, "/sign/registration")}),
+            const SizedBox(height: 20),
+            SecondaryButton(
+                color: 0xFFFFFFFF,
+                text: "Qeydiyyatsız dəvam et",
+                width: size.width < 768 ? size.width * 0.75 : null,
+                fn: () => {anonymSignIn()}),
           ],
         ),
       ),

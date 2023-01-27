@@ -62,7 +62,7 @@ class _ProfileState extends State<Profile> {
 
         return BlocProvider(
           create: (context) => ProfileBloc(globalState.userData!)
-            ..setPhoneNumber(globalState.userData!.phone),
+            ..setPhoneNumber(globalState.userData?.phone ?? ""),
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               return Scaffold(
@@ -186,7 +186,7 @@ class _ProfileState extends State<Profile> {
                                       ),
                                       // User name
                                       Text(
-                                        globalState.userData!.name,
+                                        globalState.userData?.name ?? "",
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline6,
@@ -196,7 +196,7 @@ class _ProfileState extends State<Profile> {
                                       ),
                                       // User name
                                       Text(
-                                        globalState.userData!.phone,
+                                        globalState.userData?.phone ?? "",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey[600]),

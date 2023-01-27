@@ -38,20 +38,21 @@ class _ListHomeState extends State<ListHome> {
                   height: MediaQuery.of(context).size.height - 100,
                   child: ListView(shrinkWrap: true, children: [
                     // const SizedBox(height: 20),
-                    SingleChildScrollView(
-                      child: ListView.builder(
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: state.userData?.list.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child:
-                                ListItem(detail: state.userData!.list[index]),
-                          );
-                        },
+                    if (state.userData != null)
+                      SingleChildScrollView(
+                        child: ListView.builder(
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: state.userData?.list.length ?? 0,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child:
+                                  ListItem(detail: state.userData!.list[index]),
+                            );
+                          },
+                        ),
                       ),
-                    ),
                   ]),
                 ),
                 Positioned(

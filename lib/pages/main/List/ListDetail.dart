@@ -89,72 +89,77 @@ class _ListDetailState extends State<ListDetail> {
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       children: [
-                        Text(state.userList!.name,
+                        Text(state.userList?.name ?? "",
                             style: const TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 25),
-                        ReorderableListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: state.userList!.details.length,
-                            itemBuilder: (context, index) {
-                              UserListDetail detail = globalState.userData!.list
-                                  .firstWhere((element) =>
-                                      element.id == state.userList!.id)
-                                  .details[index];
-                              return CheckboxListTile(
-                                secondary: Wrap(
-                                  spacing: 25,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        context.read<GlobalBloc>().removeDetail(
+                        if (state.userList != null &&
+                            globalState.userData != null)
+                          ReorderableListView.builder(
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: state.userList!.details.length,
+                              itemBuilder: (context, index) {
+                                UserListDetail detail = globalState
+                                    .userData!.list
+                                    .firstWhere((element) =>
+                                        element.id == state.userList!.id)
+                                    .details[index];
+                                return CheckboxListTile(
+                                  secondary: Wrap(
+                                    spacing: 25,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<GlobalBloc>()
+                                              .removeDetail(
+                                                  state.userList!, detail);
+                                        },
+                                        child: const Icon(Icons.remove_circle,
+                                            color: Color(mainColor)),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          // user.removeDetail(widget.list, detail);
+                                        },
+                                        child: const Icon(Icons.menu,
+                                            color: Colors.black54),
+                                      )
+                                    ],
+                                  ),
+                                  activeColor: const Color(mainColor),
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  checkboxShape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  contentPadding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
+                                  key: Key(detail.id),
+                                  title: Text(detail.name,
+                                      style: TextStyle(
+                                          decoration: detail.isDone
+                                              ? TextDecoration.lineThrough
+                                              : null)),
+                                  value: detail.isDone,
+                                  onChanged: (bool? value) {
+                                    context
+                                        .read<GlobalBloc>()
+                                        .changeDetailStatus(
                                             state.userList!, detail);
-                                      },
-                                      child: const Icon(Icons.remove_circle,
-                                          color: Color(mainColor)),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        // user.removeDetail(widget.list, detail);
-                                      },
-                                      child: const Icon(Icons.menu,
-                                          color: Colors.black54),
-                                    )
-                                  ],
-                                ),
-                                activeColor: const Color(mainColor),
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                checkboxShape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 0),
-                                key: Key(detail.id),
-                                title: Text(detail.name,
-                                    style: TextStyle(
-                                        decoration: detail.isDone
-                                            ? TextDecoration.lineThrough
-                                            : null)),
-                                value: detail.isDone,
-                                onChanged: (bool? value) {
-                                  context.read<GlobalBloc>().changeDetailStatus(
-                                      state.userList!, detail);
-                                },
-                              );
-                            },
-                            onReorder: (int oldIndex, int newIndex) {
-                              if (newIndex > oldIndex) {
-                                newIndex -= 1;
-                              }
-                              // final UserListDetail item =
-                              //     state.userList!.details.removeAt(oldIndex);
-                              // state.userList!.details.insert(newIndex, item);
-                              context.read<GlobalBloc>().reorderDetail(
-                                  state.userList!,
-                                  state.userList!.details[oldIndex],
-                                  newIndex);
-                            }),
+                                  },
+                                );
+                              },
+                              onReorder: (int oldIndex, int newIndex) {
+                                if (newIndex > oldIndex) {
+                                  newIndex -= 1;
+                                }
+
+                                context.read<GlobalBloc>().reorderDetail(
+                                    state.userList!,
+                                    state.userList!.details[oldIndex],
+                                    newIndex);
+                              }),
                         const SizedBox(height: 25),
                         CupertinoTextField(
                           controller: editingController,
@@ -172,9 +177,7 @@ class _ListDetailState extends State<ListDetail> {
                                         name: editingController.text,
                                         isDone: false));
                                 editingController.clear();
-                                context
-                              .read<ListBloc>()
-                              .changeAddButton(false);
+                                context.read<ListBloc>().changeAddButton(false);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 10.0),

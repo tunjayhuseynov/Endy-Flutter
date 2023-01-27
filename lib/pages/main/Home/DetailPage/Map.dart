@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,8 +10,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
 
 class MapPage extends StatefulWidget {
   final List<Place> places;
@@ -178,15 +178,9 @@ class _MapPageState extends State<MapPage> {
                                   await MapsLauncher.launchCoordinates(
                                       place.lat, place.lng, "Məkan");
                                 } catch (e) {
-                                  showTopSnackBar(
-                                    Overlay.of(context)!,
-                                    displayDuration:
-                                        const Duration(milliseconds: 1000),
-                                    const CustomSnackBar.error(
-                                      message:
-                                          "Xəritəyə qoşulurken xəta baş verdi",
-                                    ),
-                                  );
+                                  ShowTopSnackBar(context,
+                                      "Xəritəyə qoşulurken xəta baş verdi",
+                                      error: true);
                                 }
                               },
                               title: Text(place.name),

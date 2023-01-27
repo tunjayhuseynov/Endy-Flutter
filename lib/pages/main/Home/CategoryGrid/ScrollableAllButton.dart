@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Cache_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/CategoryListItem.dart';
@@ -9,8 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 
-class ScrollableAllButton extends StatelessWidget {
-  const ScrollableAllButton({
+class ScrollableAllButton extends StatefulWidget {
+  ScrollableAllButton({
     Key? key,
     required this.category,
     required this.subcategory,
@@ -28,6 +29,11 @@ class ScrollableAllButton extends StatelessWidget {
   final Client client;
 
   @override
+  State<ScrollableAllButton> createState() => _ScrollableAllButtonState();
+}
+
+class _ScrollableAllButtonState extends State<ScrollableAllButton> {
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, size) {
@@ -39,54 +45,78 @@ class ScrollableAllButton extends StatelessWidget {
               child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: category!.subcategory.length + 1,
+                  itemCount: widget.category!.subcategory.length + 1,
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return CategoryFilterItem(
-                          isSelected: selectedId == "",
+                          isSelected: widget.selectedId == "",
                           subcategory: Subcategory(
                               id: "all",
                               createdAt: DateTime.now().millisecondsSinceEpoch,
                               products: [],
                               name: "Hamısı",
-                              category: category!.id),
-                          fn: (Subcategory subcategory) {
-                            fnSetState("");
+                              category: widget.category!.id),
+                          fn: (Subcategory subcategory) async {
+                            final ctx = context.read<CategoryCacheBloc>();
+                            final state = ctx.state;
+                            if (state.cancellableOperation != null) {
+                              state.cancellableOperation?.cancel();
+                            }
+                            widget.fnSetState("");
                             context.read<CategoryGridBarBloc>().deleteCache();
                             context.read<CategoryGridBloc>().set(
-                                category: category,
+                                category: widget.category,
                                 subcategory: null,
-                                company: company);
+                                company: widget.company);
 
                             context.read<CategoryCacheBloc>().reset();
-                            context.read<CategoryCacheBloc>().getResult(
-                                category, company, null, client,
-                                mode: filterState);
+                            var c = CancelableOperation.fromFuture(
+                                ctx.getResult(widget.category, widget.company,
+                                    null, widget.client,
+                                    mode: filterState));
+                            ctx.setCancelableoperation(c);
+
+                            final newState = await c.value;
+                            if (newState != null) {
+                              ctx.setState(newState);
+                            }
                           });
                     }
                     final curr =
-                        category!.subcategory[index - 1] as Subcategory;
+                        widget.category!.subcategory[index - 1] as Subcategory;
                     return CategoryFilterItem(
-                        isSelected: selectedId == curr.id,
+                        isSelected: widget.selectedId == curr.id,
                         subcategory: curr,
-                        fn: (Subcategory subcategory) {
+                        fn: (Subcategory subcategory) async {
+                          final ctx = context.read<CategoryCacheBloc>();
+                          final state = ctx.state;
+                          if (state.cancellableOperation != null) {
+                            state.cancellableOperation?.cancel();
+                          }
                           context.read<CategoryGridBarBloc>().deleteCache();
 
-                          fnSetState(selectedId == curr.id ? "" : curr.id);
+                          widget.fnSetState(
+                              widget.selectedId == curr.id ? "" : curr.id);
 
                           context.read<CategoryGridBloc>().set(
-                              category: category,
-                              subcategory: selectedId == curr.id ? null : curr,
-                              company: company);
+                              category: widget.category,
+                              subcategory:
+                                  widget.selectedId == curr.id ? null : curr,
+                              company: widget.company);
 
                           context.read<CategoryCacheBloc>().reset();
+                          var c = CancelableOperation.fromFuture(ctx.getResult(
+                              widget.category,
+                              widget.company,
+                              widget.selectedId == curr.id ? null : curr,
+                              widget.client,
+                              mode: filterState));
+                          ctx.setCancelableoperation(c);
 
-                          context.read<CategoryCacheBloc>().getResult(
-                              category,
-                              company,
-                              selectedId == curr.id ? null : curr,
-                              client,
-                              mode: filterState);
+                          final newState = await c.value;
+                          if (newState != null) {
+                            ctx.setState(newState);
+                          }
                         });
                   }),
             );

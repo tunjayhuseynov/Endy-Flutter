@@ -18,28 +18,50 @@ class CategoryGridLayout extends StatefulWidget {
 }
 
 class _CategoryGridLayoutState extends State<CategoryGridLayout> {
-  late CancelableOperation<void> cancellableOperation;
-
   @override
   void initState() {
     super.initState();
+    var ctx = context.read<CategoryCacheBloc>();
     var state = context.read<CategoryGridBloc>().state;
     var filterState = context.read<FilterPageBloc>().state;
-    cancellableOperation = CancelableOperation.fromFuture(context
+    var c = CancelableOperation.fromFuture(context
         .read<CategoryCacheBloc>()
         .getResult(
             state.category, state.company, state.subcategory, widget.client,
             mode: filterState));
+    ctx.setCancelableoperation(c);
+    c.value.then((value) {
+      if (value != null) {
+        ctx.setState(value);
+      }
+    });
   }
 
   @override
   void dispose() {
-    cancellableOperation.cancel();
+    var ctx = context.read<CategoryCacheBloc>();
+    if (ctx.state.cancellableOperation != null)
+      ctx.state.cancellableOperation!.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final gridCount = w < 768
+        ? 2
+        : w < 1124
+            ? 4
+            : w < 1526
+                ? 6
+                : 8;
+    final gridRatio = w < 768
+        ? w * 0.66 / 450
+        : w < 1124
+            ? w * 0.33 / 430
+            : w < 1526
+                ? w * 0.33 / 650
+                : w * 0.33 / 870;
     return BlocBuilder<CategoryGridBloc, CategoryGridState>(
       builder: (context, state) {
         return BlocBuilder<CategoryCacheBloc, CategoryCacheState>(
@@ -59,8 +81,8 @@ class _CategoryGridLayoutState extends State<CategoryGridLayout> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 10),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: constraints.maxWidth * 0.66 / 430,
+                        crossAxisCount: gridCount,
+                        childAspectRatio: gridRatio,
                         mainAxisSpacing: 15,
                         crossAxisSpacing: 15),
                     itemCount: cacheState.products.length,

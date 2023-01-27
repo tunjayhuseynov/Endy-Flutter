@@ -60,7 +60,6 @@ class _NotificationPageState extends State<NotificationPage> {
                       : const Text(''),
                   onTap: () {
                     if (state.notifications[index].onClick != null) {
-                      print(state.notifications[index].onClick);
                       Navigator.of(context).pushNamed("/home/detail",
                           arguments: state.notifications[index].onClick);
                     }

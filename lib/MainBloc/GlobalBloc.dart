@@ -24,6 +24,7 @@ class GlobalState {
   final UserData? userData;
   final int? reset;
   final String aboutApp;
+  final bool internetConnectionLost;
 
   final bool isMapDisabled;
   final bool isMostViewedDisabled;
@@ -51,6 +52,7 @@ class GlobalState {
     this.panels = const [],
     this.catalogs = const [],
     this.aboutApp = "",
+    this.internetConnectionLost = false,
     this.isMostViewedDisabled = false,
   });
 
@@ -68,6 +70,7 @@ class GlobalState {
       List<Panel>? panels,
       List<Catalog>? catalogs,
       String? aboutApp,
+      bool? internetConnectionLost,
       bool? isMapDisabled,
       bool? isMostViewedDisabled}) {
     return GlobalState(
@@ -85,6 +88,8 @@ class GlobalState {
       panels: panels ?? this.panels,
       reset: reset ?? this.reset,
       aboutApp: aboutApp ?? this.aboutApp,
+      internetConnectionLost:
+          internetConnectionLost ?? this.internetConnectionLost,
       isMapDisabled: isMapDisabled ?? this.isMapDisabled,
       isMostViewedDisabled: isMostViewedDisabled ?? this.isMostViewedDisabled,
     );
@@ -104,6 +109,7 @@ class GlobalState {
         packageStatus,
         reset,
         isMapDisabled,
+        internetConnectionLost,
         aboutApp,
         isMostViewedDisabled
       ];
@@ -201,6 +207,10 @@ class GlobalBloc extends Parent {
     }
   }
 
+  void updateInternetConnectionLost(bool status) {
+    emit(state.copyWith(internetConnectionLost: status));
+  }
+
   void removeBonusCard(BonusCard bonus) {
     if (state.userData != null) {
       var data = UserData.fromInstance(state.userData!);
@@ -244,7 +254,8 @@ class GlobalBloc extends Parent {
       if (user == null) {
         emit(GlobalState()
             .copyWith(authStatus: GlobalAuthStatus.notLoggedIn, user: null));
-      } else {
+      } else if (!user.isAnonymous &&
+          FirebaseAuth.instance.currentUser != null) {
         FirebaseFirestore.instance
             .collection("users")
             .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -268,6 +279,10 @@ class GlobalBloc extends Parent {
             });
           }
         });
+      } else {
+        // FirebaseAuth.instance.setPersistence(Persistence.NONE);
+        emit(GlobalState()
+            .copyWith(authStatus: GlobalAuthStatus.loggedIn, user: null));
       }
     });
   }

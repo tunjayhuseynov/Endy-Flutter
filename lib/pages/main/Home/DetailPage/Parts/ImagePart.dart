@@ -79,10 +79,19 @@ class ImagePart extends StatelessWidget {
                             .doc(product!.id));
                     return GestureDetector(
                       onTap: () => {
-                        if (!isLiked)
-                          {context.read<GlobalBloc>().addFavorite(product!)}
+                        if (state.userData == null)
+                          {Navigator.pushNamed(context, '/needregister', arguments: true)}
                         else
-                          {context.read<GlobalBloc>().removeFavorite(product!)}
+                          {
+                            if (!isLiked)
+                              {context.read<GlobalBloc>().addFavorite(product!)}
+                            else
+                              {
+                                context
+                                    .read<GlobalBloc>()
+                                    .removeFavorite(product!)
+                              }
+                          }
                       },
                       child: Container(
                           width: 35,

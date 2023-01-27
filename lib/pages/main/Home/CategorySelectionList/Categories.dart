@@ -25,6 +25,7 @@ class _CategoryListState extends State<CategoryList> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return BlocSelector<CategoryListBloc, CategoryListState, CategoryListState>(
       selector: (state) {
         return state.copyWith(
@@ -61,7 +62,8 @@ class _CategoryListState extends State<CategoryList> {
             ),
             body: Column(
               children: [
-                Padding(
+                Container(
+                  width: w < 768 ? null : 300,
                   padding: const EdgeInsets.all(8.0),
                   child: CupertinoSearchTextField(
                     placeholder: "Axtarış",
@@ -102,32 +104,39 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     final productAmount = category.subcategory.map((e) => e.products.length);
     final amountOfSub = productAmount.isNotEmpty
         ? productAmount.reduce((value, element) => value + element)
         : 0;
 
-    return GestureDetector(
-      onTap: () {
-        context.read<CategorySelectionListBloc>().setTypeAndList(
-            category, false, false, true, [], [], category.subcategory);
-        Navigator.pushNamed(context, '/home/category');
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 15),
-              width: 45,
-              height: 45,
-              child: CachedNetworkImage(imageUrl: category.logo),
-            ),
-            Expanded(flex: 2, child: Text(category.name)),
-            Text(amountOfSub.toString(),
-                style: const TextStyle(fontWeight: FontWeight.w500)),
-          ],
+    return Container(
+      padding: w < 768
+          ? null
+          : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
+      child: InkWell(
+        mouseCursor: SystemMouseCursors.click,
+        onTap: () {
+          context.read<CategorySelectionListBloc>().setTypeAndList(
+              category, false, false, true, [], [], category.subcategory);
+          Navigator.pushNamed(context, '/home/category');
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 15),
+                width: 45,
+                height: 45,
+                child: CachedNetworkImage(imageUrl: category.logo),
+              ),
+              Expanded(flex: 2, child: Text(category.name)),
+              Text(amountOfSub.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
+            ],
+          ),
         ),
       ),
     );

@@ -20,8 +20,11 @@ class ImagePart extends StatefulWidget {
 }
 
 class _ImagePartState extends State<ImagePart> {
+  bool heartHover = false;
+
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Stack(
       clipBehavior: Clip.antiAlias,
       fit: StackFit.loose,
@@ -48,9 +51,10 @@ class _ImagePartState extends State<ImagePart> {
         Positioned(
             left: 0,
             top: 0,
-            width: 35,
-            height: 35,
+            width: w > 768 ? 40 : 35,
+            height: w > 768 ? 40 : 35,
             child: CachedNetworkImage(
+                filterQuality: FilterQuality.high,
                 imageUrl: (widget.widget.product.company as Company).logo,
                 placeholder: (context, url) => const Center(
                     child: SizedBox(
@@ -68,19 +72,32 @@ class _ImagePartState extends State<ImagePart> {
                     state.userData!.liked.contains(FirebaseFirestore.instance
                         .collection('products')
                         .doc(widget.widget.product.id));
-                return GestureDetector(
+                return InkWell(
+                  onHover: (value) {
+                    setState(() {
+                      heartHover = value;
+                    });
+                  },
                   onTap: () => {
-                    if (!isLiked)
+                    if (state.userData == null)
                       {
-                        context
-                            .read<GlobalBloc>()
-                            .addFavorite(widget.widget.product),
+                        Navigator.pushNamed(context, '/needregister',
+                            arguments: true)
                       }
                     else
                       {
-                        context
-                            .read<GlobalBloc>()
-                            .removeFavorite(widget.widget.product),
+                        if (!isLiked)
+                          {
+                            context
+                                .read<GlobalBloc>()
+                                .addFavorite(widget.widget.product),
+                          }
+                        else
+                          {
+                            context
+                                .read<GlobalBloc>()
+                                .removeFavorite(widget.widget.product),
+                          }
                       }
                   },
                   child: Container(
@@ -93,7 +110,7 @@ class _ImagePartState extends State<ImagePart> {
                             BoxShadow(
                               offset: const Offset(1, 2),
                               blurRadius: 5,
-                              spreadRadius: 1,
+                              spreadRadius: heartHover ? 2.5 : 1,
                               color: Colors.black.withOpacity(0.2),
                             ),
                           ],

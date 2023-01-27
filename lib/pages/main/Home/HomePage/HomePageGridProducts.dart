@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
@@ -27,19 +29,24 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
 
   @override
   void initState() {
+    var pixelRatio = window.devicePixelRatio;
+    var logicalScreenSize = window.physicalSize / pixelRatio;
+    var logicalWidth = logicalScreenSize.width;
+
     categories = [...context.read<GlobalBloc>().state.categories];
     context
         .read<HomePageCacheBloc>()
         .getMostViewedProducts(categories, FilterPageState.none);
 
-    context
-        .read<HomePageCacheBloc>()
-        .getProducts(categories, FilterPageState.none);
+    context.read<HomePageCacheBloc>().getProducts(
+        categories, FilterPageState.none,
+        limit: logicalWidth < 768 ? 4 : 6);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     categories.sort((a, b) => a.order.compareTo(b.order));
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (globalContext, globalState) {
@@ -52,9 +59,9 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
                   .read<HomePageCacheBloc>()
                   .getMostViewedProducts(categories, FilterPageState.none);
 
-              context
-                  .read<HomePageCacheBloc>()
-                  .getProducts(categories, FilterPageState.none);
+              context.read<HomePageCacheBloc>().getProducts(
+                  categories, FilterPageState.none,
+                  limit: width < 768 ? 4 : 6);
             }
           },
           builder: (context, state) {
@@ -75,7 +82,8 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
                     if (state.mostViewedConnectionStatus ==
                             ConnectionStatus.Connected &&
                         state.mainProductsConnectionStatus ==
-                            ConnectionStatus.Connected && globalState.isMostViewedDisabled == false)
+                            ConnectionStatus.Connected &&
+                        globalState.isMostViewedDisabled == false)
                       MostViwed(snap: state.mostViewedProducts),
                     if (state.mainProductsConnectionStatus ==
                             ConnectionStatus.Connected &&
@@ -104,6 +112,9 @@ class ProductListFourGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final gridCount = w < 768 ? 2 : w < 1150 ? 4 : 6;
+    final gridRatio = w < 768 ? w * 0.66 / 450 : w < 1150 ? w * 0.33 / 480 : w * 0.33 / 700;
     return ListView.builder(
         shrinkWrap: true,
         physics: const ScrollPhysics(),
@@ -127,7 +138,8 @@ class ProductListFourGrid extends StatelessWidget {
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                     ),
-                    GestureDetector(
+                    InkWell(
+                        mouseCursor: SystemMouseCursors.click,
                         onTap: () async {
                           // Navigator.pushNamed(context, "home/category",
                           //     arguments: productList[index].keys.first);
@@ -153,26 +165,21 @@ class ProductListFourGrid extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio:
-                              constraints.maxWidth * 0.66 / 430, //(250 / 430),
-                          mainAxisSpacing: 15,
-                          crossAxisSpacing: 15),
-                      itemCount: data[index].length,
-                      itemBuilder: (context, i) => DiscountCard(
-                        product: data[index][i],
-                      ),
-                    );
-                  },
-                ),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: gridCount,
+                      childAspectRatio: gridRatio, //(250 / 430),
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15),
+                  itemCount: data[index].length,
+                  itemBuilder: (context, i) => DiscountCard(
+                    product: data[index][i],
+                  ),
+                )
               ],
             ),
           );

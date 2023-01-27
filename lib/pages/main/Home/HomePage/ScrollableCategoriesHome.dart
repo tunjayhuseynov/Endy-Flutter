@@ -33,20 +33,26 @@ class ScrollableCategoriesHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: ListView.builder(
-        itemCount: list.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (_, index) =>
-            _buildBox(category: list[index], context: context),
-      ),
-    );
+    return LayoutBuilder(builder: (context, c) {
+      return SizedBox(
+        height: 100,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (_, index) {
+            return _buildBox(category: list[index], context: context);
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildBox(
           {required Category category, required BuildContext context}) =>
-      GestureDetector(
+      InkWell(
+        mouseCursor: SystemMouseCursors.click,
+        // hoverColor: Colors.transparent,
         onTap: () {
           if (category.id == "100") {
             context.read<CategoryListBloc>().setTypeAndList(category);
@@ -69,6 +75,7 @@ class ScrollableCategoriesHome extends StatelessWidget {
             height: 100,
             width: 100,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 category.logo.contains("https://")
                     ? SizedBox(

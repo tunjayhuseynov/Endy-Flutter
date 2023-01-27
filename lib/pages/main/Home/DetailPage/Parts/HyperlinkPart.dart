@@ -1,5 +1,6 @@
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/types/product.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -26,13 +27,11 @@ class HyperlinkWidget extends StatelessWidget {
           fn: () async {
             if (!await launchUrl(Uri.parse(product?.link ?? ""),
                 mode: LaunchMode.externalApplication)) {
-              showTopSnackBar(
-                  Overlay.of(context)!,
-                  displayDuration: const Duration(milliseconds: 1000),
-                  const CustomSnackBar.error(
-                    message:
-                        "Linkə daxil olarkən xəta baş verdi. Xahiş edirik yenidən cəhd edin.",
-                  ));
+              ShowTopSnackBar(
+                context,
+                error: true,
+                "Linkə daxil olarkən xəta baş verdi. Xahiş edirik yenidən cəhd edin.",
+              );
             }
           },
           width: 100,

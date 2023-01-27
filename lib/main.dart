@@ -5,22 +5,22 @@ import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.da
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/env.dart';
 import 'package:endy/firebase_options.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
-import 'package:endy/utils/router.dart';
+import 'package:endy/mainMaterial.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:typesense/typesense.dart';
 
 final typesenseConfig = Configuration(
   // Replace with your configuration
-  dotenv.env['TYPESENSE_API_KEY']!,
+  TYPESENSE_API,
   nodes: {
     Node(
       Protocol.https,
@@ -69,6 +69,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
   @override
   void initState() {
     if (!kIsWeb) {
@@ -83,41 +85,22 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<GlobalBloc>(
-              lazy: false, create: (context) => GlobalBloc()..loadUtils()),
-          BlocProvider<HomePageNavBloc>(create: (context) => HomePageNavBloc()),
-          BlocProvider<OTPBloc>(create: (context) => OTPBloc()),
-          BlocProvider<CategoryGridBloc>(
-              create: (context) => CategoryGridBloc()),
-          BlocProvider<FilterPageBloc>(create: (context) => FilterPageBloc()),
-          BlocProvider<HomePageCacheBloc>(
-              create: (context) => HomePageCacheBloc()),
-          BlocProvider<CategorySelectionListBloc>(
-              create: (context) => CategorySelectionListBloc()),
-          BlocProvider<CategoryListBloc>(
-              create: (context) => CategoryListBloc()),
-          BlocProvider<ListBloc>(create: (context) => ListBloc()),
-        ],
-        child: MaterialApp(
-            title: 'Endy',
-            theme: ThemeData(
-                primarySwatch: Colors.red,
-                useMaterial3: true,
-                textTheme: GoogleFonts.robotoTextTheme(Theme.of(context)
-                    .textTheme
-                    .copyWith(bodyText1: const TextStyle())
-                    .apply(
-                      bodyColor: const Color.fromARGB(255, 48, 46, 46),
-                    ))),
-            initialRoute: '/home',
-            onGenerateRoute: (RouteSettings setting) {
-              return MaterialPageRoute(
-                  builder:  routerSwitch(setting),
-                  settings: setting);
-            }));
+    return MultiBlocProvider(providers: [
+      BlocProvider<GlobalBloc>(
+          lazy: false, create: (context) => GlobalBloc()..loadUtils()),
+      BlocProvider<HomePageNavBloc>(create: (context) => HomePageNavBloc()),
+      BlocProvider<OTPBloc>(create: (context) => OTPBloc()),
+      BlocProvider<CategoryGridBloc>(create: (context) => CategoryGridBloc()),
+      BlocProvider<FilterPageBloc>(create: (context) => FilterPageBloc()),
+      BlocProvider<HomePageCacheBloc>(create: (context) => HomePageCacheBloc()),
+      BlocProvider<CategorySelectionListBloc>(
+          create: (context) => CategorySelectionListBloc()),
+      BlocProvider<CategoryListBloc>(create: (context) => CategoryListBloc()),
+      BlocProvider<ListBloc>(create: (context) => ListBloc()),
+    ], child: AppMaterial());
   }
 }

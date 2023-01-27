@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/category.dart';
@@ -13,6 +14,7 @@ class CategoryCacheState {
   int per_page;
   bool isSearching;
   bool isClosed;
+  CancelableOperation<CategoryCacheState?>? cancellableOperation;
 
   CategoryCacheState({
     this.isLastPage = false,
@@ -21,6 +23,7 @@ class CategoryCacheState {
     this.per_page = 5,
     this.isSearching = true,
     this.isClosed = false,
+    this.cancellableOperation,
   });
 
   CategoryCacheState copyWith({
@@ -30,6 +33,7 @@ class CategoryCacheState {
     int? per_page,
     bool? isSearching,
     bool? isClosed,
+    CancelableOperation<CategoryCacheState?>? cancellableOperation,
   }) {
     return CategoryCacheState(
       products: products ?? this.products,
@@ -38,6 +42,7 @@ class CategoryCacheState {
       per_page: per_page ?? this.per_page,
       isSearching: isSearching ?? this.isSearching,
       isClosed: isClosed ?? this.isClosed,
+      cancellableOperation: cancellableOperation ?? this.cancellableOperation,
     );
   }
 }
@@ -49,6 +54,10 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
   Future<void> close() async {
     emit(state.copyWith(isClosed: true));
     return super.close();
+  }
+
+  void setState(CategoryCacheState state) {
+    emit(state);
   }
 
   void set() {
@@ -63,16 +72,25 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
   void setSearching(bool isSearching) =>
       emit(state.copyWith(isSearching: isSearching));
 
-  Future<List<Product>> getResult(Category? category, Company? company,
-      Subcategory? subcategory, Client client,
-      {FilterPageState mode = FilterPageState.none}) async {
+  void setCancelableoperation(
+      CancelableOperation<CategoryCacheState?>? cancellableOperation) {
+    emit(state.copyWith(cancellableOperation: cancellableOperation));
+  }
+
+  Future<CategoryCacheState?> getResult(
+    Category? category,
+    Company? company,
+    Subcategory? subcategory,
+    Client client, {
+    FilterPageState mode = FilterPageState.none,
+  }) async {
     String q = "";
     String sort = "deadline:asc";
     String filter = 'status:=approved';
 
     if (state.isLastPage) {
       setSearching(false);
-      return [];
+      return null;
     }
 
     if (category != null) {
@@ -114,21 +132,19 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
         "per_page": state.per_page.toString(),
       });
 
-      if (isClosed) return [];
+      if (isClosed) return null;
 
       List<Product> hits = (await Future.wait(rawHits['hits']
           .map<Future<Product>>(
               (e) => ProductsCrud.renderProduct(e["document"]))));
 
-      emit(state.copyWith(
+      return state.copyWith(
         products: [...state.products, ...hits],
         currentPage: state.currentPage + 1,
         isSearching: false,
         isLastPage:
             (rawHits['found'] / state.per_page).ceil() == state.currentPage,
-      ));
-
-      return hits as dynamic;
+      );
     } catch (e) {
       throw Exception(e);
     }

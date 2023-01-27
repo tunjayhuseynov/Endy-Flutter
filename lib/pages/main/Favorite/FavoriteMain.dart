@@ -34,7 +34,7 @@ class FavoriteMain extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: FutureBuilder<List<Product>>(
                   future: ProductsCrud.getSpecificProducts(
-                      (context.read<GlobalBloc>().state.userData!.liked)
+                      (context.read<GlobalBloc>().state.userData?.liked ?? [])
                           .map((e) => e.id)
                           .toList()),
                   builder: (context, snapshot) {
@@ -44,7 +44,7 @@ class FavoriteMain extends StatelessWidget {
                         color: Color(mainColor),
                       ));
                     }
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const ScrollPhysics(),

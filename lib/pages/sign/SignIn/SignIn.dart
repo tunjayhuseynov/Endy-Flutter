@@ -1,12 +1,11 @@
+import 'package:endy/Pages/Sign/OTP/OTP.dart';
 import 'package:endy/Pages/Sign/SignIn/Signin_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
-import 'package:endy/Pages/sign/OTP/OTP.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class SignIn extends StatelessWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -26,7 +25,8 @@ class SignIn extends StatelessWidget {
                 Center(
                   child: Container(
                     margin: const EdgeInsets.only(top: 25),
-                    width: size.width / 1.2,
+                    width:
+                        size.width < 768 ? size.width / 1.2 : size.width * 0.30,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -101,16 +101,10 @@ class SignIn extends StatelessWidget {
                               await navigator.pushNamed('/sign/otp',
                                   arguments: OtpParams(phone: state.phone));
                             } catch (e) {
-                              showTopSnackBar(
-                                Overlay.of(context)!,
-                                displayDuration:
-                                    const Duration(milliseconds: 1000),
-                                CustomSnackBar.error(
-                                  message: e
-                                      .toString()
-                                      .replaceAll("Exception: ", ""),
-                                ),
-                              );
+                              ShowTopSnackBar(
+                                  context,
+                                  error: true,
+                                  e.toString().replaceAll("Exception: ", ""));
                             }
                           },
                           width: size.width,

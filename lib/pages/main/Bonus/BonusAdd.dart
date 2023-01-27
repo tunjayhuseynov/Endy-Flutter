@@ -173,16 +173,12 @@ class _BonusAddState extends State<BonusAdd>
                                           .addBonusCard(card);
                                       Navigator.pop(context);
                                     } catch (e) {
-                                      showTopSnackBar(
-                                        Overlay.of(context)!,
-                                        displayDuration:
-                                            const Duration(milliseconds: 1000),
-                                        CustomSnackBar.error(
-                                          message: e
+                                      ShowTopSnackBar(
+                                          error: true,
+                                          context,
+                                          e
                                               .toString()
-                                              .replaceAll("Exception: ", ""),
-                                        ),
-                                      );
+                                              .replaceAll("Exception: ", ""));
                                     }
                                   }),
                             ),
