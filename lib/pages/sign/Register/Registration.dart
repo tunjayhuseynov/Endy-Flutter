@@ -53,7 +53,7 @@ class _RegistrationState extends State<Registration> {
             Navigator.of(context).pushNamed("/sign/main");
             return false;
           },
-          child: Scaffold(
+          child: ScaffoldWrapper(
               backgroundColor: Colors.white,
               body: Stack(
                 children: [
@@ -63,6 +63,7 @@ class _RegistrationState extends State<Registration> {
                         ? size.width * 0.85
                         : size.width * 0.30,
                     child: ListView(
+                      shrinkWrap: true,
                       children: [
                         SizedBox(height: size.height * 0.09),
                         const Text('Qeydiyyatdan keç',

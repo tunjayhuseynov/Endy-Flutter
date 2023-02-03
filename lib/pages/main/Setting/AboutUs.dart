@@ -1,4 +1,5 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -11,7 +12,7 @@ class AboutUs extends StatelessWidget {
     return BlocBuilder<GlobalBloc, GlobalState>(
       buildWhen: (previous, current) => previous.aboutApp != current.aboutApp,
       builder: (context, state) {
-        return Scaffold(
+        return ScaffoldWrapper(
           backgroundColor: Colors.white,
           appBar: AppBar(
             toolbarHeight: 80,

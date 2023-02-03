@@ -9,6 +9,7 @@ import 'package:endy/Pages/main/Home/DetailPage/Parts/PricePart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/TimePart.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,56 +35,60 @@ class DetailState extends State<DetailPage> {
       builder: (globalContext, globalState) {
         return BlocBuilder<DetailPageBloc, DetailPageState>(
           builder: (context, state) {
-            return ListView(
-              physics: const ScrollPhysics(),
-              children: [
-                ImagePart(
-                    buttonCarouselController: buttonCarouselController,
-                    size: size,
-                    images: images,
-                    product: product),
-                Container(
-                  margin: const EdgeInsets.only(top: 15),
-                  height: 13,
-                  width: size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: images
-                        .asMap()
-                        .entries
-                        .map((e) => Container(
-                              margin: const EdgeInsets.only(right: 5),
-                              width: 13,
-                              height: 13,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: state.current == e.key
-                                      ? const Color(mainColor)
-                                      : Colors.grey[300]),
-                            ))
-                        .toList(),
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
+              child: ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  ImagePart(
+                      buttonCarouselController: buttonCarouselController,
+                      size: size,
+                      images: images,
+                      product: product),
+                  Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    height: 13,
+                    width: size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: images
+                          .asMap()
+                          .entries
+                          .map((e) => Container(
+                                margin: const EdgeInsets.only(right: 5),
+                                width: 13,
+                                height: 13,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: state.current == e.key
+                                        ? const Color(mainColor)
+                                        : Colors.grey[300]),
+                              ))
+                          .toList(),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  height: 15,
-                  width: size.width,
-                  child: Center(
-                      child:
-                          Text("${(state.current ?? 0) + 1}/${images.length}")),
-                ),
-                const SizedBox(height: 10),
-                PricePart(product: product),
-                TimePart(product: product),
-                if (globalState.isMapDisabled == false &&
-                    product.availablePlaces.length > 0)
-                  MapWidget(mounted: mounted, product: product),
-                const SizedBox(height: 20),
-                FeatuersWidget(product: product),
-                const SizedBox(height: 20),
-                HyperlinkWidget(product: product),
-                const SizedBox(height: 30),
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    height: 15,
+                    width: size.width,
+                    child: Center(
+                        child:
+                            Text("${(state.current ?? 0) + 1}/${images.length}")),
+                  ),
+                  const SizedBox(height: 10),
+                  PricePart(product: product),
+                  TimePart(product: product),
+                  if (globalState.isMapDisabled == false &&
+                      product.availablePlaces.length > 0)
+                    MapWidget(mounted: mounted, product: product),
+                  const SizedBox(height: 20),
+                  FeatuersWidget(product: product),
+                  const SizedBox(height: 20),
+                  HyperlinkWidget(product: product),
+                  const SizedBox(height: 30),
+                ],
+              ),
             );
           },
         );

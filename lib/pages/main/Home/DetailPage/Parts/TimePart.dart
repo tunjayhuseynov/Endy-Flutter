@@ -26,44 +26,72 @@ class TimePart extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              const Icon(Icons.access_time),
-              const SizedBox(width: 10),
-              Center(
-                child: CountdownTimer(
-                  endTime: product!.deadline * 1000,
-                  endWidget: const Text(
-                    "Bitdi",
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  widgetBuilder:
-                      (BuildContext context, CurrentRemainingTime? time) {
-                    if (time == null) {
-                      return const Text(
-                        "Bitdi",
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      );
-                    }
-                    return Text(
-                      (time.days ?? 0) != 0
-                          ? "Son ${time.days} gün ${time.hours} saat"
-                          : "Son ${time.hours != null ? "${time.hours} saat " : ""}${time.min} dəqiqə",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 15),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-          CachedNetworkImage(
-            imageUrl: (product?.company as Company).logo,
-            width: 50,
-            height: 50,
-          )
+          ProductTimerWidget(product: product),
+          ProductCompanyWidget(product: product)
         ],
       ),
+    );
+  }
+}
+
+class ProductCompanyWidget extends StatelessWidget {
+  const ProductCompanyWidget({
+    super.key,
+    required this.product,
+  });
+
+  final Product? product;
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: (product?.company as Company).logo,
+      width: 50,
+      height: 50,
+    );
+  }
+}
+
+class ProductTimerWidget extends StatelessWidget {
+  const ProductTimerWidget({
+    super.key,
+    required this.product,
+  });
+
+  final Product? product;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Icon(Icons.access_time),
+        const SizedBox(width: 10),
+        Center(
+          child: CountdownTimer(
+            endTime: product!.deadline * 1000,
+            endWidget: const Text(
+              "Bitdi",
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            widgetBuilder:
+                (BuildContext context, CurrentRemainingTime? time) {
+              if (time == null) {
+                return const Text(
+                  "Bitdi",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                );
+              }
+              return Text(
+                (time.days ?? 0) != 0
+                    ? "Son ${time.days} gün ${time.hours} saat"
+                    : "Son ${time.hours != null ? "${time.hours} saat " : ""}${time.min} dəqiqə",
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: 15),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:endy/Pages/main/Home/HomePage/HomePageGridProducts.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
 import 'package:endy/main.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +33,6 @@ class _HomePageState extends State<HomePage> {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         var state = context.read<SearchPageBloc>().state;
-        print("Done");
         if (state.search.isNotEmpty &&
             !state.isLastPage &&
             !state.isSearching) {
@@ -65,20 +65,23 @@ class _HomePageState extends State<HomePage> {
       buildWhen: (previous, current) => previous.search != current.search,
       builder: (context, state) {
         var categories = context.read<GlobalBloc>().state.categories;
+        var companies = context.read<GlobalBloc>().state.companies;
         categories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: RefreshIndicator(
+        return Material(
+          color: Colors.white,
+          child: RefreshIndicator(
             color: const Color(mainColor),
             triggerMode: RefreshIndicatorTriggerMode.anywhere,
             onRefresh: () async =>
                 {context.read<HomePageCacheBloc>().deleteCache()},
-            child: SingleChildScrollView(
-              controller: scrollController,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: getContainerSize(size.width)),
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  TopBar(size: size, editingController: editingController),
+                  if (size.width < 1024)
+                    TopBar(size: size, editingController: editingController),
                   state.search.isNotEmpty
                       ? SearchPage(client: client)
                       : Column(
@@ -86,15 +89,11 @@ class _HomePageState extends State<HomePage> {
                             const Padding(padding: EdgeInsets.only(top: 5)),
                             Container(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                                  const EdgeInsets.symmetric(horizontal: 5),
                               child: const AdSlider(),
                             ),
                             const Padding(padding: EdgeInsets.only(top: 20)),
-                            Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 0),
-                                child:
-                                    ScrollableCategoriesHome(list: categories)),
+                            ScrollableCategoriesHome(list: categories, allBrands: companies),
                             // const Padding(padding: EdgeInsets.only(top: 15)),
                             HomePageGridProducts()
                           ],
@@ -134,15 +133,16 @@ class _TopBarState extends State<TopBar> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, c) {
-      return Container(
-        padding:
-            const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
-        width: c.maxWidth < 708 ? widget.size.width : 300,
+    return Container(
+        padding: widget.size.width < 1024
+            ? const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20)
+            : null,
+        width: widget.size.width < 1024 ? widget.size.width : null,
         height: 80,
-        // color: Colors.white,
-        child: SizedBox(
+        alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
+        child: Container(
           height: 40,
+          alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
           child: CupertinoSearchTextField(
             placeholder: "Axtarış",
             onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
@@ -160,6 +160,5 @@ class _TopBarState extends State<TopBar> {
           ),
         ),
       );
-    });
   }
 }

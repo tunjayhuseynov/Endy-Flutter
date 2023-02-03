@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Main.dart';
 import 'package:endy/utils/connection.dart';
 import 'package:endy/utils/router.dart';
 import 'package:endy/utils/scrollBehavior.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 
 class AppMaterial extends StatefulWidget {
   const AppMaterial({super.key});
@@ -46,23 +46,33 @@ class AppMaterialState extends State<AppMaterial> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        scrollBehavior: MyCustomScrollBehavior(),
-        title: 'Endy',
-        theme: ThemeData(
-            primarySwatch: Colors.red,
-            useMaterial3: true,
-            textTheme: GoogleFonts.robotoTextTheme(Theme.of(context)
-                .textTheme
-                .copyWith(bodyLarge: const TextStyle())
-                .apply(
-                  bodyColor: const Color.fromARGB(255, 48, 46, 46),
-                ))),
-        // initialRoute: '/home',
-        home: const MainProvider(),
-        onGenerateRoute: (RouteSettings setting) {
-          return MaterialPageRoute(
-              builder: routerSwitch(setting), settings: setting);
-        });
+    return Portal(
+      child: MaterialApp(
+          scrollBehavior: MyCustomScrollBehavior(),
+          title: 'Endy',
+          theme: ThemeData(
+              primarySwatch: Colors.red,
+              useMaterial3: true,
+              textTheme: GoogleFonts.robotoTextTheme(Theme.of(context)
+                  .textTheme
+                  .copyWith(bodyLarge: const TextStyle())
+                  .apply(
+                    bodyColor: const Color.fromARGB(255, 48, 46, 46),
+                  ))),
+          initialRoute: '/',
+          // home: GlobalWidget(child: const MainProvider(), disallowAnonym: false),
+          onGenerateRoute: (RouteSettings setting) {
+            return CustomPageRoute(
+                builder: routerSwitch(setting), settings: setting);
+          }),
+    );
   }
+}
+
+class CustomPageRoute extends MaterialPageRoute {
+  CustomPageRoute({builder, settings})
+      : super(builder: builder, settings: settings);
+
+  @override
+  Duration get transitionDuration => Duration(milliseconds: kIsWeb ? 0 : 300);
 }

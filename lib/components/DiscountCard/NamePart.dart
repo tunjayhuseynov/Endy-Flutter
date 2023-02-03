@@ -16,10 +16,10 @@ class NamePart extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: size.width * 0.75,
-      height: 30,
+      height: 40,
       child: AutoSizeText(
         stepGranularity: 1,
-        presetFontSizes: [16, 14, 12],
+        presetFontSizes: [16, 14, 13, 12],
         maxLines: 3,
         widget.product.name,
         textAlign: TextAlign.center,

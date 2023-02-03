@@ -27,42 +27,58 @@ class MapWidget extends StatelessWidget {
               color: Colors.grey, width: 1, style: BorderStyle.solid),
         ),
       ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.location_on_sharp,
-            color: Color(mainColor),
-          ),
-          const SizedBox(width: 10),
-          GestureDetector(
-            onTap: () async {
-              bool serviceEnabled;
-              final res = await Permission.locationWhenInUse.request();
-              serviceEnabled = await Geolocator.isLocationServiceEnabled();
-              if (!mounted) return;
+      child: ProductMapWidget(mounted: mounted, product: product),
+    );
+  }
+}
 
-              if (res != PermissionStatus.granted || !serviceEnabled) {
-                return ShowTopSnackBar(
-                    error: true,
-                    context,
-                    "Zəhmət olmasa lokasyon servisini aktivləşdirin");
-              }
+class ProductMapWidget extends StatelessWidget {
+  const ProductMapWidget({
+    super.key,
+    required this.mounted,
+    required this.product,
+  });
 
-              Navigator.pushNamed(context, '/home/map', arguments: [
-                product?.availablePlaces.cast<Place>().toList(),
-                product?.company
-              ]);
-            },
-            child: const Text(
-              "Endirim olan məkanlar",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  letterSpacing: .75),
-            ),
+  final bool mounted;
+  final Product? product;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Icon(
+          Icons.location_on_sharp,
+          color: Color(mainColor),
+        ),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: () async {
+            bool serviceEnabled;
+            final res = await Permission.locationWhenInUse.request();
+            serviceEnabled = await Geolocator.isLocationServiceEnabled();
+            if (!mounted) return;
+
+            if (res != PermissionStatus.granted || !serviceEnabled) {
+              return ShowTopSnackBar(
+                  error: true,
+                  context,
+                  "Zəhmət olmasa lokasyon servisini aktivləşdirin");
+            }
+
+            Navigator.pushNamed(context, '/home/map', arguments: [
+              product?.availablePlaces.cast<Place>().toList(),
+              product?.company
+            ]);
+          },
+          child: const Text(
+            "Endirim olan məkanlar",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+                letterSpacing: .75),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

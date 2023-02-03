@@ -19,41 +19,56 @@ class _DiscountCardState extends State<DiscountCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return InkWell(
-      mouseCursor: SystemMouseCursors.click,
-      onTap: () {
-        Navigator.pushNamed(context, '/home/detail',
-            arguments: widget.product.id);
-      },
-      onHover: (value) {
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (value) {
         setState(() {
-          spread = value ? 2.25 : 1.0;
+          spread = 3.75;
         });
       },
-      child: Container(
-        padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              offset: const Offset(1, 2),
-              blurRadius: 5,
-              spreadRadius: spread,
-              color: Colors.black.withOpacity(0.2),
+      onExit: (value) {
+        setState(() {
+          spread = 1;
+        });
+      },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context,
+              '/home/detail?id=${widget.product.id}&name=${widget.product.name}',
+              arguments: widget.product.id);
+        },
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Container(
+            width: 200,
+            // height: c.maxWidth * 1.5,
+            padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(1, 2),
+                  blurRadius: 5,
+                  spreadRadius: spread,
+                  color: Colors.black.withOpacity(0.2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Wrap(
-          children: [
-            ImagePart(widget: widget),
-            const SizedBox(height: 5),
-            TimePart(widget: widget),
-            NamePart(size: size, widget: widget),
-            const SizedBox(height: 25),
-            PricePart(widget: widget),
-            Container(height: 25),
-          ],
+            child: Wrap(
+              children: [
+                ImagePart(widget: widget),
+                const SizedBox(height: 5),
+                TimePart(widget: widget),
+                const SizedBox(height: 10),
+                NamePart(size: size, widget: widget),
+                const SizedBox(height: 25),
+                PricePart(widget: widget),
+                Container(height: 15)
+              ],
+            ),
+          ),
         ),
       ),
     );

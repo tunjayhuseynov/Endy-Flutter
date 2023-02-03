@@ -1,3 +1,4 @@
+import 'package:endy/Pages/main/Home/DetailPage/DetailPageWeb.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
 import 'package:endy/Pages/main/home/DetailPage/detailPage.dart';
 import 'package:endy/streams/products.dart';
@@ -17,11 +18,12 @@ class DetailPageContainer extends StatefulWidget {
 class DetailPageContainerState extends State<DetailPageContainer> {
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return BlocProvider<DetailPageBloc>(
       create: (context) => DetailPageBloc()..increaseSeenTime(widget.id),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: FutureBuilder<Product>(
+      child: Material(
+        color: Colors.white,
+        child: FutureBuilder<Product>(
             future: ProductsCrud.getProduct(widget.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -33,7 +35,11 @@ class DetailPageContainerState extends State<DetailPageContainer> {
               }
               if (snapshot.hasData) {
                 Product? product = snapshot.data;
-                return DetailPage(product: product);
+                return w >= 1024
+                    ? DetailPageWeb(
+                        product: product,
+                      )
+                    : DetailPage(product: product);
               }
 
               return const Text("Məlumat yoxdur");

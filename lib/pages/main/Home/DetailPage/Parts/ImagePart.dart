@@ -67,59 +67,62 @@ class ImagePart extends StatelessWidget {
           Positioned(
               right: 25,
               top: 7.5,
-              child: SizedBox(
-                width: 35,
-                height: 35,
-                child: BlocBuilder<GlobalBloc, GlobalState>(
-                  builder: (context, state) {
-                    final isLiked = state.userData != null &&
-                        state.userData!.liked.contains(FirebaseFirestore
-                            .instance
-                            .collection('products')
-                            .doc(product!.id));
-                    return GestureDetector(
-                      onTap: () => {
-                        if (state.userData == null)
-                          {Navigator.pushNamed(context, '/needregister', arguments: true)}
-                        else
-                          {
-                            if (!isLiked)
-                              {context.read<GlobalBloc>().addFavorite(product!)}
-                            else
-                              {
-                                context
-                                    .read<GlobalBloc>()
-                                    .removeFavorite(product!)
-                              }
-                          }
-                      },
-                      child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              // box shadow
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: const Offset(1, 2),
-                                  blurRadius: 5,
-                                  spreadRadius: 1,
-                                  color: Colors.black.withOpacity(0.2),
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(50)),
-                          child: isLiked
-                              ? const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                  size: 25,
-                                )
-                              : const Icon(
-                                  Icons.favorite_border,
-                                  size: 25,
-                                )),
-                    );
-                  },
+              child: InkWell(
+                mouseCursor: SystemMouseCursors.click,
+                child: SizedBox(
+                  width: 35,
+                  height: 35,
+                  child: BlocBuilder<GlobalBloc, GlobalState>(
+                    builder: (context, state) {
+                      final isLiked = state.userData != null &&
+                          state.userData!.liked.contains(FirebaseFirestore
+                              .instance
+                              .collection('products')
+                              .doc(product!.id));
+                      return GestureDetector(
+                        onTap: () => {
+                          if (state.userData == null)
+                            {Navigator.pushNamed(context, '/needregister', arguments: true)}
+                          else
+                            {
+                              if (!isLiked)
+                                {context.read<GlobalBloc>().addFavorite(product!)}
+                              else
+                                {
+                                  context
+                                      .read<GlobalBloc>()
+                                      .removeFavorite(product!)
+                                }
+                            }
+                        },
+                        child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                // box shadow
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(1, 2),
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(50)),
+                            child: isLiked
+                                ? const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 25,
+                                  )
+                                : const Icon(
+                                    Icons.favorite_border,
+                                    size: 25,
+                                  )),
+                      );
+                    },
+                  ),
                 ),
               ))
         ],

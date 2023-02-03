@@ -87,7 +87,7 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
     String q = "";
     String sort = "deadline:asc";
     String filter = 'status:=approved';
-
+  print(subcategory?.id);
     if (state.isLastPage) {
       setSearching(false);
       return null;
@@ -101,7 +101,7 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
       if (filter.isNotEmpty) filter += '&&';
       filter += 'company:=companies/${company.id}';
     }
-    if (subcategory != null) {
+    if (subcategory != null && subcategory != "") {
       if (filter.isNotEmpty) filter += '&&';
       filter += 'subcategory:=subcategories/${subcategory.id}';
     }

@@ -24,6 +24,7 @@ class _BonusHomeState extends State<BonusHome> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Stack(children: [
             ListView(
+              shrinkWrap: true,
               physics: const ScrollPhysics(),
               children: [
                 const SizedBox(height: 25),

@@ -24,6 +24,7 @@ class Setting extends StatelessWidget {
               padding: EdgeInsets.only(top: size.height * 0.1),
               width: size.width * 0.85,
               child: ListView(
+                shrinkWrap: true,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,

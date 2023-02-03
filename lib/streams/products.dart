@@ -116,7 +116,7 @@ class ProductsCrud {
         product.category.runtimeType == String
             ? product.category.toString().split("/")[1]
             : product.category.id);
-    if (product.subcategory != null) {
+    if (product.subcategory != null && product.subcategory != "") {
       product.subcategory = await SubcategoryCrud.getSubcategory(
           product.subcategory.runtimeType == String
               ? product.subcategory.toString().split("/")[1]

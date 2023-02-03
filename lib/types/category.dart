@@ -16,6 +16,7 @@ class Category {
       required this.name,
       required this.logo,
       required this.productCount,
+      required this.subcategory,
       required this.createdAt,
       required this.isAllBrands,
       required this.isAllCategories});

@@ -45,7 +45,7 @@ class _ListDetailState extends State<ListDetail> {
               sendText = list.reduce((value, element) =>
                   "${state.userList?.name}:\n$value\n$element");
             }
-            return Scaffold(
+            return ScaffoldWrapper(
                 backgroundColor: Colors.white,
                 appBar: AppBar(
                     leading: GestureDetector(

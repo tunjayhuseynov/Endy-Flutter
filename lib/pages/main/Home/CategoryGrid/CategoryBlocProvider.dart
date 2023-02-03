@@ -1,4 +1,5 @@
 import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGrid.dart';
+import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGridWeb.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Cache_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bar_Bloc.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
@@ -10,6 +11,7 @@ class CategoryBlocProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return MultiBlocProvider(providers: [
       BlocProvider<SearchPageBloc>(
         create: (context) => SearchPageBloc(),
@@ -20,6 +22,6 @@ class CategoryBlocProvider extends StatelessWidget {
       BlocProvider<CategoryCacheBloc>(
         create: (context) => CategoryCacheBloc(),
       ),
-    ], child: CategoryGrid());
+    ], child: w < 1024 ? CategoryGrid() : CategoryGridWeb());
   }
 }

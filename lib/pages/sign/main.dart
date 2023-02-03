@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Sign extends StatefulWidget {
   const Sign({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class _SignState extends State<Sign> {
     try {
       await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
+      context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loggedIn);
       Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -33,14 +36,15 @@ class _SignState extends State<Sign> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return ScaffoldWrapper(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(
           children: [
             SizedBox(
-              height: size.width < 768 ? size.height * 0.55 : size.height * 0.35,
+              height:
+                  size.width < 768 ? size.height * 0.55 : size.height * 0.35,
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: AlignmentDirectional.center,

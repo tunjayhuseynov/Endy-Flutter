@@ -19,7 +19,7 @@ class _ListHomeState extends State<ListHome> {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        return Scaffold(
+        return ScaffoldWrapper(
           backgroundColor: Colors.white,
           appBar: AppBar(
             leading: GestureDetector(

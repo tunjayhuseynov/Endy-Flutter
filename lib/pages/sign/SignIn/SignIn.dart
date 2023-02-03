@@ -17,7 +17,7 @@ class SignIn extends StatelessWidget {
       create: (context) => SigninBloc(),
       child: BlocBuilder<SigninBloc, SigninState>(
         builder: (context, state) {
-          return Scaffold(
+          return ScaffoldWrapper(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: false,
             body: Stack(

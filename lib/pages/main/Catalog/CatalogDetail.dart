@@ -1,6 +1,7 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Catalog/CatalogCard.dart';
 import 'package:endy/types/company.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +11,10 @@ class CatalogDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final w = MediaQuery.of(context).size.width;
+    var catalogs = company.catalogs;
+
+    return ScaffoldWrapper(
       appBar: AppBar(
         title: Text("${company.name} kataloqları"),
       ),
@@ -22,24 +26,20 @@ class CatalogDetail extends StatelessWidget {
             physics: const ScrollPhysics(),
             children: [
               SizedBox(height: 20),
-              LayoutBuilder(builder: (context, constraints) {
-                var catalogs = company.catalogs;
-                return GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: catalogs.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio:
-                            constraints.maxWidth * 0.66 / 350, //(250 / 430),
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15),
-                    itemBuilder: ((context, index) {
-                      return CatalogCard(
-                        catalog: catalogs[index],
-                      );
-                    }));
-              }),
+              GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: catalogs.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: getCatalogMainGrid(w),
+                      childAspectRatio: 250 / 350, //(250 / 430),
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15),
+                  itemBuilder: ((context, index) {
+                    return CatalogCard(
+                      catalog: catalogs[index],
+                    );
+                  })),
               const SizedBox(height: 50),
             ],
           );

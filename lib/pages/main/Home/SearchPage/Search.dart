@@ -5,6 +5,7 @@ import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/searchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
@@ -46,8 +47,8 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    final gridCount = w < 768 ? 2 :  w < 1124  ? 4 : w < 1526 ? 6 : 8;
-    final gridRatio = w < 768 ? w * 0.66 / 450 : w < 1124 ? w * 0.33 / 460 :w < 1526 ? w * 0.33 / 670 : w * 0.33 / 890;
+    final gridCount = getSearchCardCount(w);
+ 
     return BlocConsumer<SearchPageBloc, SearchPageState>(
       listener: (context, state) {
         if (state.search.isNotEmpty && state.isSearching == true) {
@@ -72,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                     const EdgeInsets.only(left: 10, right: 10, bottom: 20),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: gridCount,
-                    childAspectRatio: gridRatio,
+                    childAspectRatio: (200 / 350),
                     mainAxisSpacing: 15,
                     crossAxisSpacing: 15),
                 itemCount: state.products.length,

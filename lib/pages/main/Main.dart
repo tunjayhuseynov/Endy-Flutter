@@ -1,4 +1,3 @@
-import 'package:endy/FirebaseMessaging.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
 import 'package:endy/Pages/main/Onboard/Onboard.dart';

@@ -19,7 +19,7 @@ class PricePart extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Container(
-            height: 35,
+            height: 40,
             decoration: const BoxDecoration(
               color: Color(mainColor),
               borderRadius: BorderRadius.only(
@@ -27,9 +27,9 @@ class PricePart extends StatelessWidget {
                 bottomLeft: Radius.circular(10),
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             child: AutoSizeText(
-              minFontSize: 12,
+              minFontSize: 14,
               maxFontSize: 18,
               wrapWords: false,
               "${widget.product.discount.runtimeType == double ? (widget.product.discount as double).toStringAsFixed(0) : widget.product.discount}%",
@@ -58,7 +58,7 @@ class PricePart extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: AutoSizeText(
-                    presetFontSizes: [14, 12, 10, 8],
+                    presetFontSizes: [14, 12, 10],
                     wrapWords: false,
                     "${widget.product.price.toStringAsFixed(2)} AZN",
                     style: const TextStyle(
@@ -77,7 +77,7 @@ class PricePart extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: AutoSizeText(
-                    presetFontSizes: [18, 16, 14, 12],
+                    presetFontSizes: [18, 16, 14],
                     maxLines: 1,
                     "${widget.product.discountedPrice.toStringAsFixed(2)} AZN",
                     style: const TextStyle(fontWeight: FontWeight.w600),

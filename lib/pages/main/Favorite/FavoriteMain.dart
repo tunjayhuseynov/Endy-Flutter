@@ -3,6 +3,7 @@ import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/searchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,9 +12,11 @@ class FavoriteMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final w = MediaQuery.of(context).size.width;
+    return ScaffoldWrapper(
       backgroundColor: Colors.white,
       body: ListView(
+        shrinkWrap: true,
         children: [
           const SizedBox(height: 25),
           const Align(
@@ -44,16 +47,17 @@ class FavoriteMain extends StatelessWidget {
                         color: Color(mainColor),
                       ));
                     }
-                    if (snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty) {
+                    if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const ScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: (250 / 430),
-                                mainAxisSpacing: 15,
-                                crossAxisSpacing: 15),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: getSearchCardCount(w),
+                            childAspectRatio: (200 / 350),
+                            mainAxisSpacing: 15,
+                            crossAxisSpacing: 15),
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) => DiscountCard(
                           product: snapshot.data![index],

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Catalog/CatalogMain.dart';
 import 'package:endy/Pages/main/Home/HomePage/Nav.dart';
-import 'package:endy/Pages/main/Home/HomePage/Rail.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/Pages/main/NeedRegister/index.dart';
 import 'package:endy/Pages/main/bonus/bonusHome.dart';
@@ -23,16 +21,18 @@ class MainContainer extends StatefulWidget {
 }
 
 class _MainContainerState extends State<MainContainer> {
-  static _children(bool disallowAnonymous, BuildContext context) {
+  static _children(BuildContext context) {
     return [
       HomePage(),
-      disallowAnonymous ? NeedRegister() : BonusHome(),
+      BonusHome(),
       CatalogMain(),
       // ListHome(),
       Setting(),
-      disallowAnonymous ? NeedRegister() : FavoriteMain()
+      FavoriteMain()
     ];
   }
+
+  static List<int> get blacklist => [1, 4];
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +41,9 @@ class _MainContainerState extends State<MainContainer> {
       buildWhen: (previous, current) =>
           current.authStatus == GlobalAuthStatus.loggedIn,
       builder: (globalContext, globalState) {
+        final disallowed =
+            globalState.authStatus == GlobalAuthStatus.loggedIn &&
+                globalState.userData == null;
         return BlocBuilder<HomePageNavBloc, int>(builder: (context, state) {
           return BlocProvider<SearchPageBloc>(
               lazy: false,
@@ -50,32 +53,20 @@ class _MainContainerState extends State<MainContainer> {
                     previous.search != current.search,
                 builder: (searchContext, searchState) {
                   return WillPopScope(
-                      child: Scaffold(
-                          backgroundColor: Colors.white,
-                          extendBody: true,
-                          bottomNavigationBar: width < 768
-                              ? SizedBox(
-                                  height: 80,
-                                  child: Nav(),
-                                )
-                              : null,
-                          body: width < 768
-                              ? _children(
-                                  globalState.authStatus ==
-                                          GlobalAuthStatus.loggedIn &&
-                                      globalState.userData == null,
-                                  context)[state]
-                              : Row(
-                                  children: [
-                                    NavRail(state, context),
-                                    Expanded(
-                                        child: _children(
-                                            globalState.authStatus ==
-                                                    GlobalAuthStatus.loggedIn &&
-                                                globalState.userData == null,
-                                            context)[state])
-                                  ],
-                                )),
+                      child: width < 1024
+                          ? Scaffold(
+                              backgroundColor: Colors.white,
+                              extendBody: true,
+                              bottomNavigationBar: SizedBox(
+                                height: 80,
+                                child: Nav(),
+                              ),
+                              body: blacklist.contains(state) && disallowed
+                                  ? NeedRegister()
+                                  : SingleChildScrollView(
+                                      child: _children(context)[state]),
+                            )
+                          : _children(context)[state],
                       onWillPop: () async {
                         if (searchState.search.isNotEmpty) {
                           searchContext.read<SearchPageBloc>().reset();

@@ -99,7 +99,7 @@ class _OTPState extends State<OTP> {
     );
     return BlocBuilder<OTPBloc, OTPState>(
       builder: (context, state) {
-        return Scaffold(
+        return ScaffoldWrapper(
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),

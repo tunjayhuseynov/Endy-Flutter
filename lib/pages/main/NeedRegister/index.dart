@@ -1,3 +1,4 @@
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 
 class NeedRegister extends StatelessWidget {
@@ -6,7 +7,7 @@ class NeedRegister extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldWrapper(
       appBar: activeTab != null && activeTab!
           ? AppBar(
               surfaceTintColor: Colors.white,
@@ -20,6 +21,7 @@ class NeedRegister extends StatelessWidget {
           : null,
       body: Center(
         child: Container(
+          height: 200,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +39,11 @@ class NeedRegister extends StatelessWidget {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       "/sign/registration", (route) => false);
                 },
-                child: const Text("Qeydiyyatdan keç", style: TextStyle(fontSize: 16)),
+                child: const Text("Qeydiyyatdan keç",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(mainColor),
+                    )),
               ),
             ],
           ),
