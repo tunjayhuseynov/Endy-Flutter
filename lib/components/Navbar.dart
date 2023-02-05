@@ -3,6 +3,7 @@ import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
+import 'dart:math' as Math;
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -19,7 +20,8 @@ class NavbarState extends State<Navbar> {
     final editingController = TextEditingController();
     return Material(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: getContainerSize(w) - 25),
+        padding: EdgeInsets.symmetric(
+            horizontal: Math.max(0, getContainerSize(w) - 25)),
         color: Colors.white,
         height: 75,
         width: w,
@@ -82,19 +84,26 @@ class NavbarState extends State<Navbar> {
                       },
                       children: [
                         PlutoMenuItem(
+                          title: "Profil",
+                          icon: Icons.person,
+                          onTap: () {
+                            Navigator.of(context).pushNamed("/setting/profile");
+                          },
+                        ),
+                        PlutoMenuItem(
                           title: "Seçimlərim",
                           icon: Icons.favorite,
                           onTap: () {
                             Navigator.of(context).pushNamed("/favorite");
                           },
                         ),
-                        PlutoMenuItem(
-                          title: "Alış-veriş listim",
-                          icon: Icons.list,
-                          onTap: () {
-                            Navigator.of(context).pushNamed("/list");
-                          },
-                        ),
+                        // PlutoMenuItem(
+                        //   title: "Alış-veriş listim",
+                        //   icon: Icons.list,
+                        //   onTap: () {
+                        //     Navigator.of(context).pushNamed("/list");
+                        //   },
+                        // ),
                         PlutoMenuItem(
                           title: "Haqqımızda",
                           icon: Icons.info,

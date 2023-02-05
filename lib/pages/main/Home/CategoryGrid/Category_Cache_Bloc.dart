@@ -87,7 +87,6 @@ class CategoryCacheBloc extends Cubit<CategoryCacheState> {
     String q = "";
     String sort = "deadline:asc";
     String filter = 'status:=approved';
-  print(subcategory?.id);
     if (state.isLastPage) {
       setSearching(false);
       return null;

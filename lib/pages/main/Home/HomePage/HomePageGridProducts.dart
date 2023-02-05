@@ -43,7 +43,6 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-
     final gridCount = getHomeGridCardCount(w);
     categories.sort((a, b) => a.order.compareTo(b.order));
     return BlocBuilder<GlobalBloc, GlobalState>(
@@ -85,10 +84,7 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
                 if (isReady)
                   ProductListFourGrid(
                       gridCount: gridCount,
-                      data: state.products
-                          .where((e) => e.isNotEmpty)
-                          .take(gridCount)
-                          .toList()),
+                      data: state.products.where((e) => e.isNotEmpty).toList()),
               ],
             ));
           },
@@ -111,6 +107,7 @@ class ProductListFourGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
+
     return ListView.builder(
         shrinkWrap: true,
         physics: const ScrollPhysics(),
@@ -143,7 +140,7 @@ class ProductListFourGrid extends StatelessWidget {
                           //     arguments: productList[index].keys.first);
                           context
                               .read<CategoryGridBloc>()
-                              .set(category: data[index][0].category);
+                              .set(category: data[index][0].category, subcategory: null, id: "");
                           await Navigator.pushNamed(context, '/home/main/all');
                         },
                         child: Padding(
@@ -166,23 +163,25 @@ class ProductListFourGrid extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                LayoutBuilder(builder: (context, c) {
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const ScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: gridCount,
-                        childAspectRatio: (200 / 350),
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15),
-                    itemCount: data[index].length,
-                    itemBuilder: (context, i) => DiscountCard(
-                      product: data[index][i],
-                    ),
-                  );
-                })
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: gridCount,
+                      childAspectRatio: (200 / 350),
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15),
+                  itemCount: data[index]
+                      .take(w < 768 ? gridCount * 2 : gridCount)
+                      .length,
+                  itemBuilder: (context, i) => DiscountCard(
+                    product: data[index]
+                        .take(w < 768 ? gridCount * 2 : gridCount)
+                        .elementAt(i),
+                  ),
+                )
               ],
             ),
           );

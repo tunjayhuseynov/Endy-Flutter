@@ -67,9 +67,7 @@ class _HomePageState extends State<HomePage> {
         var categories = context.read<GlobalBloc>().state.categories;
         var companies = context.read<GlobalBloc>().state.companies;
         categories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
-        return Material(
-          color: Colors.white,
-          child: RefreshIndicator(
+        return RefreshIndicator(
             color: const Color(mainColor),
             triggerMode: RefreshIndicatorTriggerMode.anywhere,
             onRefresh: () async =>
@@ -93,7 +91,8 @@ class _HomePageState extends State<HomePage> {
                               child: const AdSlider(),
                             ),
                             const Padding(padding: EdgeInsets.only(top: 20)),
-                            ScrollableCategoriesHome(list: categories, allBrands: companies),
+                            ScrollableCategoriesHome(
+                                list: categories, allBrands: companies),
                             // const Padding(padding: EdgeInsets.only(top: 15)),
                             HomePageGridProducts()
                           ],
@@ -101,8 +100,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-          ),
-        );
+          );
       },
     );
   }
@@ -134,31 +132,31 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: widget.size.width < 1024
-            ? const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20)
-            : null,
-        width: widget.size.width < 1024 ? widget.size.width : null,
-        height: 80,
+      padding: widget.size.width < 1024
+          ? const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20)
+          : null,
+      width: widget.size.width < 1024 ? widget.size.width : null,
+      height: 80,
+      alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
+      child: Container(
+        height: 40,
         alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
-        child: Container(
-          height: 40,
-          alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
-          child: CupertinoSearchTextField(
-            placeholder: "Axtarış",
-            onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
-            onChanged: (value) {
-              if (_debounce != null || _debounce?.isActive == true) {
-                _debounce?.cancel();
-              }
-              _debounce = Timer(const Duration(milliseconds: 800), () {
-                context.read<SearchPageBloc>().setSearch(value);
-              });
-            },
-            controller: widget.editingController,
-            prefixInsets: const EdgeInsets.only(left: 10),
-            borderRadius: const BorderRadius.all(Radius.circular(50)),
-          ),
+        child: CupertinoSearchTextField(
+          placeholder: "Axtarış",
+          onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
+          onChanged: (value) {
+            if (_debounce != null || _debounce?.isActive == true) {
+              _debounce?.cancel();
+            }
+            _debounce = Timer(const Duration(milliseconds: 800), () {
+              context.read<SearchPageBloc>().setSearch(value);
+            });
+          },
+          controller: widget.editingController,
+          prefixInsets: const EdgeInsets.only(left: 10),
+          borderRadius: const BorderRadius.all(Radius.circular(50)),
         ),
-      );
+      ),
+    );
   }
 }

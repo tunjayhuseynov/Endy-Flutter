@@ -120,7 +120,7 @@ class Nav extends StatelessWidget {
                           shape: const CircleBorder(),
                           backgroundColor: const Color(mainColor),
                           elevation: 0.1,
-                          child: const Icon(Icons.favorite, size: 35),
+                          child: const Icon(Icons.favorite, size: 35, color: Colors.white),
                           onPressed: () {
                             currentIndex.setIndex(4);
                           }),

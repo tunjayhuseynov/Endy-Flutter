@@ -118,8 +118,6 @@ class SearchPageBloc extends Cubit<SearchPageState> {
       List<Product> hits = rawHits['hits']
           .map<Product>((e) => Product.fromJson(e["document"]))
           .toList();
-      print((rawHits['found']).ceil());
-      print(state.currentPage);
       emit(state.copyWith(
         products: [...state.products, ...hits],
         currentPage: state.currentPage + 1,

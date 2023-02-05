@@ -80,10 +80,14 @@ class ScaffoldWrapper extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final Color? backgroundColor;
   final bool? resizeToAvoidBottomInset;
+  final bool? extendBody;
+  final Widget? bottomNavigationBar;
   ScaffoldWrapper(
       {required this.body,
       this.appBar,
       this.backgroundColor,
+      this.bottomNavigationBar,
+      this.extendBody,
       this.resizeToAvoidBottomInset});
 
   @override
@@ -97,6 +101,8 @@ class ScaffoldWrapper extends StatelessWidget {
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             backgroundColor: backgroundColor,
             appBar: appBar,
+            extendBody: extendBody ?? false,
+            bottomNavigationBar: bottomNavigationBar,
             body: body,
           );
   }

@@ -78,90 +78,89 @@ class _CategoryCardState extends State<CategoryCard> {
 
   onSubVisible(bool value) => setState(() => subVisible = value);
 
+  onClickMobileV(double w) {
+    if (w < 1024) {
+      if (widget.category.id == "100") {
+        context.read<CategoryListBloc>().setTypeAndList(widget.category);
+
+        Navigator.pushNamed(context, "/home/category/all");
+      } else {
+        context.read<CategorySelectionListBloc>().setTypeAndList(
+            widget.category,
+            widget.category.isAllCategories,
+            widget.category.isAllBrands,
+            (!widget.category.isAllBrands && !widget.category.isAllCategories),
+            context.read<GlobalBloc>().state.categories,
+            context.read<GlobalBloc>().state.companies,
+            widget.category.subcategory);
+
+        Navigator.pushNamed(context, "/home/category");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      // hoverColor: Colors.transparent,
-      onTap: () {
-        if (w < 1024) {
-          if (widget.category.id == "100") {
-            context.read<CategoryListBloc>().setTypeAndList(widget.category);
-
-            Navigator.pushNamed(context, "/home/category/all");
-          } else {
-            context.read<CategorySelectionListBloc>().setTypeAndList(
-                widget.category,
-                widget.category.isAllCategories,
-                widget.category.isAllBrands,
-                (!widget.category.isAllBrands &&
-                    !widget.category.isAllCategories),
-                context.read<GlobalBloc>().state.categories,
-                context.read<GlobalBloc>().state.companies,
-                widget.category.subcategory);
-
-            Navigator.pushNamed(context, "/home/category");
-          }
-        }
-      },
-      child: Container(
-          height: 100,
-          width: 100,
-          child: PortalTarget(
-            visible: (visible || subVisible) && w >= 1024,
-            anchor: const Aligned(
-              follower: Alignment.topCenter,
-              target: Alignment.bottomRight,
-            ),
-            portalFollower: WebSubmenu(
-                category: widget.category, onSubVisible: onSubVisible),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              // onEnter: (event) => setState(() => visible = true),
-              // onExit: (event) => setState(() => visible = false),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => subVisible = !subVisible),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    widget.category.logo.contains("https://")
-                        ? SizedBox(
-                            height: 40,
-                            width: 40,
-                            child: CachedNetworkImage(
-                                imageUrl: widget.category.logo,
-                                fit: BoxFit.cover),
-                          )
-                        : SizedBox(
-                            height: 40,
-                            width: 40,
-                            child: Image.asset(
-                              widget.category.logo,
-                              fit: BoxFit.cover,
-                            ),
+    return Container(
+        height: 100,
+        width: 100,
+        child: PortalTarget(
+          visible: (visible || subVisible) && w >= 1024,
+          anchor: const Aligned(
+            follower: Alignment.topCenter,
+            target: Alignment.bottomRight,
+          ),
+          portalFollower:
+              WebSubmenu(category: widget.category, onSubVisible: onSubVisible),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            // onEnter: (event) => setState(() => visible = true),
+            // onExit: (event) => setState(() => visible = false),
+            child: GestureDetector(
+              behavior: w < 1024 ? null : HitTestBehavior.opaque,
+              onTap: () => w < 1024
+                  ? onClickMobileV(w)
+                  : setState(() => subVisible = !subVisible),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widget.category.logo.contains("https://")
+                      ? SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: CachedNetworkImage(
+                              imageUrl: widget.category.logo,
+                              fit: BoxFit.cover),
+                        )
+                      : SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: Image.asset(
+                            widget.category.logo,
+                            fit: BoxFit.cover,
                           ),
-                    const SizedBox(
-                      height: 10,
+                        ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 40,
+                    width: 80,
+                    child: AutoSizeText(
+                      wrapWords: true,
+                      softWrap: true,
+                      widget.category.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 12),
                     ),
-                    SizedBox(
-                      height: 40,
-                      width: 80,
-                      child: AutoSizeText(
-                        wrapWords: true,
-                        softWrap: true,
-                        widget.category.name,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 12),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
-          )),
-    );
+          ),
+        ));
   }
 }
 
