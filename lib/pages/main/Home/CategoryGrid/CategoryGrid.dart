@@ -25,44 +25,45 @@ class CategoryGrid extends StatefulWidget {
 
 class _CategoryGridState extends State<CategoryGrid> {
   TextEditingController editingController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
+  // final ScrollController scrollController = ScrollController();
   final client = Client(typesenseConfig);
   var focusNode = FocusNode();
 
   @override
   void initState() {
     context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
+    context.read<SearchPageBloc>().reset();
     super.initState();
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        var searchState = context.read<SearchPageBloc>().state;
-        var state = context.read<CategoryGridBloc>().state;
-        if (searchState.search.isNotEmpty) {
-          if (!searchState.isSearching && !searchState.isLastPage) {
-            context.read<SearchPageBloc>().setIsSearching(true);
-            context.read<SearchPageBloc>().getSearchResult(
-                state.category, state.company, state.subcategory, client);
-          }
-        } else {
-          var ctx = context.read<CategoryCacheBloc>();
-          var cacheState = ctx.state;
-          if (!cacheState.isSearching && !cacheState.isLastPage) {
-            var filterState = context.read<FilterPageBloc>().state;
-            ctx.setSearching(true);
-            var c = CancelableOperation.fromFuture(ctx.getResult(
-                state.category, state.company, state.subcategory, client,
-                mode: filterState));
-            ctx.setCancelableoperation(c);
-            c.value.then((value) {
-              if (value != null) {
-                ctx.setState(value);
-              }
-            });
-          }
-        }
-      }
-    });
+    // scrollController.addListener(() {
+    //   if (scrollController.position.pixels ==
+    //       scrollController.position.maxScrollExtent) {
+    //     var searchState = context.read<SearchPageBloc>().state;
+    //     var state = context.read<CategoryGridBloc>().state;
+    //     if (searchState.search.isNotEmpty) {
+    //       if (!searchState.isSearching && !searchState.isLastPage) {
+    //         context.read<SearchPageBloc>().setIsSearching(true);
+    //         context.read<SearchPageBloc>().getSearchResult(
+    //             state.category, state.company, state.subcategory, client);
+    //       }
+    //     } else {
+    //       var ctx = context.read<CategoryCacheBloc>();
+    //       var cacheState = ctx.state;
+    //       if (!cacheState.isSearching && !cacheState.isLastPage) {
+    //         var filterState = context.read<FilterPageBloc>().state;
+    //         ctx.setSearching(true);
+    //         var c = CancelableOperation.fromFuture(ctx.getResult(
+    //             state.category, state.company, state.subcategory, client,
+    //             mode: filterState));
+    //         ctx.setCancelableoperation(c);
+    //         c.value.then((value) {
+    //           if (value != null) {
+    //             ctx.setState(value);
+    //           }
+    //         });
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   Future<void> filterClick(CategoryGridState state) async {
@@ -89,7 +90,7 @@ class _CategoryGridState extends State<CategoryGrid> {
   void dispose() {
     // context.read<CategoryCacheBloc>().setClose();
     editingController.dispose();
-    scrollController.dispose();
+    // scrollController.dispose();
     focusNode.dispose();
     super.dispose();
   }
@@ -108,6 +109,7 @@ class _CategoryGridState extends State<CategoryGrid> {
                   backgroundColor: Colors.white,
                   appBar: AppBar(
                     surfaceTintColor: Colors.white,
+                    backgroundColor: Colors.white,
                     toolbarHeight: 80,
                     leadingWidth: 56,
                     // titleSpacing: 35,
@@ -152,20 +154,22 @@ class _CategoryGridState extends State<CategoryGrid> {
                         )
                     ],
                   ),
-                  body: searchState.search.isNotEmpty
-                      ? SearchPage(
-                          client: client,
-                          category: state.category,
-                          company: state.company,
-                          subcategory: state.subcategory,
-                        )
+                  body: searchState.search.isNotEmpty && w < 1024
+                      ? SingleChildScrollView(
+                        child: SearchPage(
+                            client: client,
+                            category: state.category,
+                            company: state.company,
+                            subcategory: state.subcategory,
+                          ),
+                      )
                       : RefreshIndicator(
                           color: const Color(mainColor),
                           onRefresh: () async {
                             context.read<CategoryGridBloc>().resetAll();
                           },
                           child: ListView(
-                            controller: scrollController,
+                            // controller: scrollController,
                             children: [
                               Visibility(
                                   visible: state.category != null,

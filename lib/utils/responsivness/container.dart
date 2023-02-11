@@ -1,6 +1,6 @@
 // Containers
-const xxlContainer = 250.0;
-const xlContainer = 150.0;
+const xxlContainer = 350.0;
+const xlContainer = 250.0;
 const lgContainer = 125.0;
 const baseContainer = 75.0;
 const mdContainer = 5.0;

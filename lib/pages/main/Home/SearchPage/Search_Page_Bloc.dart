@@ -1,3 +1,4 @@
+import 'package:endy/streams/products.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
@@ -19,13 +20,13 @@ class SearchPageState {
       this.products = const [],
       this.currentPage = 1,
       this.isLastPage = false,
-      this.isSearching = true,
+      this.isSearching = false,
       this.isClosed = false,
-      this.per_page = f.kIsWeb ? 32 : 5});
+      this.per_page = f.kIsWeb ? 10 : 5});
 
   SearchPageState copyWith({
     String? search,
-    List<Product>? products = const [],
+    List<Product>? products,
     int? currentPage,
     bool? isLastPage,
     bool? isSearching,
@@ -48,12 +49,11 @@ class SearchPageBloc extends Cubit<SearchPageState> {
   SearchPageBloc() : super(SearchPageState());
 
   void setSearch(String search) {
-    emit(state.copyWith(
-        search: search,
-        currentPage: 1,
-        isLastPage: false,
-        products: [],
-        isSearching: true));
+    if (search == '')
+      reset();
+    else
+      emit(state.copyWith(
+          search: search, currentPage: 1, isLastPage: false, products: []));
   }
 
   void setClose() => emit(state.copyWith(isClosed: true));
@@ -74,44 +74,31 @@ class SearchPageBloc extends Cubit<SearchPageState> {
 
   void reset() => emit(SearchPageState());
 
-  Future<List<Product>> getSearchResult(Category? category, Company? company,
-      Subcategory? subcategory, Client client) async {
-    if (state.search == '') return [];
-    String q = state.search;
-    String sort = "deadline:asc";
-    String filter = 'status:=approved';
+  void set(SearchPageState state) => emit(state);
 
+  Future<List<Product>> getSearchResult(Category? category, Company? company,
+      Subcategory? subcategory, Client client,
+      {int? per_page, int? current_page}) async {
+    if (state.search == '') return [];
+    if (state.isSearching) return [];
     if (state.isLastPage) {
       setIsSearching(false);
       return [];
     }
 
-    if (category != null) {
-      if (filter.isNotEmpty) filter += '&&';
-      filter += 'category:=categories/${category.id}';
-    }
-    if (company != null) {
-      if (filter.isNotEmpty) filter += '&&';
-      filter += 'company:=companies/${company.id}';
-    }
-    if (subcategory != null) {
-      if (filter.isNotEmpty) filter += '&&';
-      filter += 'subcategory:=subcategories/${subcategory.id}';
-    }
-
+    setIsSearching(true);
     try {
-      final rawHits = await client.collection("products").documents.search({
-        "q": q,
-        "query_by": "name,description",
-        "sort_by": sort,
-        "filter_by": filter,
-        "page": state.currentPage.toString(),
-        "per_page": state.per_page.toString(),
-      });
-
+      final rawHits = await ProductsCrud.getProductsFromTypesense(
+        client,
+        state.search,
+        state.currentPage,
+        state.per_page,
+        category: category,
+        company: company,
+        subcategory: subcategory,
+      );
       if (rawHits['hits'].length == 0) {
-        emit(
-            state.copyWith(isLastPage: true, isSearching: false, products: []));
+        emit(state.copyWith(isLastPage: true, isSearching: false));
         return [];
       }
 
@@ -119,15 +106,14 @@ class SearchPageBloc extends Cubit<SearchPageState> {
           .map<Product>((e) => Product.fromJson(e["document"]))
           .toList();
       emit(state.copyWith(
-        products: [...state.products, ...hits],
-        currentPage: state.currentPage + 1,
-        isSearching: false,
         isLastPage:
             (rawHits['found'] / state.per_page).ceil() == state.currentPage,
       ));
 
       return hits;
     } catch (e) {
+      setIsSearching(false);
+      print(e);
       throw Exception(e);
     }
   }

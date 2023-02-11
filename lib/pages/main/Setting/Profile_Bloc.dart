@@ -4,13 +4,16 @@ import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_cropper_platform_interface/image_cropper_platform_interface.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileState {
   DateTime? selectedDate;
+  bool isDateSelectorOpen;
   bool isLoading;
   bool editEnabled;
   bool isComponentLoading;
@@ -20,6 +23,7 @@ class ProfileState {
     this.selectedDate,
     this.phoneNumber = "",
     this.isLoading = false,
+    this.isDateSelectorOpen = false,
     this.editEnabled = false,
     this.isComponentLoading = false,
   });
@@ -28,12 +32,14 @@ class ProfileState {
     DateTime? selectedDate,
     bool? isLoading,
     bool? editEnabled,
+    bool? isDateSelectorOpen,
     bool? isComponentLoading,
     String? phoneNumber,
   }) {
     return ProfileState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
       selectedDate: selectedDate ?? this.selectedDate,
+      isDateSelectorOpen: isDateSelectorOpen ?? this.isDateSelectorOpen,
       isLoading: isLoading ?? this.isLoading,
       editEnabled: editEnabled ?? this.editEnabled,
       isComponentLoading: isComponentLoading ?? this.isComponentLoading,
@@ -44,6 +50,7 @@ class ProfileState {
         selectedDate,
         isLoading,
         editEnabled,
+        isDateSelectorOpen,
         isComponentLoading,
         phoneNumber,
       ];
@@ -78,6 +85,10 @@ class ProfileBloc extends Cubit<ProfileState> {
     emit(state.copyWith(isLoading: isLoading));
   }
 
+  void setDateSelector(bool isDateSelectorOpen) {
+    emit(state.copyWith(isDateSelectorOpen: isDateSelectorOpen));
+  }
+
   Future<UserData> saveChanges(
       UserData user, String nameInput, String mailInput) async {
     if (validation(nameInput) == true ||
@@ -98,7 +109,7 @@ class ProfileBloc extends Cubit<ProfileState> {
     return user;
   }
 
-  Future<String?> takePhoto() async {
+  Future<String?> takePhoto(BuildContext context) async {
     try {
       // if (await Permission.photos.request().isGranted) {
       setLoading(true);
@@ -112,6 +123,16 @@ class ProfileBloc extends Cubit<ProfileState> {
           CropAspectRatioPreset.ratio4x3,
         ],
         uiSettings: [
+          WebUiSettings(
+            context: context,
+            translations: WebTranslations(
+              cropButton: 'Kəs',
+              cancelButton: 'Ləğv et',
+              title: 'Profil şəkli',
+              rotateLeftTooltip: 'Sola çevir',
+              rotateRightTooltip: 'Sağa çevir',
+            ),
+          ),
           AndroidUiSettings(
               toolbarTitle: 'Kəs',
               toolbarColor: const Color(mainColor),
@@ -128,13 +149,20 @@ class ProfileBloc extends Cubit<ProfileState> {
       if (croppedFile != null && user != null) {
         final storageRef = FirebaseStorage.instance.ref();
         final pp = storageRef.child("pp/${user.uid}/pp_image.png");
-        File file = File(croppedFile.path);
-        await pp.putFile(file).whenComplete(() => null);
+        if (!kIsWeb) {
+          File file = File(croppedFile.path);
+          await pp.putFile(file).whenComplete(() => null);
+        } else {
+          await pp
+              .putData(await croppedFile.readAsBytes())
+              .whenComplete(() => null);
+        }
         String url = await pp.getDownloadURL();
         await user.updatePhotoURL(url);
         setLoading(false);
         return url;
       }
+      setLoading(false);
       // return null;
       // }
     } catch (e) {

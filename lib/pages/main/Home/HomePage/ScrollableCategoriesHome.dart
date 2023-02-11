@@ -6,12 +6,16 @@ import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.da
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
+import 'package:endy/utils/responsivness/container.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:provider/provider.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 
 class ScrollableCategoriesHome extends StatelessWidget {
+  final ScrollController controller = ScrollController();
+
   late final List<Category> list;
   final Category allcategory = Category(
       id: "100",
@@ -45,16 +49,56 @@ class ScrollableCategoriesHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    return SizedBox(
+    final count = w >= 1024 ? list.length - 1 : list.length;
+    return Container(
       height: 100,
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: w >= 1024 ? list.length - 1 : list.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (_, index) {
-          return CategoryCard(
-              category: w >= 1024 ? list.skip(1).toList()[index] : list[index]);
-        },
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: w >= 1024 ? 50 : 0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              controller: controller,
+              itemCount: count,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (_, index) {
+                return CategoryCard(
+                    category:
+                        w >= 1024 ? list.skip(1).toList()[index] : list[index]);
+              },
+            ),
+          ),
+          if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
+            Positioned(
+                left: 0,
+                top: 20,
+                child: IconButton(
+                    mouseCursor: SystemMouseCursors.click,
+                    onPressed: () {
+                      controller.animateTo(controller.offset - 100,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.linear);
+                    },
+                    icon: Icon(
+                      CupertinoIcons.back,
+                      color: Colors.black,
+                    ))),
+          if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
+            Positioned(
+                right: 0,
+                top: 20,
+                child: IconButton(
+                    mouseCursor: SystemMouseCursors.click,
+                    onPressed: () {
+                      controller.animateTo(controller.offset + 100,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.linear);
+                    },
+                    icon: Icon(
+                      CupertinoIcons.forward,
+                      color: Colors.black,
+                    )))
+        ],
       ),
     );
   }

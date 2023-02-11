@@ -3,8 +3,11 @@ import 'package:endy/Pages/main/Bonus/BonusHome.dart';
 import 'package:endy/Pages/main/Catalog/CatalogMain.dart';
 import 'package:endy/Pages/main/Favorite/FavoriteMain.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/Pages/main/Setting/Setting.dart';
 import 'package:endy/components/Navbar.dart';
+import 'package:endy/main.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
@@ -38,6 +41,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tap_canvas/tap_canvas.dart';
+import 'package:typesense/typesense.dart';
 
 Widget Function(BuildContext context) routerSwitch(RouteSettings setting) {
   late Widget widget;
@@ -136,15 +140,15 @@ Widget Function(BuildContext context) routerSwitch(RouteSettings setting) {
       );
       break;
 
-    case "/setting/profile":
+    case "/profile":
       widget = const Profile();
       disallowAnonym = true;
       break;
-    case "/setting/notification":
+    case "/notification":
       widget = const NotificationPage();
       disallowAnonym = true;
       break;
-    case "/setting/about":
+    case "/about":
       widget = const AboutUs();
       break;
 
@@ -162,52 +166,61 @@ Widget Function(BuildContext context) routerSwitch(RouteSettings setting) {
       widget = const MainContainer();
   }
   var needSign = FirebaseAuth.instance.currentUser == null;
-  if (needSign && setting.name != null && !setting.name!.contains('/sign')) {
-    widget = const Sign();
-  } else if (!needSign &&
-      setting.name != null &&
-      setting.name!.contains('/sign')) {
-    widget = const MainContainer();
-  }
+
+  final client = Client(typesenseConfig);
 
   return (BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    ScrollController controller = ScrollController();
+    // ScrollController controller = ScrollController();
     return MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
         child: TapCanvas(
-          child: GlobalWidget(
-            child: w < 1024
-                ? widget
-                : Scaffold(
-                    backgroundColor: Colors.white,
-                    body: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: ListView(
-                          controller: controller,
-                          shrinkWrap: true,
-                          children: [
-                            if (setting.name != null &&
-                                !setting.name!.contains("/sign") &&
-                                !needSign)
-                              Navbar(),
-                            Padding(
-                                padding: const EdgeInsets.only(top: 40),
-                                child: widget),
-                          ]),
-                    ),
+            child: GlobalWidget(
+          child: w < 1024
+              ? widget
+              : Scaffold(
+                  backgroundColor: Colors.white,
+                  body: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: ListView(
+                        // controller: controller,
+                        shrinkWrap: true,
+                        children: [
+                          if (setting.name != null &&
+                              !setting.name!.contains("/sign") &&
+                              !needSign)
+                            Navbar(),
+                          BlocBuilder<SearchPageBloc, SearchPageState>(
+                              buildWhen: (previous, current) =>
+                                  (previous.search.isEmpty &&
+                                      current.search.isNotEmpty) ||
+                                  (previous.search.isNotEmpty &&
+                                      current.search.isEmpty),
+                              builder: (context, state) {
+                                return Padding(
+                                    padding: const EdgeInsets.only(top: 40),
+                                    child: state.search.length > 0
+                                        ? SearchPage(client: client)
+                                        : widget);
+                              }),
+                        ]),
                   ),
-            disallowAnonym: disallowAnonym,
-          ),
-        ));
+                ),
+          disallowAnonym: disallowAnonym,
+          urlPath: setting.name ?? "",
+        )));
   };
 }
 
 class GlobalWidget extends StatefulWidget {
   final Widget child;
   final bool disallowAnonym;
+  final String urlPath;
   const GlobalWidget(
-      {super.key, required this.child, required this.disallowAnonym});
+      {super.key,
+      required this.child,
+      required this.disallowAnonym,
+      required this.urlPath});
 
   @override
   State<GlobalWidget> createState() => _GlobalWidgetState();
@@ -261,13 +274,7 @@ class _GlobalWidgetState extends State<GlobalWidget> {
           }
           return state.userData != null && state.userData!.isFirstEnter
               ? const Onboard()
-              : state.authStatus == GlobalAuthStatus.loggedIn &&
-                      state.userData == null &&
-                      widget.disallowAnonym
-                  ? NeedRegister(
-                      activeTab: true,
-                    )
-                  : widget.child;
+              : widget.child;
         }
         return widget.child;
       },

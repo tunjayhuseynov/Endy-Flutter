@@ -29,20 +29,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        var state = context.read<SearchPageBloc>().state;
-        if (state.search.isNotEmpty &&
-            !state.isLastPage &&
-            !state.isSearching) {
-          context.read<SearchPageBloc>().setIsSearching(true);
-          context
-              .read<SearchPageBloc>()
-              .getSearchResult(null, null, null, client);
-        }
-      }
-    });
     super.initState();
   }
 
@@ -68,39 +54,38 @@ class _HomePageState extends State<HomePage> {
         var companies = context.read<GlobalBloc>().state.companies;
         categories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
         return RefreshIndicator(
-            color: const Color(mainColor),
-            triggerMode: RefreshIndicatorTriggerMode.anywhere,
-            onRefresh: () async =>
-                {context.read<HomePageCacheBloc>().deleteCache()},
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: getContainerSize(size.width)),
-              child: Column(
-                children: [
-                  SizedBox(height: 30),
-                  if (size.width < 1024)
-                    TopBar(size: size, editingController: editingController),
-                  state.search.isNotEmpty
-                      ? SearchPage(client: client)
-                      : Column(
-                          children: [
-                            const Padding(padding: EdgeInsets.only(top: 5)),
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: const AdSlider(),
-                            ),
-                            const Padding(padding: EdgeInsets.only(top: 20)),
-                            ScrollableCategoriesHome(
-                                list: categories, allBrands: companies),
-                            // const Padding(padding: EdgeInsets.only(top: 15)),
-                            HomePageGridProducts()
-                          ],
-                        )
-                ],
-              ),
+          color: const Color(mainColor),
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          onRefresh: () async =>
+              {context.read<HomePageCacheBloc>().deleteCache()},
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                if (size.width < 1024)
+                  TopBar(size: size, editingController: editingController),
+                state.search.isNotEmpty && size.width < 1024
+                    ? SearchPage(client: client)
+                    : Column(
+                        children: [
+                          const Padding(padding: EdgeInsets.only(top: 5)),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: const AdSlider(),
+                          ),
+                          const Padding(padding: EdgeInsets.only(top: 20)),
+                          ScrollableCategoriesHome(
+                              list: categories, allBrands: companies),
+                          // const Padding(padding: EdgeInsets.only(top: 15)),
+                          HomePageGridProducts()
+                        ],
+                      )
+              ],
             ),
-          );
+          ),
+        );
       },
     );
   }
@@ -143,14 +128,21 @@ class _TopBarState extends State<TopBar> {
         alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
         child: CupertinoSearchTextField(
           placeholder: "Axtarış",
-          onSuffixTap: () => context.read<SearchPageBloc>().setSearch(''),
+          onSuffixTap: () {
+            context.read<SearchPageBloc>().setSearch('');
+            widget.editingController.clear();
+          },
           onChanged: (value) {
             if (_debounce != null || _debounce?.isActive == true) {
               _debounce?.cancel();
             }
-            _debounce = Timer(const Duration(milliseconds: 800), () {
+            if (value.isNotEmpty) {
+              _debounce = Timer(const Duration(milliseconds: 800), () {
+                context.read<SearchPageBloc>().setSearch(value);
+              });
+            } else {
               context.read<SearchPageBloc>().setSearch(value);
-            });
+            }
           },
           controller: widget.editingController,
           prefixInsets: const EdgeInsets.only(left: 10),

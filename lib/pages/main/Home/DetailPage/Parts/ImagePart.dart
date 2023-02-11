@@ -55,6 +55,7 @@ class ImagePart extends StatelessWidget {
               }).toList(),
             ),
           ),
+          if(size.width < 1024)
           Positioned(
             top: 0,
             left: 10,

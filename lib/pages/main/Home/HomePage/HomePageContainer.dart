@@ -9,7 +9,6 @@ import 'package:endy/Pages/main/favorite/FavoriteMain.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/Pages/main/setting/Setting.dart';
-import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,42 +45,39 @@ class _MainContainerState extends State<MainContainer> {
             globalState.authStatus == GlobalAuthStatus.loggedIn &&
                 globalState.userData == null;
         return BlocBuilder<HomePageNavBloc, int>(builder: (context, state) {
-          return BlocProvider<SearchPageBloc>(
-              lazy: false,
-              create: (context) => SearchPageBloc(),
-              child: BlocBuilder<SearchPageBloc, SearchPageState>(
-                buildWhen: (previous, current) =>
-                    previous.search != current.search,
-                builder: (searchContext, searchState) {
-                  return WillPopScope(
-                      child: width < 1024
-                          ? Scaffold(
-                              backgroundColor: Colors.white,
-                              extendBody: true,
-                              bottomNavigationBar: SizedBox(
-                                height: 80,
-                                child: Nav(),
-                              ),
-                              body: blacklist.contains(state) && disallowed
-                                  ? NeedRegister()
-                                  : SingleChildScrollView(
-                                      child: _children(context)[state]),
-                            )
-                          : _children(context)[state],
-                      onWillPop: () async {
-                        if (searchState.search.isNotEmpty) {
-                          searchContext.read<SearchPageBloc>().reset();
-                          return false;
-                        }
-                        if (Platform.isAndroid) {
-                          await SystemNavigator.pop();
-                        } else if (Platform.isIOS) {
-                          exit(0);
-                        }
-                        return true;
-                      });
-                },
-              ));
+          return BlocBuilder<SearchPageBloc, SearchPageState>(
+            buildWhen: (previous, current) =>
+                previous.search != current.search,
+            builder: (searchContext, searchState) {
+              return WillPopScope(
+                  child: width < 1024
+                      ? Scaffold(
+                          backgroundColor: Colors.white,
+                          extendBody: true,
+                          bottomNavigationBar: SizedBox(
+                            height: 80,
+                            child: Nav(),
+                          ),
+                          body: blacklist.contains(state) && disallowed
+                              ? NeedRegister()
+                              : SingleChildScrollView(
+                                  child: _children(context)[state]),
+                        )
+                      : blacklist.contains(state) && disallowed ? NeedRegister() : _children(context)[state],
+                  onWillPop: () async {
+                    if (searchState.search.isNotEmpty) {
+                      searchContext.read<SearchPageBloc>().reset();
+                      return false;
+                    }
+                    if (Platform.isAndroid) {
+                      await SystemNavigator.pop();
+                    } else if (Platform.isIOS) {
+                      exit(0);
+                    }
+                    return true;
+                  });
+            },
+          );
         });
       },
     );

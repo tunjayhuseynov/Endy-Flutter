@@ -29,12 +29,8 @@ class _AdSliderState extends State<AdSlider> {
                 width: c.maxWidth < 768 ? c.maxWidth : 768,
                 child: Card(
                   surfaceTintColor: Colors.white,
+                  color: Colors.white,
                   child: Container(
-                      // clipBehavior: Clip.antiAliasWithSaveLayer,
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(color: const Color(mainColor), width: 2),
-                      //   borderRadius: BorderRadius.circular(22),
-                      // ),
                       child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                     child: Stack(alignment: AlignmentDirectional.center, children: [

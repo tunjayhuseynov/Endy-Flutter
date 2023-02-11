@@ -8,6 +8,7 @@ import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
+import 'package:typesense/typesense.dart';
 
 class ProductsCrud {
   static Future<List<Product>> getProducts([
@@ -159,7 +160,8 @@ class ProductsCrud {
       List<Product> products = [];
       products = (await Future.wait(ids.map((e) => getNullableProduct(e))))
           .where((element) => element != null)
-          .toList().cast<Product>();
+          .toList()
+          .cast<Product>();
       return products;
     } catch (e) {
       print(e);
@@ -178,16 +180,48 @@ class ProductsCrud {
       throw Exception("Got error when increasing seen times");
     }
   }
+
+  static Future<Map<String, dynamic>> getProductsFromTypesense(
+      Client client, String search, int current_page, int per_page,
+      {Category? category, Company? company, Subcategory? subcategory}) async {
+    String q = search;
+    String sort = "deadline:asc";
+    String filter = 'status:=approved';
+
+    if (category != null) {
+      if (filter.isNotEmpty) filter += '&&';
+      filter += 'category:=categories/${category.id}';
+    }
+    if (company != null) {
+      if (filter.isNotEmpty) filter += '&&';
+      filter += 'company:=companies/${company.id}';
+    }
+    if (subcategory != null) {
+      if (filter.isNotEmpty) filter += '&&';
+      filter += 'subcategory:=subcategories/${subcategory.id}';
+    }
+
+    final rawHits = await client.collection("products").documents.search({
+      "q": q,
+      "query_by": "name,description",
+      "sort_by": sort,
+      "filter_by": filter,
+      "page": current_page.toString(),
+      "per_page": per_page.toString(),
+    });
+
+    return rawHits;
+  }
 }
 
 class ProductParser {
   static Future<Product> parse(Map<String, dynamic> json) async {
     Product product = Product.fromJson(json);
-    for (var i = 0; i < product.availablePlaces.length; i++) {
-      Place element = product.availablePlaces[i];
-      Place place = await PlaceCrud.getPlace((element as DocumentReference).id);
-      element = place;
-    }
+    product.availablePlaces = (await Future.wait(product.availablePlaces.map(
+            (e) => PlaceCrud.getPlace(
+                e.runtimeType == String ? e.toString().split("/")[1] : e.id))))
+        .where((element) => element != null)
+        .toList();
     product.category = await CategoryCrud.getCategory(product.category.id);
     product.subcategory =
         await SubcategoryCrud.getSubcategory(product.subcategory.id);

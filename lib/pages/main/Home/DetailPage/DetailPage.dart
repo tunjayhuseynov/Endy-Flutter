@@ -39,7 +39,7 @@ class DetailState extends State<DetailPage> {
               padding: EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
               child: ListView(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                physics: size.width >= 1024 ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
                 children: [
                   ImagePart(
                       buttonCarouselController: buttonCarouselController,

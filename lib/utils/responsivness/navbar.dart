@@ -20,8 +20,8 @@ int getNavbarImageAndMenuFlex(double w) {
 }
 
 // Navbar Search Flex
-const xxlNavbarSearchFlex = 2;
-const xlNavbarSearchFlex = 2;
+const xxlNavbarSearchFlex = 1;
+const xlNavbarSearchFlex = 1;
 const lgNavbarSearchFlex = 1;
 const baseNavbarSearchFlex = 1;
 const mdNavbarSearchFlex = 1;

@@ -75,7 +75,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/setting/profile');
+                            Navigator.pushNamed(context, '/profile');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -104,7 +104,7 @@ class Setting extends StatelessWidget {
                         child: ListTile(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, '/setting/notification');
+                                context, '/notification');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -139,7 +139,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/setting/about');
+                            Navigator.pushNamed(context, '/about');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,

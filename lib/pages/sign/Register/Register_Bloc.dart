@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
@@ -84,15 +85,49 @@ class RegisterBloc extends Cubit<RegisterState> {
   }
 
   void setDatePicker(BuildContext context) {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        minTime: DateTime(1940, 1, 1),
-        maxTime: DateTime.now().add(Duration(days: 365 * -13)),
-        onChanged: (date) {}, onConfirm: (date) {
-      setSelectedDate(date);
-    },
-        currentTime: state.selectedDate ?? DateTime.now(),
-        locale: LocaleType.az);
+    if (MediaQuery.of(context).size.width < 1024) {
+      DatePicker.showDatePicker(context,
+          showTitleActions: true,
+          minTime: DateTime(1940, 1, 1),
+          maxTime: DateTime.now().add(Duration(days: 365 * -13)),
+          onChanged: (date) {}, onConfirm: (date) {
+        setSelectedDate(date);
+      },
+          currentTime: state.selectedDate ?? DateTime.now(),
+          locale: LocaleType.az);
+    } else {
+      showDatePicker(
+              context: context,
+              cancelText: "Ləğv et",
+              confirmText: "Təsdiqlə",
+              locale: Locale('az', 'AZ'),
+              builder: (context, child) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(
+                      primary: Color(mainColor),
+                      onPrimary: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                      ),
+                    ),
+                  ),
+                  child: child!,
+                );
+              },
+              initialDate: state.selectedDate ??
+                  DateTime.now().add(Duration(days: 365 * -13)),
+              firstDate: DateTime.utc(1940),
+              lastDate: DateTime.now().add(Duration(days: 365 * -13)))
+          .then((date) {
+        if (date != null) {
+          setSelectedDate(date);
+        }
+      });
+    }
   }
 
   Future<void> phoneVerification(String name) async {

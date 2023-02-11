@@ -3,11 +3,13 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/utils/connection.dart';
 import 'package:endy/utils/router.dart';
 import 'package:endy/utils/scrollBehavior.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class AppMaterial extends StatefulWidget {
   const AppMaterial({super.key});
@@ -50,6 +52,15 @@ class AppMaterialState extends State<AppMaterial> {
       child: MaterialApp(
           scrollBehavior: MyCustomScrollBehavior(),
           title: 'Endy',
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            Locale('en'),
+            Locale('az'),
+          ],
           theme: ThemeData(
               primarySwatch: Colors.red,
               useMaterial3: true,
@@ -59,7 +70,7 @@ class AppMaterialState extends State<AppMaterial> {
                   .apply(
                     bodyColor: const Color.fromARGB(255, 48, 46, 46),
                   ))),
-          initialRoute: '/',
+          initialRoute: FirebaseAuth.instance.currentUser == null ? "/sign/main" : '/',
           // home: GlobalWidget(child: const MainProvider(), disallowAnonym: false),
           onGenerateRoute: (RouteSettings setting) {
             return CustomPageRoute(

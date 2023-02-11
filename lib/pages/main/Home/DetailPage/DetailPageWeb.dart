@@ -1,17 +1,20 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/DetailPage/Parts/CompanyWeb.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/FeaturesPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/HyperlinkPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/ImagePart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/MapButtonPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/PricePart.dart';
+import 'package:endy/Pages/main/Home/DetailPage/Parts/SimilarProductsPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/TimePart.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 
 class DetailPageWeb extends StatefulWidget {
   final Product? product;
@@ -48,12 +51,20 @@ class DetailState extends State<DetailPageWeb> {
                       Expanded(
                         child: Column(
                           children: [
-                            ImagePart(
-                                buttonCarouselController:
-                                    buttonCarouselController,
-                                size: size,
-                                images: images,
-                                product: product),
+                            Container(
+                              // smooth black border
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.black.withOpacity(0.15)),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ImagePart(
+                                  buttonCarouselController:
+                                      buttonCarouselController,
+                                  size: size,
+                                  images: images,
+                                  product: product),
+                            ),
                             Container(
                               margin: const EdgeInsets.only(top: 15),
                               height: 13,
@@ -85,45 +96,60 @@ class DetailState extends State<DetailPageWeb> {
                                   child: Text(
                                       "${(state.current ?? 0) + 1}/${images.length}")),
                             ),
+                            const SizedBox(height: 20),
+                            Container(
+                                width: 200,
+                                child: HyperlinkWidget(
+                                    product: product, horizontalPadding: 0)),
                           ],
                         ),
                       ),
+                      const SizedBox(width: 20),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            ProductNameWidget(
-                                product: product,
-                                textAlign: TextAlign.left,
-                                fontSize: 28),
-                            const SizedBox(height: 20),
-                            ProductPercentageWidget(product: product),
-                            const SizedBox(height: 20),
-                            ProductCompanyWidget(product: product),
-                            const SizedBox(height: 20),
-                            ProductTimerWidget(product: product),
-                            const SizedBox(height: 20),
-                            if (globalState.isMapDisabled == false &&
-                                product.availablePlaces.length > 0)
-                              ProductMapWidget(
-                                  mounted: mounted, product: product),
-                            const SizedBox(height: 20),
-                            Container(
-                              width: 200,
-                                child: HyperlinkWidget(
-                                    product: product,
-                                    horizontalPadding: 0)),
-                          ],
+                        child: PortalTarget(
+                          visible: true,
+                          anchor: Aligned(
+                              offset:
+                                  Offset(getContainerSize(size.width) / 2, 115),
+                              follower: Alignment.center,
+                              target: Alignment.topRight),
+                          portalFollower: CompanyWeb(product: product),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              ProductNameWidget(
+                                  product: product,
+                                  textAlign: TextAlign.left,
+                                  fontSize: 28),
+                              const SizedBox(height: 20),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 150),
+                                child:
+                                    ProductPercentageWidget(product: product),
+                              ),
+                              const SizedBox(height: 20),
+                              // ProductCompanyWidget(product: product),
+                              const SizedBox(height: 20),
+                              ProductTimerWidget(product: product),
+                              const SizedBox(height: 20),
+                              if (globalState.isMapDisabled == false &&
+                                  product.availablePlaces.length > 0)
+                                ProductMapWidget(
+                                    mounted: mounted, product: product),
+                              const SizedBox(height: 20),
+                              FeatuersWidget(product: product),
+                            ],
+                          ),
                         ),
                       )
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  FeatuersWidget(product: product),
+                  const SizedBox(height: 50),
+                  SimilarProducts(product: product),
                   const SizedBox(height: 20),
                 ],
               ),

@@ -3,7 +3,6 @@ import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/places.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/company.dart';
-import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
 
 class CompanyCrud {
@@ -14,11 +13,10 @@ class CompanyCrud {
     if (data == null) throw Exception('Company not found');
 
     Company company = Company.fromJson(data);
-    for (var i = 0; i < company.places.length; i++) {
-      Place element = company.places[i];
-      Place place = await PlaceCrud.getPlace((element as DocumentReference).id);
-      element = place;
-    }
+    company.places =
+        (await Future.wait(company.places.map((e) => PlaceCrud.getPlace(e.id))))
+            .where((element) => element != null)
+            .toList();
     for (var i = 0; i < company.products.length; i++) {
       Product element = company.products[i];
       Product product =
@@ -47,8 +45,10 @@ class CompanyCrud {
       var company = Company.fromJson(companies.docs[i].data());
       company.places = await Future.wait(
           company.places.map((e) => PlaceCrud.getPlace(e.id)));
-      company.catalogs = await Future.wait(
-          company.catalogs.map((e) => CatalogsCrud.getCatalog(e.id)));
+      company.catalogs = (await Future.wait(
+              company.catalogs.map((e) => CatalogsCrud.getCatalog(e.id))))
+          .where((element) => element != null)
+          .toList();
 
       myCompanies.add(company);
     }

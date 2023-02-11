@@ -19,10 +19,10 @@ class FavoriteMain extends StatelessWidget {
         shrinkWrap: true,
         children: [
           const SizedBox(height: 25),
-          const Align(
-            alignment: Alignment.centerLeft,
+          Align(
+            alignment: w < 1024 ? Alignment.centerLeft : Alignment.center,
             child: Padding(
-              padding: EdgeInsets.only(left: 20.0),
+              padding: EdgeInsets.only(left: w < 1024 ? 20.0 : 0),
               child: Text(
                 "Seçilmişlər",
                 style: TextStyle(
@@ -64,7 +64,7 @@ class FavoriteMain extends StatelessWidget {
                         ),
                       );
                     }
-                    return const Text('Məlumat tapılmadı');
+                    return const Text('Məlumat tapılmadı', textAlign: TextAlign.center,);
                   })),
           const SizedBox(height: 25),
         ],

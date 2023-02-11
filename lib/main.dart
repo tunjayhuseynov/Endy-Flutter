@@ -5,6 +5,7 @@ import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.da
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/env.dart';
 import 'package:endy/firebase_options.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
@@ -93,6 +94,7 @@ class _MyAppState extends State<MyApp> {
       BlocProvider<GlobalBloc>(
           lazy: false, create: (context) => GlobalBloc()..loadUtils()),
       BlocProvider<HomePageNavBloc>(create: (context) => HomePageNavBloc()),
+      BlocProvider<SearchPageBloc>(create: (context) => SearchPageBloc()),
       BlocProvider<OTPBloc>(create: (context) => OTPBloc()),
       BlocProvider<CategoryGridBloc>(create: (context) => CategoryGridBloc()),
       BlocProvider<FilterPageBloc>(create: (context) => FilterPageBloc()),

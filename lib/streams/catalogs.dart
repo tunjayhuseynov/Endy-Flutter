@@ -24,13 +24,13 @@ class CatalogsCrud {
     }
   }
 
-  static Future<Catalog> getCatalog(String id) async {
+  static Future<Catalog?> getCatalog(String id) async {
     try {
       var query = FirebaseFirestore.instance.collection("catalogs").doc(id);
 
       final catalog = await query.get();
-
-      return Catalog.fromJson(catalog.data() ?? {});
+      if(catalog.data() == null) return null;
+      return Catalog.fromJson(catalog.data()!);
     } catch (e) {
       print(e);
       throw Exception('Error getting catalogs');
