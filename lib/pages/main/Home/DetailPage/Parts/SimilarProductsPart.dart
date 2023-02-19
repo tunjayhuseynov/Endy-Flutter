@@ -19,7 +19,7 @@ class _SimilarProductsState extends State<SimilarProducts> {
 
   Future<List<Product>> getProducts() async {
     var list = await ProductsCrud.getProductsFromTypesense(client, "", 1, 5,
-        category: widget.product.category);
+        categoryId: widget.product.category.id);
 
     List<Product> hits = await Future.wait(list['hits'].map<Future<Product>>(
         (e) => ProductsCrud.renderProduct(e["document"])));

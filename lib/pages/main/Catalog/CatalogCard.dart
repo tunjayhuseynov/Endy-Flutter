@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/types/catalog.dart';
@@ -26,8 +27,7 @@ class _CatalogCardState extends State<CatalogCard> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "/catalog/single",
-              arguments: this.widget.catalog);
+          context.router.pushNamed("/catalog/single/" + this.widget.catalog.id);
         },
         child: LayoutBuilder(
           builder: (ctx, con) {
@@ -56,8 +56,7 @@ class _CatalogCardState extends State<CatalogCard> {
                           maxLines: 1,
                           maxFontSize: 14,
                           minFontSize: 10,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       Text(
                           "${DateFormat("dd MMMM", "az").format(DateTime.fromMillisecondsSinceEpoch((this.widget.catalog.startDate * 1e3).toInt()))} - ${DateFormat("dd MMMM", "az").format(DateTime.fromMillisecondsSinceEpoch((this.widget.catalog.endDate * 1e3).toInt()))}",

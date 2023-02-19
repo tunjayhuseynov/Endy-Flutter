@@ -1,14 +1,42 @@
-import 'package:endy/Pages/Sign/OTP/OTP.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/SignIn/Signin_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/utils/index.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-class SignIn extends StatelessWidget {
-  const SignIn({Key? key}) : super(key: key);
+class SignInRoute extends StatelessWidget {
+  const SignInRoute({Key? key}) : super(key: key);
+
+  onLogIn(BuildContext context, BuildContext stateContext, String phone) async {
+    try {
+      await stateContext.read<SigninBloc>().login();
+      var c =
+          await context.router.pushNamed('/sign/otp/' + phone);
+      if (c != null) {
+        final userData = await FirebaseFirestore.instance
+            .collection("users")
+            .where("phone", isEqualTo: phone)
+            .get();
+        final userExist = userData.docs.isEmpty;
+        if (userExist) {
+          throw Exception("İstifadəçi mövcud deyil");
+        }
+        await FirebaseAuth.instance.signInWithCredential(c as PhoneAuthCredential);
+        stateContext.read<GlobalBloc>().setAll();
+        context.router.pushNamed('/');
+      }
+    } catch (e) {
+      print(e);
+      ShowTopSnackBar(
+          context, error: true, e.toString().replaceAll("Exception: ", ""));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +44,8 @@ class SignIn extends StatelessWidget {
     return BlocProvider(
       create: (context) => SigninBloc(),
       child: BlocBuilder<SigninBloc, SigninState>(
-        builder: (context, state) {
-          return ScaffoldWrapper(
+        builder: (ctx, state) {
+          return Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: false,
             body: Stack(
@@ -73,7 +101,7 @@ class SignIn extends StatelessWidget {
                           initialCountryCode: 'AZ',
                           invalidNumberMessage: 'Nömrə düzgün deyil',
                           onChanged: (phone) {
-                            context.read<SigninBloc>().setPhone(phone.number
+                            ctx.read<SigninBloc>().setPhone(phone.number
                                     .startsWith("0")
                                 ? phone.countryCode + phone.number.substring(1)
                                 : phone.completeNumber);
@@ -93,20 +121,7 @@ class SignIn extends StatelessWidget {
                               ),
                         PrimaryButton(
                           text: 'Daxil ol',
-                          fn: () async {
-                            try {
-                              var navigator = Navigator.of(context);
-                              await context.read<SigninBloc>().login();
-
-                              await navigator.pushNamed('/sign/otp',
-                                  arguments: OtpParams(phone: state.phone));
-                            } catch (e) {
-                              ShowTopSnackBar(
-                                  context,
-                                  error: true,
-                                  e.toString().replaceAll("Exception: ", ""));
-                            }
-                          },
+                          fn: () async => onLogIn(context, ctx, state.phone),
                           width: size.width,
                           isLoading: state.isLoading,
                         ),

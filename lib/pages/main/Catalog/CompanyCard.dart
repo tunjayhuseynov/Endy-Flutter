@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,8 @@ class _CompanyCardState extends State<CompanyCard> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "/catalog/detail",
-              arguments: this.widget.company);
+          context.router
+              .pushNamed("/catalog/detail/" + (this.widget.company?.id ?? ""));
         },
         child: Card(
           color: Colors.white,

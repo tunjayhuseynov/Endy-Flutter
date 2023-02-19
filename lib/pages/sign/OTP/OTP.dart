@@ -1,32 +1,19 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:pinput/pinput.dart';
 
-class OtpParams {
-  String phone;
-  String? name;
-  String? mail;
-  DateTime? selectedDate;
-  bool? isForgotPassword = false;
-
-  OtpParams({
-    required this.phone,
-    this.name,
-    this.mail,
-    this.selectedDate,
-    this.isForgotPassword,
-  });
-}
-
 class OTP extends StatefulWidget {
-  final OtpParams params;
-  const OTP({Key? key, required this.params}) : super(key: key);
+  final String phone;
+  const OTP({Key? key, @pathParam this.phone = ""}) : super(key: key);
 
   @override
   State<OTP> createState() => _OTPState();
@@ -40,7 +27,7 @@ class _OTPState extends State<OTP> {
   void initState() {
     super.initState();
     context.read<OTPBloc>().setErrorMessage("");
-    resend(widget.params.phone);
+    resend(widget.phone);
 
     _controller = CountdownTimerController(
       onEnd: () {
@@ -50,17 +37,44 @@ class _OTPState extends State<OTP> {
     );
   }
 
+  onComplete(String pin, String code) async {
+    try {
+      context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loading);
+      PhoneAuthCredential c = await context.read<OTPBloc>().verify(pin, code);
+      await context.router.pop<PhoneAuthCredential>(c);
+    } catch (e) {
+      context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.notLoggedIn);
+      if (!mounted) return;
+      context
+          .read<OTPBloc>()
+          .setErrorMessage(e.toString().replaceAll("Exception: ", ""));
+      _smsController.clear();
+    }
+  }
+
   resend(String phone) async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      timeout: const Duration(seconds: 60),
-      phoneNumber: phone,
-      verificationCompleted: (PhoneAuthCredential credential) async {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        context.read<OTPBloc>().setCode(verificationId);
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
+    try {
+      FirebaseAuth.instance.setLanguageCode('az');
+      if (kIsWeb) {
+        var result = await FirebaseAuth.instance.signInWithPhoneNumber(phone);
+        context.read<OTPBloc>().setCode(result.verificationId);
+      } else {
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          timeout: const Duration(seconds: 60),
+          phoneNumber: phone,
+          verificationCompleted: (PhoneAuthCredential credential) async {},
+          verificationFailed: (FirebaseAuthException e) {},
+          codeSent: (String verificationId, int? resendToken) {
+            context.read<OTPBloc>().setCode(verificationId);
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+      }
+    } catch (e) {
+      context
+          .read<OTPBloc>()
+          .setErrorMessage(e.toString().replaceAll("Exception: ", ""));
+    }
   }
 
   @override
@@ -99,7 +113,7 @@ class _OTPState extends State<OTP> {
     );
     return BlocBuilder<OTPBloc, OTPState>(
       builder: (context, state) {
-        return ScaffoldWrapper(
+        return Scaffold(
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),
@@ -141,33 +155,7 @@ class _OTPState extends State<OTP> {
                     showCursor: true,
                     errorText: state.errorMessage,
                     forceErrorState: state.errorMessage.isNotEmpty,
-                    onCompleted: (pin) async {
-                      try {
-                        context
-                            .read<GlobalBloc>()
-                            .setAuthLoading(GlobalAuthStatus.loading);
-                        await context.read<OTPBloc>().verify(
-                              pin,
-                              state.code,
-                              widget.params.selectedDate,
-                              widget.params.name,
-                              widget.params.phone,
-                              widget.params.mail,
-                            );
-                        if (!mounted) return;
-                        context.read<GlobalBloc>().setAll();
-                        await Navigator.pushNamedAndRemoveUntil(
-                            context, "/", (route) => false);
-                      } catch (e) {
-                        context
-                            .read<GlobalBloc>()
-                            .setAuthLoading(GlobalAuthStatus.notLoggedIn);
-                        if (!mounted) return;
-                        context.read<OTPBloc>().setErrorMessage(
-                            e.toString().replaceAll("Exception: ", ""));
-                        _smsController.clear();
-                      }
-                    },
+                    onCompleted: (pin) => onComplete(pin, state.code),
                   ),
                   const SizedBox(
                     height: 20,
@@ -202,7 +190,7 @@ class _OTPState extends State<OTP> {
                       if (state.isFinised)
                         TextButton(
                             onPressed: () => {
-                                  resend(widget.params.phone),
+                                  resend(widget.phone),
                                   context.read<OTPBloc>().setErrorMessage(""),
                                   _smsController.clear()
                                 },

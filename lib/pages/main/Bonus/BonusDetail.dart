@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
@@ -6,15 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BonusDetailPage extends StatefulWidget {
+class BonusDetailPageRoute extends StatefulWidget {
   final BonusCard card;
-  const BonusDetailPage({Key? key, required this.card}) : super(key: key);
+  const BonusDetailPageRoute({Key? key, required this.card}) : super(key: key);
 
   @override
-  State<BonusDetailPage> createState() => _BonusDetailPageState();
+  State<BonusDetailPageRoute> createState() => _BonusDetailPageRouteState();
 }
 
-class _BonusDetailPageState extends State<BonusDetailPage> {
+class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
   Widget cardInfo(context) {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
@@ -71,7 +72,7 @@ class _BonusDetailPageState extends State<BonusDetailPage> {
                   if (response == true) {
                     if (!mounted) return;
                     context.read<GlobalBloc>().removeBonusCard(widget.card);
-                    Navigator.pop(context);
+                    context.router.pop(context);
                   }
                 },
                 icon: const Icon(CupertinoIcons.delete, color: Colors.red),
@@ -79,7 +80,7 @@ class _BonusDetailPageState extends State<BonusDetailPage> {
             ],
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
           ),
@@ -98,7 +99,7 @@ class DebitCardPart extends StatelessWidget {
   }) : super(key: key);
 
   final Size size;
-  final BonusDetailPage widget;
+  final BonusDetailPageRoute widget;
 
   @override
   Widget build(BuildContext context) {

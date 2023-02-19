@@ -1,27 +1,32 @@
+import 'dart:html';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BonusHome extends StatefulWidget {
-  const BonusHome({Key? key}) : super(key: key);
+class BonusHomeRoute extends StatefulWidget {
+  const BonusHomeRoute({Key? key}) : super(key: key);
 
   @override
-  State<BonusHome> createState() => _BonusHomeState();
+  State<BonusHomeRoute> createState() => _BonusHomeRouteState();
 }
 
-class _BonusHomeState extends State<BonusHome> {
+class _BonusHomeRouteState extends State<BonusHomeRoute> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
+          height: MediaQuery.of(context).size.height,
           child: Stack(children: [
             ListView(
               shrinkWrap: true,
@@ -64,8 +69,20 @@ class _BonusHomeState extends State<BonusHome> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color(mainColor))),
                     onPressed: () async {
-                      if (await Permission.camera.request().isGranted) {
-                        await Navigator.pushNamed(context, '/bonus/camera');
+                      if (!kIsWeb &&
+                          await Permission.camera.request().isGranted) {
+                        await context.router.pushNamed('/bonus/camera');
+                      }
+
+                      if (kIsWeb) {
+                        window.navigator
+                            .getUserMedia(audio: false, video: true)
+                            .then((value) {
+                          context.router.pushNamed('/bonus/camera');
+                        }).catchError((e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Kamera icazə verilmədi")));
+                        });
                       }
                     },
                     child: const Text(
@@ -94,7 +111,7 @@ class BonusState extends State<Bonus> {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () =>
-          Navigator.pushNamed(context, '/bonus/detail', arguments: widget.card),
+          context.router.pushNamed('/bonus/detail/' + widget.card.cardNumber),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(

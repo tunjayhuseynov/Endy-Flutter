@@ -1,9 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/utils/responsivness/container.dart';
@@ -123,23 +121,16 @@ class _CategoryCardState extends State<CategoryCard> {
   onSubVisible(bool value) => setState(() => subVisible = value);
 
   onClickMobileV(double w) {
-    if (w < 1024) {
-      if (widget.category.id == "100") {
-        context.read<CategoryListBloc>().setTypeAndList(widget.category);
+    if (widget.category.id == "100") {
+      // context.read<CategoryListBloc>().setTypeAndList(widget.category);
 
-        Navigator.pushNamed(context, "/home/category/all");
-      } else {
-        context.read<CategorySelectionListBloc>().setTypeAndList(
-            widget.category,
-            widget.category.isAllCategories,
-            widget.category.isAllBrands,
-            (!widget.category.isAllBrands && !widget.category.isAllCategories),
-            context.read<GlobalBloc>().state.categories,
-            context.read<GlobalBloc>().state.companies,
-            widget.category.subcategory);
+      context.router.pushNamed("/category/list");
+    }else if (widget.category.id == "200") {
+      // context.read<CategoryListBloc>().setTypeAndList(widget.category);
 
-        Navigator.pushNamed(context, "/home/category");
-      }
+      context.router.pushNamed("/company/list/all");
+    } else {
+      context.router.pushNamed("/subcategory/list/${widget.category.id}");
     }
   }
 
@@ -305,20 +296,20 @@ class _WebMenuItemState extends State<WebMenuItem> {
       },
       child: GestureDetector(
         onTap: () {
-          if (widget.isBrand) {
-            context.read<CategoryGridBloc>().set(
-                company: widget.widget,
-                category: null,
-                subcategory: null,
-                id: "");
-          } else {
-            context.read<CategoryGridBloc>().set(
-                id: widget.widget.id,
-                company: null,
-                category: widget.category,
-                subcategory: widget.widget);
-          }
-          Navigator.pushNamed(context, '/home/main/all');
+          context
+              .read<CategoryGridBloc>()
+              .set(prevPath: context.router.currentPath);
+
+          var id =
+              widget.isBrand == true ? widget.widget.id : widget.category.id;
+          var subId = widget.widget?.id == null ||
+                  widget.widget?.id == "" ||
+                  widget.isBrand == true
+              ? "all"
+              : widget.widget.id;
+
+          context.router.pushNamed(
+              '${widget.isBrand ? "company" : "category"}/products/${id}/${subId}');
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),

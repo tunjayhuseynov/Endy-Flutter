@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CategoryListState {
   final String searchValue;
 
-  // List<Category> categories;
+  List<Category> categories;
 
   Category? selectedCategory;
 
   CategoryListState({
     this.searchValue = "",
-    // this.categories = const [],
+    this.categories = const [],
     this.selectedCategory,
   });
 
@@ -26,7 +26,7 @@ class CategoryListState {
   }) {
     return CategoryListState(
       searchValue: searchValue ?? this.searchValue,
-      // categories: categories ?? this.categories,
+      categories: categories ?? this.categories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
     );
   }

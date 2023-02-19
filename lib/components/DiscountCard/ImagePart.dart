@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
@@ -80,10 +81,7 @@ class _ImagePartState extends State<ImagePart> {
                   },
                   onTap: () => {
                     if (state.userData == null)
-                      {
-                        Navigator.pushNamed(context, '/needregister',
-                            arguments: true)
-                      }
+                      {context.router.pushNamed('/needregister')}
                     else
                       {
                         if (!isLiked)

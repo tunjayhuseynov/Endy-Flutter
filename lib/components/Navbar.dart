@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/navbar.dart';
@@ -9,11 +11,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'dart:math' as Math;
 
-class Navbar extends StatefulWidget {
+class Navbar extends StatefulWidget implements PreferredSizeWidget {
   const Navbar({super.key});
 
   @override
   State<Navbar> createState() => NavbarState();
+
+  @override
+  Size get preferredSize => Size(double.infinity, 75);
 }
 
 getRouteIndex(String route) {
@@ -35,11 +40,23 @@ getRouteIndex(String route) {
 }
 
 class NavbarState extends State<Navbar> {
+  final editingController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    editingController.text = context.routeData.queryParams.getString("params", "");
+  }
+
+  @override
+  void dispose() {
+    editingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final w = size.width;
-    final editingController = TextEditingController();
     final route = getRouteIndex(ModalRoute.of(context)?.settings.name ?? "/");
 
     return BlocBuilder<GlobalBloc, GlobalState>(builder: (context, state) {
@@ -59,7 +76,7 @@ class NavbarState extends State<Navbar> {
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed("/"),
+                    onTap: () => context.router.pushNamed("/"),
                     child: Container(
                         alignment: Alignment.bottomCenter,
                         padding: const EdgeInsets.only(right: 40),
@@ -98,14 +115,14 @@ class NavbarState extends State<Navbar> {
                         title: "Ana səhifə",
                         icon: Icons.home,
                         onTap: () {
-                          Navigator.of(context).pushNamed("/");
+                          context.router.pushNamed("/");
                         },
                       ),
                       PlutoMenuItem(
                         title: "Kataloq",
                         icon: Icons.menu_book_rounded,
                         onTap: () {
-                          Navigator.of(context).pushNamed("/catalog");
+                          context.router.pushNamed("/catalog");
                         },
                       ),
                       PlutoMenuItem(
@@ -118,8 +135,7 @@ class NavbarState extends State<Navbar> {
                               title: "Profil",
                               icon: Icons.person,
                               onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed("/profile");
+                                context.router.pushNamed("/profile");
                               },
                             ),
                           if (state.userData == null)
@@ -128,29 +144,28 @@ class NavbarState extends State<Navbar> {
                               icon: Icons.login,
                               onTap: () {
                                 FirebaseAuth.instance.signOut();
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    "/sign/main", (route) => false);
+                                context.router.pushNamed("/sign/main");
                               },
                             ),
                           PlutoMenuItem(
                             title: "Seçimlərim",
                             icon: Icons.favorite,
                             onTap: () {
-                              Navigator.of(context).pushNamed("/favorite");
+                              context.router.pushNamed("/favorite");
                             },
                           ),
                           // PlutoMenuItem(
                           //   title: "Alış-veriş listim",
                           //   icon: Icons.list,
                           //   onTap: () {
-                          //     Navigator.of(context).pushNamed("/list");
+                          //     context.router.pushNamed("/list");
                           //   },
                           // ),
                           PlutoMenuItem(
                             title: "Haqqımızda",
                             icon: Icons.info,
                             onTap: () {
-                              Navigator.of(context).pushNamed("/about");
+                              context.router.pushNamed("/about");
                             },
                           ),
                         ],

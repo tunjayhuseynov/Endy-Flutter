@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
@@ -13,14 +14,14 @@ extension E on String {
   String lastChars(int n) => substring(length - n);
 }
 
-class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+class ProfileRoute extends StatefulWidget {
+  const ProfileRoute({Key? key}) : super(key: key);
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<ProfileRoute> createState() => _ProfileRouteState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileRouteState extends State<ProfileRoute> {
   TextEditingController name = TextEditingController();
 
   TextEditingController mail = TextEditingController();
@@ -88,7 +89,7 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   IconButton(
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                        context.router.pop(context);
                                       },
                                       icon: const Icon(Icons.arrow_back_ios)),
                                   const Text('Profil',

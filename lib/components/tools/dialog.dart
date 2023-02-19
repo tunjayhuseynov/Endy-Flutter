@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class Dialogs {
@@ -22,7 +23,7 @@ class Dialogs {
                   foregroundColor: MaterialStateProperty.all(Colors.black)),
               child: const Text('Ləvğ et'),
               onPressed: () {
-                Navigator.of(context).pop(false);
+                context.router.pop(false);
               },
             ),
             TextButton(
@@ -30,7 +31,7 @@ class Dialogs {
                   foregroundColor: MaterialStateProperty.all(Colors.red)),
               child: const Text('Sil'),
               onPressed: () {
-                Navigator.of(context).pop(true);
+                context.router.pop(true);
               },
             ),
           ],

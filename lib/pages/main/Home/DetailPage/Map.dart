@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:endy/types/company.dart';
-import 'package:endy/types/place.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:endy/streams/products.dart';
+import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,24 +12,22 @@ import 'dart:typed_data';
 
 import 'package:maps_launcher/maps_launcher.dart';
 
+class MapPageRoute extends StatefulWidget {
+  final String? id;
 
-class MapPage extends StatefulWidget {
-  final List<Place> places;
-  final Company company;
-
-  const MapPage({Key? key, required this.places, required this.company})
-      : super(key: key);
+  const MapPageRoute({Key? key, @pathParam required this.id}) : super(key: key);
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<MapPageRoute> createState() => _MapPageRouteState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageRouteState extends State<MapPageRoute> {
   final Completer<GoogleMapController> _controller = Completer();
   final List<Marker> _marker = <Marker>[];
   double _height = 175;
   final double _const_height = 175;
   Position? location;
+  Product? product;
 
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(40.409264, 49.867092),
@@ -42,10 +41,12 @@ class _MapPageState extends State<MapPage> {
   }
 
   loadData() async {
+    Product p = await ProductsCrud.getProduct(widget.id!);
+    product = p;
     location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-    Uint8List image = await loadNetworkImage(widget.company.logo);
+    Uint8List image = await loadNetworkImage(p.company.logo);
     final ui.Codec markerImageCodec = await ui.instantiateImageCodec(
         image.buffer.asUint8List(),
         targetHeight: 75,
@@ -55,7 +56,7 @@ class _MapPageState extends State<MapPage> {
         await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List resizedImageMarker = byteData!.buffer.asUint8List();
 
-    for (var element in widget.places) {
+    for (var element in p.availablePlaces) {
       _marker.add(Marker(
         markerId: MarkerId(element.id),
         icon: BitmapDescriptor.fromBytes(resizedImageMarker),
@@ -103,7 +104,7 @@ class _MapPageState extends State<MapPage> {
               top: 20,
               child: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.router.pop(context);
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios_outlined,
@@ -167,26 +168,27 @@ class _MapPageState extends State<MapPage> {
                     fit: FlexFit.tight,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: widget.places.length,
+                      itemCount: product?.availablePlaces.length,
                       itemBuilder: (context, index) {
-                        final place = widget.places[index];
+                        final place = product?.availablePlaces[index];
                         return Column(
                           children: [
-                            ListTile(
-                              onTap: () async {
-                                try {
-                                  await MapsLauncher.launchCoordinates(
-                                      place.lat, place.lng, "Məkan");
-                                } catch (e) {
-                                  ShowTopSnackBar(context,
-                                      "Xəritəyə qoşulurken xəta baş verdi",
-                                      error: true);
-                                }
-                              },
-                              title: Text(place.name),
-                              subtitle: Text(
-                                  "${(Geolocator.distanceBetween(place.lat, place.lng, location?.latitude ?? 0, location?.longitude ?? 0).roundToDouble() / 1000).toStringAsFixed(2)} km"),
-                            ),
+                            if (place != null)
+                              ListTile(
+                                onTap: () async {
+                                  try {
+                                    await MapsLauncher.launchCoordinates(
+                                        place.lat, place.lng, "Məkan");
+                                  } catch (e) {
+                                    ShowTopSnackBar(context,
+                                        "Xəritəyə qoşulurken xəta baş verdi",
+                                        error: true);
+                                  }
+                                },
+                                title: Text(place.name),
+                                subtitle: Text(
+                                    "${(Geolocator.distanceBetween(place.lat, place.lng, location?.latitude ?? 0, location?.longitude ?? 0).roundToDouble() / 1000).toStringAsFixed(2)} km"),
+                              ),
                             const Divider(
                               thickness: 1,
                             )

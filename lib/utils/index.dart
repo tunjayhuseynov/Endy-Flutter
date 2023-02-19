@@ -82,9 +82,11 @@ class ScaffoldWrapper extends StatelessWidget {
   final bool? resizeToAvoidBottomInset;
   final bool? extendBody;
   final Widget? bottomNavigationBar;
+  final double? hPadding;
   ScaffoldWrapper(
       {required this.body,
       this.appBar,
+      this.hPadding,
       this.backgroundColor,
       this.bottomNavigationBar,
       this.extendBody,
@@ -95,7 +97,7 @@ class ScaffoldWrapper extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     return width >= 1024
         ? Padding(
-            padding: EdgeInsets.symmetric(horizontal: getContainerSize(width)),
+            padding: EdgeInsets.symmetric(horizontal: hPadding ?? getContainerSize(width)),
             child: body)
         : Scaffold(
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,

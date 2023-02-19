@@ -1,14 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class Camera extends StatefulWidget {
-  const Camera({Key? key}) : super(key: key);
+class CameraRoute extends StatefulWidget {
+  const CameraRoute({Key? key}) : super(key: key);
 
   @override
-  CameraState createState() => CameraState();
+  CameraRouteState createState() => CameraRouteState();
 }
 
-class CameraState extends State<Camera> {
+class CameraRouteState extends State<CameraRoute> {
   MobileScannerController controller = MobileScannerController();
 
   CustomPaint _getCustomPaintOverlay(BuildContext context) {
@@ -22,15 +23,15 @@ class CameraState extends State<Camera> {
       children: [
         MobileScanner(
             controller: controller,
-            allowDuplicates: false,
-            onDetect: (barcode, args) {
-              if (barcode.rawValue == null) {
+            // allowDuplicates: false,
+            onDetect: (capture) {
+              final List<Barcode> barcodes = capture.barcodes;
+              if (barcodes[0].rawValue == null) {
                 debugPrint('Failed to scan Barcode');
               } else {
-                final String code = barcode.rawValue!;
+                final String code = barcodes[0].rawValue!;
                 controller.stop();
-                Navigator.pushReplacementNamed(context, "/bonus/add",
-                    arguments: code);
+                context.router.pushNamed("/bonus/add/" + code);
               }
             }),
         _getCustomPaintOverlay(context),

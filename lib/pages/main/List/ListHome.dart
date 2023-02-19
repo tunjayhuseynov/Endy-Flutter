@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
 import 'package:endy/types/user.dart';
@@ -7,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xid/xid.dart';
 
-class ListHome extends StatefulWidget {
-  const ListHome({Key? key}) : super(key: key);
+class ListHomeRoute extends StatefulWidget {
+  const ListHomeRoute({Key? key}) : super(key: key);
 
   @override
-  State<ListHome> createState() => _ListHomeState();
+  State<ListHomeRoute> createState() => _ListHomeRouteState();
 }
 
-class _ListHomeState extends State<ListHome> {
+class _ListHomeRouteState extends State<ListHomeRoute> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
@@ -24,7 +25,7 @@ class _ListHomeState extends State<ListHome> {
           appBar: AppBar(
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  context.router.pop(context);
                 },
                 child: const Icon(Icons.arrow_back_ios)),
             title: const Text("List",
@@ -121,7 +122,7 @@ class _ListHomeState extends State<ListHome> {
                   foregroundColor: MaterialStateProperty.all(Colors.black)),
               child: const Text('Ləvğ et'),
               onPressed: () {
-                Navigator.of(context).pop();
+                context.router.pop();
               },
             ),
             TextButton(
@@ -130,7 +131,7 @@ class _ListHomeState extends State<ListHome> {
               child: const Text('Hazır'),
               onPressed: () {
                 if (editingController.text.isNotEmpty) {
-                  Navigator.of(context).pop(editingController.text);
+                  context.router.pop(editingController.text);
                 }
               },
             ),
@@ -150,7 +151,7 @@ class ListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<ListBloc>().changeUserList(detail);
-        Navigator.of(context).pushNamed('/list/single');
+        context.router.pushNamed('/list/single');
       },
       child: Container(
         decoration: BoxDecoration(

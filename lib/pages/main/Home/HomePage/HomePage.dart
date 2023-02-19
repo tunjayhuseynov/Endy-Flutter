@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/AdSlider.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
@@ -28,11 +29,6 @@ class _HomePageState extends State<HomePage> {
   ScrollController scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     editingController.dispose();
     super.dispose();
@@ -42,49 +38,52 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return BlocConsumer<SearchPageBloc, SearchPageState>(
-      listener: (context, state) {
-        if (state.search.isEmpty) {
-          editingController.clear();
-        }
-      },
-      buildWhen: (previous, current) => previous.search != current.search,
-      builder: (context, state) {
-        var categories = context.read<GlobalBloc>().state.categories;
-        var companies = context.read<GlobalBloc>().state.companies;
-        categories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
-        return RefreshIndicator(
-          color: const Color(mainColor),
-          triggerMode: RefreshIndicatorTriggerMode.anywhere,
-          onRefresh: () async =>
-              {context.read<HomePageCacheBloc>().deleteCache()},
-          child: Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
-            child: Column(
-              children: [
-                SizedBox(height: 30),
-                if (size.width < 1024)
-                  TopBar(size: size, editingController: editingController),
-                state.search.isNotEmpty && size.width < 1024
-                    ? SearchPage(client: client)
-                    : Column(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(top: 5)),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: const AdSlider(),
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 20)),
-                          ScrollableCategoriesHome(
-                              list: categories, allBrands: companies),
-                          // const Padding(padding: EdgeInsets.only(top: 15)),
-                          HomePageGridProducts()
-                        ],
-                      )
-              ],
-            ),
-          ),
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (gContext, gState) {
+        return BlocConsumer<SearchPageBloc, SearchPageState>(
+          listener: (context, state) {
+            if (state.search.isEmpty) {
+              editingController.clear();
+            }
+          },
+          buildWhen: (previous, current) => previous.search != current.search,
+          builder: (context, state) {
+            return RefreshIndicator(
+              color: const Color(mainColor),
+              triggerMode: RefreshIndicatorTriggerMode.anywhere,
+              onRefresh: () async =>
+                  {context.read<HomePageCacheBloc>().deleteCache()},
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: getContainerSize(size.width)),
+                child: Column(
+                  children: [
+                    SizedBox(height: 30),
+                    if (size.width < 1024)
+                      TopBar(size: size, editingController: editingController),
+                    state.search.isNotEmpty && size.width < 1024
+                        ? SearchPageRoute()
+                        : Column(
+                            children: [
+                              const Padding(padding: EdgeInsets.only(top: 5)),
+                              Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: const AdSlider(),
+                              ),
+                              const Padding(padding: EdgeInsets.only(top: 20)),
+                              ScrollableCategoriesHome(
+                                  list: gState.categories,
+                                  allBrands: gState.companies),
+                              // const Padding(padding: EdgeInsets.only(top: 15)),
+                              HomePageGridProducts()
+                            ],
+                          )
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -130,6 +129,12 @@ class _TopBarState extends State<TopBar> {
           placeholder: "Axtarış",
           onSuffixTap: () {
             context.read<SearchPageBloc>().setSearch('');
+            var path = context.router.stackData
+                .firstWhere((element) => element.name == "SearchPage",
+                    orElse: () => context.router.stackData.last)
+                .path;
+            context.router
+                .pushNamed(context.routeData.path == path ? "/" : path);
             widget.editingController.clear();
           },
           onChanged: (value) {
@@ -139,9 +144,16 @@ class _TopBarState extends State<TopBar> {
             if (value.isNotEmpty) {
               _debounce = Timer(const Duration(milliseconds: 800), () {
                 context.read<SearchPageBloc>().setSearch(value);
+                context.router.pushNamed("/search?params=" + value);
               });
             } else {
               context.read<SearchPageBloc>().setSearch(value);
+              var path = context.router.stackData
+                  .firstWhere((element) => element.name == "SearchPage",
+                      orElse: () => context.router.stackData.last)
+                  .path;
+              context.router
+                  .pushNamed(context.routeData.path == path ? "/" : path);
             }
           },
           controller: widget.editingController,

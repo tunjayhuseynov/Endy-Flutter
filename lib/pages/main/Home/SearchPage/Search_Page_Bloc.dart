@@ -1,6 +1,4 @@
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
 import 'package:flutter/foundation.dart' as f;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,10 +74,10 @@ class SearchPageBloc extends Cubit<SearchPageState> {
 
   void set(SearchPageState state) => emit(state);
 
-  Future<List<Product>> getSearchResult(Category? category, Company? company,
-      Subcategory? subcategory, Client client,
+  Future<List<Product>> getSearchResult(String search, String? categoryId, String? companyId,
+      String? subcategoryId, Client client,
       {int? per_page, int? current_page}) async {
-    if (state.search == '') return [];
+    if (search == '') return [];
     if (state.isSearching) return [];
     if (state.isLastPage) {
       setIsSearching(false);
@@ -90,12 +88,12 @@ class SearchPageBloc extends Cubit<SearchPageState> {
     try {
       final rawHits = await ProductsCrud.getProductsFromTypesense(
         client,
-        state.search,
+        search,
         state.currentPage,
         state.per_page,
-        category: category,
-        company: company,
-        subcategory: subcategory,
+        categoryId: categoryId,
+        companyId: companyId,
+        subcategoryId: subcategoryId,
       );
       if (rawHits['hits'].length == 0) {
         emit(state.copyWith(isLastPage: true, isSearching: false));

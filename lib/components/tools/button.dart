@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
-  final void Function() fn;
+  final Future<void> Function() fn;
   final double? width;
   final double? fontSize;
   final bool isLoading;

@@ -3,17 +3,19 @@ import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/searchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FavoriteMain extends StatelessWidget {
-  const FavoriteMain({Key? key}) : super(key: key);
+class FavoriteMainRoute extends StatelessWidget {
+  const FavoriteMainRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
     return ScaffoldWrapper(
+      hPadding: 0,
       backgroundColor: Colors.white,
       body: ListView(
         shrinkWrap: true,
@@ -34,7 +36,7 @@ class FavoriteMain extends StatelessWidget {
           ),
           const SizedBox(height: 25),
           Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
               child: FutureBuilder<List<Product>>(
                   future: ProductsCrud.getSpecificProducts(
                       (context.read<GlobalBloc>().state.userData?.liked ?? [])
@@ -52,7 +54,7 @@ class FavoriteMain extends StatelessWidget {
                         snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         shrinkWrap: true,
-                        physics: const ScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: getSearchCardCount(w),
                             childAspectRatio: (200 / 350),

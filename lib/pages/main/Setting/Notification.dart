@@ -1,16 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+class NotificationPageRoute extends StatefulWidget {
+  const NotificationPageRoute({Key? key}) : super(key: key);
 
   @override
-  State<NotificationPage> createState() => _NotificationPageState();
+  State<NotificationPageRoute> createState() => _NotificationPageRouteState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
+class _NotificationPageRouteState extends State<NotificationPageRoute> {
   @override
   void initState() {
     timeago.setLocaleMessages('az', timeago.AzMessages());
@@ -28,7 +29,7 @@ class _NotificationPageState extends State<NotificationPage> {
             toolbarHeight: 80,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
             title: const Text('Bildirişlər',
@@ -60,8 +61,8 @@ class _NotificationPageState extends State<NotificationPage> {
                       : const Text(''),
                   onTap: () {
                     if (state.notifications[index].onClick != null) {
-                      Navigator.of(context).pushNamed("/home/detail",
-                          arguments: state.notifications[index].onClick);
+                      context.router.pushNamed("/home/detail/" +
+                          state.notifications[index].onClick!);
                     }
                   },
                 );

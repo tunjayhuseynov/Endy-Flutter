@@ -5,8 +5,8 @@ import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CatalogMain extends StatelessWidget {
-  const CatalogMain({super.key});
+class CatalogMainRoute extends StatelessWidget {
+  const CatalogMainRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,26 +18,27 @@ class CatalogMain extends StatelessWidget {
             .toList();
         return Material(
           color: Colors.white,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
-            child: ListView(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              children: [
-                const SizedBox(height: 25),
-                if (w < 1024)
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Kataloqlar",
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87),
-                    ),
+          child: ListView(
+            shrinkWrap: true,
+            physics: const ScrollPhysics(),
+            children: [
+              const SizedBox(height: 25),
+              if (w < 1024)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Kataloqlar",
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87),
                   ),
-                const SizedBox(height: 20),
-                GridView.builder(
+                ),
+              const SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+                child: GridView.builder(
                     shrinkWrap: true,
                     itemCount: companies.length,
                     physics: const NeverScrollableScrollPhysics(),
@@ -51,9 +52,9 @@ class CatalogMain extends StatelessWidget {
                         company: companies[index],
                       );
                     })),
-                const SizedBox(height: 50),
-              ],
-            ),
+              ),
+              const SizedBox(height: 50),
+            ],
           ),
         );
       },

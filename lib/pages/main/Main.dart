@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
 import 'package:endy/Pages/main/Onboard/Onboard.dart';
@@ -21,8 +22,7 @@ class _MainProviderState extends State<MainProvider> {
     if (!kIsWeb) {
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         if (message.data["onClick"] != null) {
-          Navigator.of(context)
-              .pushNamed("/home/detail", arguments: message.data["onClick"]);
+          context.router.pushNamed("/home/detail/" + message.data["onClick"]);
         }
       });
     }
@@ -62,10 +62,10 @@ class _MainProviderState extends State<MainProvider> {
               );
             }
             return state.userData != null && state.userData!.isFirstEnter
-                ? const Onboard()
-                : const MainContainer();
+                ? const OnboardRoute()
+                : const MainContainerRoute();
           }
-          return const Sign();
+          return const SignRoute();
         });
   }
 }

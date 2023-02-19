@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:endy/Pages/main/Home/DetailPage/DetailPageWeb.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
 import 'package:endy/Pages/main/home/DetailPage/detailPage.dart';
@@ -7,15 +8,17 @@ import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DetailPageContainer extends StatefulWidget {
+class DetailPageContainerRoute extends StatefulWidget {
   final String id;
-  const DetailPageContainer({Key? key, required this.id}) : super(key: key);
+  const DetailPageContainerRoute({Key? key, @pathParam this.id = ""})
+      : super(key: key);
 
   @override
-  State<DetailPageContainer> createState() => DetailPageContainerState();
+  State<DetailPageContainerRoute> createState() =>
+      DetailPageContainerRouteState();
 }
 
-class DetailPageContainerState extends State<DetailPageContainer> {
+class DetailPageContainerRouteState extends State<DetailPageContainerRoute> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;

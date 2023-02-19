@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/components/DiscountCard/ImagePart.dart';
 import 'package:endy/components/DiscountCard/NamePart.dart';
 import 'package:endy/components/DiscountCard/PricePart.dart';
@@ -34,9 +35,9 @@ class _DiscountCardState extends State<DiscountCard> {
       },
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context,
-              '/home/detail?id=${widget.product.id}&name=${widget.product.name}',
-              arguments: widget.product.id);
+          context.router.pushNamed(
+            '/home/detail/${widget.product.id}?name=${widget.product.name}',
+          );
         },
         child: FittedBox(
           fit: BoxFit.contain,

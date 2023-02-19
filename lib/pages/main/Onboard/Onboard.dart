@@ -1,17 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Onboard extends StatefulWidget {
-  const Onboard({Key? key}) : super(key: key);
+class OnboardRoute extends StatefulWidget {
+  const OnboardRoute({Key? key}) : super(key: key);
 
   @override
-  State<Onboard> createState() => _OnboardState();
+  State<OnboardRoute> createState() => _OnboardRouteState();
 }
 
-class _OnboardState extends State<Onboard> {
+class _OnboardRouteState extends State<OnboardRoute> {
   final controller = PageController();
 
   @override
@@ -67,10 +68,7 @@ class _OnboardState extends State<Onboard> {
                                 else
                                   {
                                     context.read<GlobalBloc>().setFirstEnter(),
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        "/",
-                                        (Route<dynamic> route) => false)
+                                    context.router.pushNamed("/")
                                   }
                               })),
                 ])));

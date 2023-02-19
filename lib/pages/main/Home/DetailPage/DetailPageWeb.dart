@@ -15,6 +15,7 @@ import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:web_smooth_scroll/web_smooth_scroll.dart';
 
 class DetailPageWeb extends StatefulWidget {
   final Product? product;
@@ -26,6 +27,7 @@ class DetailPageWeb extends StatefulWidget {
 
 class DetailState extends State<DetailPageWeb> {
   CarouselController buttonCarouselController = CarouselController();
+  ScrollController controller = ScrollController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -38,12 +40,13 @@ class DetailState extends State<DetailPageWeb> {
       builder: (globalContext, globalState) {
         return BlocBuilder<DetailPageBloc, DetailPageState>(
           builder: (context, state) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: getContainerSize(size.width)),
+            return WebSmoothScroll(
+              controller: controller,
               child: ListView(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                controller: controller,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: getContainerSize(size.width), vertical: 75),
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

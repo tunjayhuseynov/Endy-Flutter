@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
@@ -6,20 +7,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Sign extends StatefulWidget {
-  const Sign({Key? key}) : super(key: key);
+class SignRoute extends StatefulWidget {
+  const SignRoute({Key? key}) : super(key: key);
 
   @override
-  State<Sign> createState() => _SignState();
+  State<SignRoute> createState() => _SignRouteState();
 }
 
-class _SignState extends State<Sign> {
+class _SignRouteState extends State<SignRoute> {
   anonymSignIn() async {
     try {
       await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
       context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loggedIn);
-      Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+      context.router.pushNamed("/");
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":
@@ -36,7 +37,7 @@ class _SignState extends State<Sign> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return ScaffoldWrapper(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -84,13 +85,13 @@ class _SignState extends State<Sign> {
             PrimaryButton(
               width: size.width < 768 ? size.width * 0.75 : null,
               text: "Daxil ol",
-              fn: () => {Navigator.pushNamed(context, '/sign/signin')},
+              fn: () async => {context.router.pushNamed('/sign/signin')},
             ),
             const SizedBox(height: 20),
             SecondaryButton(
                 text: "Hesab aç",
                 width: size.width < 768 ? size.width * 0.75 : null,
-                fn: () => {Navigator.pushNamed(context, "/sign/registration")}),
+                fn: () => {context.router.pushNamed("/sign/registration")}),
             const SizedBox(height: 20),
             SecondaryButton(
                 color: 0xFFFFFFFF,

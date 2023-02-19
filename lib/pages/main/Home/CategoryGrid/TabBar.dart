@@ -13,13 +13,11 @@ class TabBar extends StatelessWidget {
     required this.category,
     required this.company,
     required this.subcategory,
-    required this.mounted,
   }) : super(key: key);
 
   final Category? category;
   final Company? company;
   final Subcategory? subcategory;
-  final bool mounted;
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +40,12 @@ class TabBar extends StatelessWidget {
                           .contains(company!.id)) {
                         await FirebaseMessaging.instance
                             .subscribeToTopic(company!.id);
-                        if (!mounted) return;
                         context.read<GlobalBloc>().addSubscription(company!.id);
                         ShowTopSnackBar(context, "Uğurla abonə oldunuz.",
                             success: true);
                       } else {
                         await FirebaseMessaging.instance
                             .unsubscribeFromTopic(company!.id);
-                        if (!mounted) return;
                         context
                             .read<GlobalBloc>()
                             .removeSubscription(company!.id);

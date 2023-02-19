@@ -10,6 +10,7 @@ import 'package:endy/Pages/main/Home/DetailPage/Parts/TimePart.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -80,7 +81,7 @@ class DetailState extends State<DetailPage> {
                   PricePart(product: product),
                   TimePart(product: product),
                   if (globalState.isMapDisabled == false &&
-                      product.availablePlaces.length > 0)
+                      product.availablePlaces.length > 0 && !kIsWeb)
                     MapWidget(mounted: mounted, product: product),
                   const SizedBox(height: 20),
                   FeatuersWidget(product: product),

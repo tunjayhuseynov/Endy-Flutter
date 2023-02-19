@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
@@ -9,14 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:xid/xid.dart';
 
-class ListDetail extends StatefulWidget {
-  const ListDetail({Key? key}) : super(key: key);
+class ListDetailRoute extends StatefulWidget {
+  const ListDetailRoute({Key? key}) : super(key: key);
 
   @override
-  State<ListDetail> createState() => _ListDetailState();
+  State<ListDetailRoute> createState() => _ListDetailRouteState();
 }
 
-class _ListDetailState extends State<ListDetail> {
+class _ListDetailRouteState extends State<ListDetailRoute> {
   TextEditingController editingController = TextEditingController();
 
   @override
@@ -50,7 +51,7 @@ class _ListDetailState extends State<ListDetail> {
                 appBar: AppBar(
                     leading: GestureDetector(
                         onTap: () {
-                          Navigator.pop(context);
+                          context.router.pop(context);
                         },
                         child: const Icon(Icons.arrow_back_ios)),
                     title: const Text("List",
@@ -69,7 +70,7 @@ class _ListDetailState extends State<ListDetail> {
                             context
                                 .read<GlobalBloc>()
                                 .removeList(state.userList!);
-                            Navigator.pop(context);
+                            context.router.pop(context);
                           }
                         },
                       ),

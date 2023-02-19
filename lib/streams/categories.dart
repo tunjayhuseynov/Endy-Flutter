@@ -19,16 +19,9 @@ class CategoryCrud {
         category.subcategory = await Future.wait(category.subcategory
             .map((e) => SubcategoryCrud.getSubcategoryPure(e.id)));
 
-        // for (var i = 0; i < category.subcategory.length; i++) {
-        //   DocumentReference element = category.subcategory[i];
-        //   Subcategory subcategory =
-        //       await SubcategoryCrud.getSubcategoryPure(element.id);
-        //   category.subcategory[i] = subcategory;
-        // }
-
         myCategories.add(category);
       }
-
+      myCategories.sort((a, b) => a.iconOrder.compareTo(b.iconOrder));
       return myCategories;
     } catch (e) {
       throw Exception('Error getting categories');

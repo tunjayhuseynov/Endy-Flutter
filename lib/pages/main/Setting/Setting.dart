@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Setting extends StatelessWidget {
-  const Setting({Key? key}) : super(key: key);
+class SettingRoute extends StatelessWidget {
+  const SettingRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +56,7 @@ class Setting extends StatelessWidget {
                             onPressed: () async => {
                               context.read<GlobalBloc>().logout(),
                               await FirebaseAuth.instance.signOut(),
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, "/sign/main", (route) => false)
+                              context.router.pushNamed("/sign/main")
                             },
                             style: ButtonStyle(
                                 foregroundColor:
@@ -75,7 +75,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/profile');
+                            context.router.pushNamed('/profile');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -89,7 +89,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/list');
+                            context.router.pushNamed('/list');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -103,8 +103,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, '/notification');
+                            context.router.pushNamed('/notification');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -139,7 +138,7 @@ class Setting extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            Navigator.pushNamed(context, '/about');
+                            context.router.pushNamed('/about');
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,

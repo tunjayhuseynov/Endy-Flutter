@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,16 +56,16 @@ class ImagePart extends StatelessWidget {
               }).toList(),
             ),
           ),
-          if(size.width < 1024)
-          Positioned(
-            top: 0,
-            left: 10,
-            child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back_ios)),
-          ),
+          if (size.width < 1024)
+            Positioned(
+              top: 0,
+              left: 10,
+              child: IconButton(
+                  onPressed: () {
+                    context.router.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back_ios)),
+            ),
           Positioned(
               right: 25,
               top: 7.5,
@@ -83,11 +84,15 @@ class ImagePart extends StatelessWidget {
                       return GestureDetector(
                         onTap: () => {
                           if (state.userData == null)
-                            {Navigator.pushNamed(context, '/needregister', arguments: true)}
+                            {context.router.pushNamed('/needregister')}
                           else
                             {
                               if (!isLiked)
-                                {context.read<GlobalBloc>().addFavorite(product!)}
+                                {
+                                  context
+                                      .read<GlobalBloc>()
+                                      .addFavorite(product!)
+                                }
                               else
                                 {
                                   context

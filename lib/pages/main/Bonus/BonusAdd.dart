@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/Pages/main/bonus/Bonus_Add_Bloc.dart';
@@ -10,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BonusAdd extends StatefulWidget {
+class BonusAddRoute extends StatefulWidget {
   final String? code;
-  const BonusAdd({Key? key, this.code}) : super(key: key);
+  const BonusAddRoute({Key? key, this.code}) : super(key: key);
 
   @override
-  State<BonusAdd> createState() => _BonusAddState();
+  State<BonusAddRoute> createState() => _BonusAddRouteState();
 }
 
-class _BonusAddState extends State<BonusAdd>
+class _BonusAddRouteState extends State<BonusAddRoute>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   TextEditingController storeController = TextEditingController();
@@ -169,7 +170,7 @@ class _BonusAddState extends State<BonusAdd>
                                       context
                                           .read<GlobalBloc>()
                                           .addBonusCard(card);
-                                      Navigator.pop(context);
+                                      context.router.pop(context);
                                     } catch (e) {
                                       ShowTopSnackBar(
                                           error: true,
@@ -186,8 +187,8 @@ class _BonusAddState extends State<BonusAdd>
                                       if (await Permission.camera
                                           .request()
                                           .isGranted) {
-                                        await Navigator.pushNamed(
-                                            context, '/bonus/camera');
+                                        await context.router
+                                            .pushNamed('/bonus/camera');
                                       }
                                     },
                                     child: const Text("Barkod skan edin"))),

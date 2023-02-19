@@ -1,21 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryList extends StatefulWidget {
-  const CategoryList({Key? key}) : super(key: key);
+class CategoryListRoute extends StatefulWidget {
+  const CategoryListRoute({Key? key}) : super(key: key);
 
   @override
-  State<CategoryList> createState() => _CategoryListState();
+  State<CategoryListRoute> createState() => _CategoryListRouteState();
 }
 
-class _CategoryListState extends State<CategoryList> {
+class _CategoryListRouteState extends State<CategoryListRoute> {
   TextEditingController editingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CategoryListBloc>().search("");
+  }
 
   @override
   void dispose() {
@@ -54,7 +60,7 @@ class _CategoryListState extends State<CategoryList> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.router.pop(context);
                   }),
               title: Text(state.selectedCategory?.name ?? "",
                   style: const TextStyle(
@@ -78,14 +84,10 @@ class _CategoryListState extends State<CategoryList> {
                 Expanded(
                   child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount:
-                          context.read<GlobalBloc>().state.categories.length,
+                      itemCount: state.categories.length,
                       itemBuilder: (BuildContext context, int index) {
                         return CategoryItem(
-                          category: context
-                              .read<GlobalBloc>()
-                              .state
-                              .categories[index],
+                          category: state.categories[index],
                         );
                       }),
                 ),
@@ -111,15 +113,11 @@ class CategoryItem extends StatelessWidget {
         : 0;
 
     return Container(
-      padding: w < 768
-          ? null
-          : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
+      padding: w < 768 ? null : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
         onTap: () {
-          context.read<CategorySelectionListBloc>().setTypeAndList(
-              category, false, false, true, [], [], category.subcategory);
-          Navigator.pushNamed(context, '/home/category');
+          context.router.pushNamed('/subcategory/list/${category.id}');
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

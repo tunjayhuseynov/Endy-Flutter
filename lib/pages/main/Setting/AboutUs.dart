@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-class AboutUs extends StatelessWidget {
-  const AboutUs({Key? key}) : super(key: key);
+class AboutUsRoute extends StatelessWidget {
+  const AboutUsRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +19,14 @@ class AboutUs extends StatelessWidget {
             toolbarHeight: 80,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
             title: const Text('Haqqımızda',
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 75),
             child: Html(
               shrinkWrap: true,
               data: state.aboutApp,

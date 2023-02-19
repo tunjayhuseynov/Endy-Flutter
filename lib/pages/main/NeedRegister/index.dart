@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 
-class NeedRegister extends StatelessWidget {
-  const NeedRegister({super.key, this.activeTab});
+class NeedRegisterRoute extends StatelessWidget {
+  const NeedRegisterRoute({super.key, this.activeTab});
   final bool? activeTab;
 
   @override
@@ -15,7 +16,7 @@ class NeedRegister extends StatelessWidget {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.router.pop(context);
                   }),
             )
           : null,
@@ -36,8 +37,7 @@ class NeedRegister extends StatelessWidget {
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      "/sign/registration", (route) => false);
+                  context.router.pushNamed("/sign/registration");
                 },
                 child: const Text("Qeydiyyatdan keç",
                     style: TextStyle(

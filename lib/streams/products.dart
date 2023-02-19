@@ -6,7 +6,6 @@ import 'package:endy/streams/places.dart';
 import 'package:endy/streams/subcategories.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
-import 'package:endy/types/place.dart';
 import 'package:endy/types/product.dart';
 import 'package:typesense/typesense.dart';
 
@@ -182,23 +181,46 @@ class ProductsCrud {
   }
 
   static Future<Map<String, dynamic>> getProductsFromTypesense(
-      Client client, String search, int current_page, int per_page,
-      {Category? category, Company? company, Subcategory? subcategory}) async {
+    Client client,
+    String search,
+    int current_page,
+    int per_page, {
+    String? categoryId,
+    String? companyId,
+    String? subcategoryId,
+    FilterPageState mode = FilterPageState.none,
+  }) async {
     String q = search;
     String sort = "deadline:asc";
     String filter = 'status:=approved';
 
-    if (category != null) {
+    if (categoryId != null && categoryId.isNotEmpty) {
       if (filter.isNotEmpty) filter += '&&';
-      filter += 'category:=categories/${category.id}';
+      filter += 'category:=categories/${categoryId}';
     }
-    if (company != null) {
+    if (companyId != null && companyId.isNotEmpty) {
       if (filter.isNotEmpty) filter += '&&';
-      filter += 'company:=companies/${company.id}';
+      filter += 'company:=companies/${companyId}';
     }
-    if (subcategory != null) {
+    if (subcategoryId != null && subcategoryId.isNotEmpty) {
       if (filter.isNotEmpty) filter += '&&';
-      filter += 'subcategory:=subcategories/${subcategory.id}';
+      filter += 'subcategory:=subcategories/${subcategoryId}';
+    }
+
+    if (mode == FilterPageState.moreThan20) {
+      if (filter.isNotEmpty) filter += '&&';
+      filter += 'discount:>20';
+    }
+
+    if (mode == FilterPageState.lastDay) {
+      if (filter.isNotEmpty) filter += '&&';
+      DateTime now = DateTime.now();
+      DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      filter += 'deadline:<${(endOfDay.millisecondsSinceEpoch / 1000).round()}';
+    }
+
+    if (mode == FilterPageState.lastAdded) {
+      sort = 'created_at:desc';
     }
 
     final rawHits = await client.collection("products").documents.search({

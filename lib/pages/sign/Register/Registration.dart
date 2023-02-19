@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/Pages/Sign/OTP/OTP.dart';
 import 'package:endy/Pages/Sign/Register/Register_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
@@ -50,10 +51,10 @@ class _RegistrationState extends State<Registration> {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            Navigator.of(context).pushNamed("/sign/main");
+            context.router.pushNamed("/sign/main");
             return false;
           },
-          child: ScaffoldWrapper(
+          child: Scaffold(
               backgroundColor: Colors.white,
               body: Stack(
                 children: [
@@ -203,17 +204,13 @@ class _RegistrationState extends State<Registration> {
                         PrimaryButton(
                             text: "Qeydiyyatdan keç",
                             isLoading: state.isLoading,
-                            fn: () => {
+                            fn: () async => {
                                   context
                                       .read<RegisterBloc>()
                                       .phoneVerification(name.text)
                                       .then((value) {
-                                    Navigator.of(context).pushNamed('/sign/otp',
-                                        arguments: OtpParams(
-                                            phone: state.phone,
-                                            name: name.text,
-                                            mail: mail.text,
-                                            selectedDate: state.selectedDate!));
+                                    context.router
+                                        .pushNamed('/sign/otp/' + state.phone);
                                   }).catchError((e) {
                                     showTopSnackBar(
                                       Overlay.of(context),
@@ -248,7 +245,7 @@ class _RegistrationState extends State<Registration> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).pushNamed('/sign/signin');
+                                context.router.pushNamed('/sign/signin');
                               },
                               child: const Text(
                                 "Daxil olun",

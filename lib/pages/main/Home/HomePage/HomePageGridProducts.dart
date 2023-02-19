@@ -1,3 +1,5 @@
+import 'package:async/async.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/MostViewed.dart';
@@ -26,25 +28,45 @@ class HomePageGridProducts extends StatefulWidget {
 class _HomePageGridProductsState extends State<HomePageGridProducts> {
   // final client = Client(typesenseConfig);
   List<Category> categories = [];
+  bool fetched = false;
+  late CancelableOperation operation;
 
-  @override
-  void initState() {
+  Future<void> fetch() async {
     categories = [...context.read<GlobalBloc>().state.categories];
-    context
+    categories.sort((a, b) => a.order.compareTo(b.order));
+
+    await context
         .read<HomePageCacheBloc>()
         .getMostViewedProducts(categories, FilterPageState.none);
 
-    context
+    await context
         .read<HomePageCacheBloc>()
         .getProducts(categories, FilterPageState.none, limit: 6);
+  }
+
+  @override
+  void initState() {
+    operation = CancelableOperation.fromFuture(fetch());
+    operation.value.then((value) => setState(() => fetched = true));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    operation.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
     final gridCount = getHomeGridCardCount(w);
-    categories.sort((a, b) => a.order.compareTo(b.order));
+    if (!fetched)
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(mainColor),
+        ),
+      );
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (globalContext, globalState) {
         return BlocConsumer<HomePageCacheBloc, HomePageCacheState>(
@@ -136,12 +158,13 @@ class ProductListFourGrid extends StatelessWidget {
                     InkWell(
                         mouseCursor: SystemMouseCursors.click,
                         onTap: () async {
-                          // Navigator.pushNamed(context, "home/category",
-                          //     arguments: productList[index].keys.first);
-                          context
-                              .read<CategoryGridBloc>()
-                              .set(category: data[index][0].category, subcategory: null, id: "");
-                          await Navigator.pushNamed(context, '/home/main/all');
+                          context.read<CategoryGridBloc>().set(
+                              prevPath: context.router.currentPath,
+                              category: data[index][0].category,
+                              subcategory: null,
+                              id: "");
+                          await context.router.pushNamed(
+                              'category/products/${data[index][0].category.id}/all');
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
@@ -121,7 +122,7 @@ class _FilterPageState extends State<FilterPage> {
                           context
                               .read<FilterPageBloc>()
                               .changeFilter(selectedInput);
-                          Navigator.pop(context);
+                          context.router.pop(context);
                         },
                         child: Text("Təsdiqlə",
                             style: const TextStyle(
