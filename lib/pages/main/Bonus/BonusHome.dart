@@ -1,4 +1,4 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -20,6 +20,26 @@ class BonusHomeRoute extends StatefulWidget {
 }
 
 class _BonusHomeRouteState extends State<BonusHomeRoute> {
+  onAdd() async {
+    if (!kIsWeb && await Permission.camera.request().isGranted) {
+      await context.router.pushNamed('/bonus/camera');
+    }
+
+    // if (kIsWeb) {
+    //   window.navigator.mediaDevices
+    //       ?.getUserMedia([
+    //     {"audio": false},
+    //     {"video": true}
+    //   ] as Map<dynamic, dynamic>)
+    //       .then((value) {
+    //     context.router.pushNamed('/bonus/camera');
+    //   }).catchError((e) {
+    //     ScaffoldMessenger.of(context)
+    //         .showSnackBar(SnackBar(content: Text("Kamera icazə verilmədi")));
+    //   });
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
@@ -68,23 +88,7 @@ class _BonusHomeRouteState extends State<BonusHomeRoute> {
                             const EdgeInsets.symmetric(horizontal: 20)),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color(mainColor))),
-                    onPressed: () async {
-                      if (!kIsWeb &&
-                          await Permission.camera.request().isGranted) {
-                        await context.router.pushNamed('/bonus/camera');
-                      }
-
-                      if (kIsWeb) {
-                        window.navigator
-                            .getUserMedia(audio: false, video: true)
-                            .then((value) {
-                          context.router.pushNamed('/bonus/camera');
-                        }).catchError((e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("Kamera icazə verilmədi")));
-                        });
-                      }
-                    },
+                    onPressed: onAdd,
                     child: const Text(
                       "+ Kart əlavə et",
                       style: TextStyle(

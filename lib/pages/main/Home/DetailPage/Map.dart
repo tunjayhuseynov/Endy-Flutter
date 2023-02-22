@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
@@ -23,6 +24,7 @@ class MapPageRoute extends StatefulWidget {
 
 class _MapPageRouteState extends State<MapPageRoute> {
   final Completer<GoogleMapController> _controller = Completer();
+  CancelableOperation? _operation;
   final List<Marker> _marker = <Marker>[];
   double _height = 175;
   final double _const_height = 175;
@@ -36,12 +38,18 @@ class _MapPageRouteState extends State<MapPageRoute> {
 
   @override
   void initState() {
-    loadData();
+    _operation = CancelableOperation.fromFuture(loadData(widget.id ?? "0")).then((p0) => setState(() {}));
     super.initState();
   }
 
-  loadData() async {
-    Product p = await ProductsCrud.getProduct(widget.id!);
+  @override
+  void dispose() {
+    _operation?.cancel();
+    super.dispose();
+  }
+
+  loadData(String id) async {
+    Product p = await ProductsCrud.getProduct(id);
     product = p;
     location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -67,7 +75,6 @@ class _MapPageRouteState extends State<MapPageRoute> {
         infoWindow: InfoWindow(title: element.name, snippet: element.name),
       ));
     }
-    setState(() {});
   }
 
   Future<Uint8List> loadNetworkImage(path) async {
@@ -168,7 +175,7 @@ class _MapPageRouteState extends State<MapPageRoute> {
                     fit: FlexFit.tight,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: product?.availablePlaces.length,
+                      itemCount: product?.availablePlaces.length ?? 0,
                       itemBuilder: (context, index) {
                         final place = product?.availablePlaces[index];
                         return Column(

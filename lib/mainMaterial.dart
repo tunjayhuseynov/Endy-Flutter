@@ -3,6 +3,7 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/route/guard.dart';
 import 'package:endy/route/permission.dart';
 import 'package:endy/route/route.gr.dart';
+import 'package:endy/utils/FirebaseAuth.dart';
 import 'package:endy/utils/connection.dart';
 import 'package:endy/utils/scrollBehavior.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,7 @@ class AppMaterialState extends State<AppMaterial> {
 
   @override
   void initState() {
+    AuthStream.initiateStream(context);
     if (!kIsWeb) {
       _networkConnectivity.initialise();
       _networkConnectivity.myStream.listen((source) {
@@ -38,6 +40,7 @@ class AppMaterialState extends State<AppMaterial> {
         }
       });
     }
+
     super.initState();
   }
 

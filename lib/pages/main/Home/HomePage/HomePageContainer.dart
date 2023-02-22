@@ -59,7 +59,9 @@ class _MainContainerRouteState extends State<MainContainerRoute> {
                       child: Nav(),
                     ),
                     body: blacklist.contains(state) && disallowed
-                        ? NeedRegisterRoute()
+                        ? NeedRegisterRoute(
+                            deactivateTab: true,
+                          )
                         : SingleChildScrollView(
                             child: _children(context)[state]),
                   ),

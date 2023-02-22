@@ -2,20 +2,34 @@ import 'package:auto_route/auto_route.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
-import 'package:endy/types/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:endy/types/user.dart';
+import 'package:collection/collection.dart';
 
 class BonusDetailPageRoute extends StatefulWidget {
-  final BonusCard card;
-  const BonusDetailPageRoute({Key? key, required this.card}) : super(key: key);
+  final String? id;
+  const BonusDetailPageRoute({Key? key, @pathParam this.id}) : super(key: key);
 
   @override
   State<BonusDetailPageRoute> createState() => _BonusDetailPageRouteState();
 }
 
 class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
+  BonusCard? card;
+
+  @override
+  void initState() {
+    card = context
+        .read<GlobalBloc>()
+        .state
+        .userData
+        ?.bonusCard
+        .firstWhereOrNull((element) => element.cardNumber == widget.id);
+    super.initState();
+  }
+
   Widget cardInfo(context) {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
@@ -33,7 +47,7 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
                   padding: const EdgeInsets.all(40),
                   backgroundColor: Colors.white,
                   barcode: Barcode.code128(),
-                  data: widget.card.cardNumber,
+                  data: card?.cardNumber ?? "",
                 ),
               ),
             );
@@ -48,7 +62,7 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
           padding: const EdgeInsets.all(40),
           backgroundColor: Colors.white,
           barcode: Barcode.telepen(),
-          data: widget.card.cardNumber,
+          data: card?.cardNumber ?? "",
         ),
       ),
     );
@@ -71,7 +85,9 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
                   final response = await Dialogs.showRemoveDialog(context);
                   if (response == true) {
                     if (!mounted) return;
-                    context.read<GlobalBloc>().removeBonusCard(widget.card);
+                    if (card != null) {
+                      context.read<GlobalBloc>().removeBonusCard(card!);
+                    }
                     context.router.pop(context);
                   }
                 },
@@ -84,7 +100,7 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
           ),
-          body: DebitCardPart(size: size, widget: widget),
+          body: DebitCardPart(size: size, card: card),
         );
       },
     );
@@ -95,11 +111,11 @@ class DebitCardPart extends StatelessWidget {
   const DebitCardPart({
     Key? key,
     required this.size,
-    required this.widget,
+    required this.card,
   }) : super(key: key);
 
   final Size size;
-  final BonusDetailPageRoute widget;
+  final BonusCard? card;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +149,7 @@ class DebitCardPart extends StatelessWidget {
                 padding: const EdgeInsets.all(40),
                 backgroundColor: Colors.white,
                 barcode: Barcode.code128(),
-                data: widget.card.cardNumber,
+                data: card?.cardNumber ?? "",
               )),
           Positioned(
             bottom: 20,
@@ -141,7 +157,7 @@ class DebitCardPart extends StatelessWidget {
             child: Text.rich(TextSpan(children: [
               const TextSpan(text: "Kart Adı:  "),
               TextSpan(
-                  text: widget.card.cardName,
+                  text: card?.cardName ?? "",
                   style: const TextStyle(
                       letterSpacing: 1, fontWeight: FontWeight.w600))
             ])),

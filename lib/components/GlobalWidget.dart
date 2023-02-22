@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
-import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
 import 'package:endy/utils/index.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 import 'package:typesense/typesense.dart';
-import 'dart:math' as Math;
 
 class GlobalWidgetRoute extends StatefulWidget {
   const GlobalWidgetRoute({
@@ -24,7 +21,7 @@ class GlobalWidgetRoute extends StatefulWidget {
 
 class _GlobalWidgetRouteState extends State<GlobalWidgetRoute> {
   final client = Client(typesenseConfig);
-  double _top = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +67,21 @@ class _GlobalWidgetRouteState extends State<GlobalWidgetRoute> {
             );
           }
           return w < 1024
-              ? AutoRouter()
+              ? AutoRouter(
+                  placeholder: (c) {
+                    return Scaffold(
+                      body: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              color: Color(mainColor),
+                            )),
+                      ),
+                    );
+                  },
+                )
               : Scaffold(
                   backgroundColor: Colors.white,
                   body: Column(

@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:endy/Pages/Sign/OTP/OTP.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/Pages/Sign/Register/Register_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
+import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +25,64 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   TextEditingController name = TextEditingController();
   TextEditingController mail = TextEditingController();
+
+  Future<void> register(
+      {required String name,
+      required String? mail,
+      required String phone,
+      required DateTime? selectedDate}) async {
+    try {
+      if (selectedDate == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Doğum tarixini daxil edin")));
+        return;
+      }
+      await context.read<RegisterBloc>().phoneVerification(name);
+      var result = await context.router.pushNamed('/sign/otp/' + phone);
+      if (result != null) {
+        var data = await FirebaseAuth.instance
+            .signInWithCredential(result as PhoneAuthCredential);
+        UserData newUser;
+        newUser = UserData(
+          id: data.user!.uid,
+          birthDate: (selectedDate.millisecondsSinceEpoch / 1000).round(),
+          role: "user",
+          name: name,
+          phone: phone,
+          mail: mail ?? "",
+          isFirstEnter: true,
+          list: [],
+          bonusCard: [],
+          liked: [],
+          subscribedCompanies: [],
+          notifications: [],
+          notificationSeenTime:
+              (DateTime.now().millisecondsSinceEpoch / 1000).round(),
+          createdAt: (DateTime.now().millisecondsSinceEpoch / 1000).round(),
+        );
+
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(data.user?.uid)
+            .set(newUser.toJson());
+        context.router.pushNamed('/');
+      }
+    } catch (e) {
+      showTopSnackBar(
+        Overlay.of(context),
+        displayDuration: const Duration(milliseconds: 1000),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomSnackBar.error(
+              message: e.toString().replaceAll("Exception: ", ""),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -204,33 +264,15 @@ class _RegistrationState extends State<Registration> {
                         PrimaryButton(
                             text: "Qeydiyyatdan keç",
                             isLoading: state.isLoading,
-                            fn: () async => {
-                                  context
-                                      .read<RegisterBloc>()
-                                      .phoneVerification(name.text)
-                                      .then((value) {
-                                    context.router
-                                        .pushNamed('/sign/otp/' + state.phone);
-                                  }).catchError((e) {
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      displayDuration:
-                                          const Duration(milliseconds: 1000),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          CustomSnackBar.error(
-                                            message: e
-                                                .toString()
-                                                .replaceAll("Exception: ", ""),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  })
-                                }),
+                            fn: () async {
+                              context.read<RegisterBloc>().setIsLoading(true);
+                              await register(
+                                  mail: state.mail,
+                                  name: state.name,
+                                  phone: state.phone,
+                                  selectedDate: state.selectedDate!);
+                              context.read<RegisterBloc>().setIsLoading(false);
+                            }),
                         const SizedBox(
                           height: 20,
                         ),

@@ -31,22 +31,28 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
   bool fetched = false;
   late CancelableOperation operation;
 
-  Future<void> fetch() async {
+  Future<void> fetch(
+      Future<List<List<Product>>> Function(
+              List<Category> categories, FilterPageState filterState,
+              {int limit})
+          getProducts,
+      Future<List<Product>> Function(
+              List<Category> categories, FilterPageState filterState)
+          getMostViewedProducts) async {
+    if (!mounted) return;
     categories = [...context.read<GlobalBloc>().state.categories];
     categories.sort((a, b) => a.order.compareTo(b.order));
 
-    await context
-        .read<HomePageCacheBloc>()
-        .getMostViewedProducts(categories, FilterPageState.none);
+    await getMostViewedProducts(categories, FilterPageState.none);
 
-    await context
-        .read<HomePageCacheBloc>()
-        .getProducts(categories, FilterPageState.none, limit: 6);
+    await getProducts(categories, FilterPageState.none, limit: 6);
   }
 
   @override
   void initState() {
-    operation = CancelableOperation.fromFuture(fetch());
+    var ctx = context.read<HomePageCacheBloc>();
+    operation = CancelableOperation.fromFuture(
+        fetch(ctx.getProducts, ctx.getMostViewedProducts));
     operation.value.then((value) => setState(() => fetched = true));
     super.initState();
   }

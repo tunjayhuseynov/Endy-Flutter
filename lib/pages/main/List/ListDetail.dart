@@ -9,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:xid/xid.dart';
+import 'package:collection/collection.dart';
 
 class ListDetailRoute extends StatefulWidget {
-  const ListDetailRoute({Key? key}) : super(key: key);
+  final String? id;
+  const ListDetailRoute({Key? key, @pathParam this.id}) : super(key: key);
 
   @override
   State<ListDetailRoute> createState() => _ListDetailRouteState();
@@ -19,6 +21,24 @@ class ListDetailRoute extends StatefulWidget {
 
 class _ListDetailRouteState extends State<ListDetailRoute> {
   TextEditingController editingController = TextEditingController();
+  UserList? list;
+  String sendText = "";
+  @override
+  void initState() {
+    list = context
+        .read<GlobalBloc>()
+        .state
+        .userData
+        ?.list
+        .firstWhereOrNull((element) => element.id == widget.id);
+
+    if (list != null && list!.details.isNotEmpty) {
+      sendText = list!.details
+          .map((e) => e.name + " " + (e.isDone ? "+" : "-"))
+          .join("\n");
+    }
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -32,19 +52,10 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
       builder: (globalContext, globalState) {
         return BlocBuilder<ListBloc, ListState>(
           builder: (context, state) {
-            final list = state.userList?.details
-                .where((element) => !element.isDone)
-                .map((e) => e.name)
-                .toList();
-            String sendText = "";
-            if (list == null || state.userList == null) {
+            if (list == null) {
               return const SizedBox(
-                child: Text("List is null"),
+                child: Text("Bu list sizə məxsus deyil"),
               );
-            }
-            if (list.isNotEmpty) {
-              sendText = list.reduce((value, element) =>
-                  "${state.userList?.name}:\n$value\n$element");
             }
             return ScaffoldWrapper(
                 backgroundColor: Colors.white,
@@ -67,9 +78,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                               await Dialogs.showRemoveDialog(context);
                           if (response == true) {
                             if (!mounted) return;
-                            context
-                                .read<GlobalBloc>()
-                                .removeList(state.userList!);
+                            context.read<GlobalBloc>().removeList(list!);
                             context.router.pop(context);
                           }
                         },
@@ -79,7 +88,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                         icon: const Icon(Icons.share),
                         tooltip: 'Share',
                         onPressed: () {
-                          Share.share(sendText, subject: state.userList!.name);
+                          Share.share(sendText, subject: list!.name);
                         },
                       ),
                     ]),
@@ -90,21 +99,20 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       children: [
-                        Text(state.userList?.name ?? "",
+                        Text(list?.name ?? "",
                             style: const TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 25),
-                        if (state.userList != null &&
-                            globalState.userData != null)
+                        if (list != null && globalState.userData != null)
                           ReorderableListView.builder(
                               shrinkWrap: true,
                               physics: const ScrollPhysics(),
-                              itemCount: state.userList!.details.length,
+                              itemCount: list!.details.length,
                               itemBuilder: (context, index) {
                                 UserListDetail detail = globalState
                                     .userData!.list
-                                    .firstWhere((element) =>
-                                        element.id == state.userList!.id)
+                                    .firstWhere(
+                                        (element) => element.id == list!.id)
                                     .details[index];
                                 return CheckboxListTile(
                                   secondary: Wrap(
@@ -114,8 +122,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                                         onTap: () {
                                           context
                                               .read<GlobalBloc>()
-                                              .removeDetail(
-                                                  state.userList!, detail);
+                                              .removeDetail(list!, detail);
                                         },
                                         child: const Icon(Icons.remove_circle,
                                             color: Color(mainColor)),
@@ -146,8 +153,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                                   onChanged: (bool? value) {
                                     context
                                         .read<GlobalBloc>()
-                                        .changeDetailStatus(
-                                            state.userList!, detail);
+                                        .changeDetailStatus(list!, detail);
                                   },
                                 );
                               },
@@ -157,9 +163,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                                 }
 
                                 context.read<GlobalBloc>().reorderDetail(
-                                    state.userList!,
-                                    state.userList!.details[oldIndex],
-                                    newIndex);
+                                    list!, list!.details[oldIndex], newIndex);
                               }),
                         const SizedBox(height: 25),
                         CupertinoTextField(
@@ -172,7 +176,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                             child: GestureDetector(
                               onTap: () {
                                 context.read<GlobalBloc>().addListDetail(
-                                    state.userList!,
+                                    list!,
                                     UserListDetail(
                                         id: Xid().toString(),
                                         name: editingController.text,

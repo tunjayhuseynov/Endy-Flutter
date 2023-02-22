@@ -23,6 +23,18 @@ class ImagePart extends StatefulWidget {
 class _ImagePartState extends State<ImagePart> {
   bool heartHover = false;
 
+  onClick(bool isLiked, GlobalState state) {
+    if (state.userData == null) {
+      context.router.pushNamed('/needregister');
+    } else {
+      if (!isLiked) {
+        context.read<GlobalBloc>().addFavorite(widget.widget.product);
+      } else {
+        context.read<GlobalBloc>().removeFavorite(widget.widget.product);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
@@ -73,56 +85,45 @@ class _ImagePartState extends State<ImagePart> {
                     state.userData!.liked.contains(FirebaseFirestore.instance
                         .collection('products')
                         .doc(widget.widget.product.id));
-                return InkWell(
-                  onHover: (value) {
+                return MouseRegion(
+                  onEnter: (value) {
                     setState(() {
-                      heartHover = value;
+                      heartHover = true;
                     });
                   },
-                  onTap: () => {
-                    if (state.userData == null)
-                      {context.router.pushNamed('/needregister')}
-                    else
-                      {
-                        if (!isLiked)
-                          {
-                            context
-                                .read<GlobalBloc>()
-                                .addFavorite(widget.widget.product),
-                          }
-                        else
-                          {
-                            context
-                                .read<GlobalBloc>()
-                                .removeFavorite(widget.widget.product),
-                          }
-                      }
+                  onExit: (value) {
+                    setState(() {
+                      heartHover = false;
+                    });
                   },
-                  child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          // box shadow
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(1, 2),
-                              blurRadius: 5,
-                              spreadRadius: heartHover ? 2.5 : 1,
-                              color: Colors.black.withOpacity(0.2),
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: isLiked
-                          ? const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                              size: 25,
-                            )
-                          : const Icon(
-                              Icons.favorite_border,
-                              size: 25,
-                            )),
+                  child: GestureDetector(
+                    onTap: () => onClick(isLiked, state),
+                    child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            // box shadow
+                            boxShadow: [
+                              BoxShadow(
+                                offset: const Offset(1, 2),
+                                blurRadius: 5,
+                                spreadRadius: heartHover ? 2.5 : 1,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(50)),
+                        child: isLiked
+                            ? const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                                size: 25,
+                              )
+                            : const Icon(
+                                Icons.favorite_border,
+                                size: 25,
+                              )),
+                  ),
                 );
               },
             )),

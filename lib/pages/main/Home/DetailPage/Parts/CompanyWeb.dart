@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/types/company.dart';
 import 'package:endy/types/product.dart';
@@ -38,7 +39,15 @@ class _CompanyWebState extends State<CompanyWeb> {
           CachedNetworkImage(imageUrl: company.logo, height: 100),
           // Text(company.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-          InkWell(mouseCursor: SystemMouseCursors.click, child: Text("Mağazaya get", style: const TextStyle(fontSize: 14, decoration: TextDecoration.underline, fontWeight: FontWeight.bold))),
+          InkWell(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () =>
+                  context.router.pushNamed('/company/list/' + company.id),
+              child: Text("Mağazaya get",
+                  style: const TextStyle(
+                      fontSize: 14,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold))),
         ],
       ),
     );

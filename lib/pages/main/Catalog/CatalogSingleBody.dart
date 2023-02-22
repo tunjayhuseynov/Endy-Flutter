@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/utils/index.dart';
@@ -38,7 +39,13 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
     return ScaffoldWrapper(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(widget.catalog.name),
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                context.router.pop();
+              }),
+          title: Text(widget.catalog.name, style: TextStyle(color: Colors.black),),
+          // leading: const CupertinoNavigationBarBackButton(),
           actions: [
             Container(
                 margin: const EdgeInsets.only(right: 20),
@@ -51,7 +58,7 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
           children: [
             Container(
               height: w < 1024 ? null : 700,
-              padding: EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80 ),
+              padding: EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80),
               margin: EdgeInsets.only(top: w < 1024 ? 0 : 75),
               child: SizedBox.expand(
                 child: MouseRegion(

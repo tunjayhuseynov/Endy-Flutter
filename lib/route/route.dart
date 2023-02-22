@@ -18,6 +18,7 @@ import 'package:endy/Pages/main/Home/CategorySelectionList/SubcategoryAndCompany
 import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
 import 'package:endy/Pages/main/Home/FilterPage/FilterPageScaffold.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
 import 'package:endy/Pages/main/List/ListDetail.dart';
@@ -39,39 +40,44 @@ import 'package:firebase_auth/firebase_auth.dart';
     CustomRoute(page: GlobalWidgetRoute, transitionsBuilder: TransitionsBuilders.noTransition, path: "/", guards: [
       AuthGuard
     ], children: [
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition,page: MainContainerRoute, path: "", initial: true,), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SearchPageRoute, path: "search"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: FavoriteMainRoute, path: "favorite", guards: [ PermissionGuard ] ), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: DetailPageContainerRoute, path: "home/detail/:id"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogMainRoute, path: "catalog"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogDetailRoute, path: "catalog/detail/:companyId"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogSingleRoute, path: "catalog/single/:id"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: AboutUsRoute, path: "about"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CategoryBlocProviderRoute, path: ":type/products/:id/:subcategoryId"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SubcategoryListRoute, path: ":type/list/:id"), // Company List or Subcategory List => D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CategoryListRoute, path: "category/list"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SettingRoute, path: "setting"), // D
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: FilterPageScaffoldRoute, path: "home/filter"), // Need modal for Web - M
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: NotificationPageRoute, path: "notification"), // Need modal for Web - M
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ProfileRoute, path: "profile", guards: [ PermissionGuard ]), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition,page: MainContainerRoute, path: "", initial: true,), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition,page: HomePage, path: "home",), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: FavoriteMainRoute, path: "favorite", guards: [ PermissionGuard ] ), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogMainRoute, path: "catalog"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogSingleRoute, path: "catalog/single/:id"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CatalogDetailRoute, path: "catalog/detail/:companyId"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: AboutUsRoute, path: "about"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CategoryListRoute, path: "category/list"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SubcategoryListRoute, path: ":type/list/:id"), // DM - params: Company List or Subcategory List
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: DetailPageContainerRoute, path: "home/detail/:id"), // DM
       
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusDetailPageRoute, path: "bonus/detail/:id", guards: [ PermissionGuard ]),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusHomeRoute, path: "bonus", guards: [ PermissionGuard ]),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CameraRoute, path: "bonus/camera", guards: [ PermissionGuard ]),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusAddRoute, path: "bonus/add/:code", guards: [ PermissionGuard ]),
-
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: NeedRegisterRoute, path: "needRegister"),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ListDetailRoute, path: "list/single", guards: [ PermissionGuard ]),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ListHomeRoute, path: "list", guards: [ PermissionGuard ]),
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CategoryBlocProviderRoute, path: ":type/products/:id/:subcategoryId"), // D
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: FilterPageScaffoldRoute, path: "home/filter"), // Need modal for Web - M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: MapPageRoute, path: "detail/map/:id"), // M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: NeedRegisterRoute, path: "needRegister"), // M
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: OnboardRoute, path: "onboard"),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: MapPageRoute, path: "detail/map/:id"),
+
+
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: NotificationPageRoute, path: "notification"), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SettingRoute, path: "setting"), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SearchPageRoute, path: "search"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ProfileRoute, path: "profile", guards: [ PermissionGuard ]), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusDetailPageRoute, path: "bonus/detail/:id", guards: [ PermissionGuard ]), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusHomeRoute, path: "bonus", guards: [ PermissionGuard ]), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CameraRoute, path: "bonus/camera", guards: [ PermissionGuard ]), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: BonusAddRoute, path: "bonus/add/:code", guards: [ PermissionGuard ]), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ListDetailRoute, path: "list/detail/:id", guards: [ PermissionGuard ]), // NoD M
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: ListHomeRoute, path: "list", guards: [ PermissionGuard ]), // NoD M
+      
+
+
     ]),
+    // Need to add 2 guards: 1 for auth redirect if logged in, 2 for showing web users that you need to download app in order to use these features
     AutoRoute(path: "/sign", page: SingWrapper, children: [
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignRoute, path: "main"),
-      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignInRoute, path: "signin"),
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignRoute, path: "main"), // DM
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignInRoute, path: "signin"), // DM
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: RegistrationContainerRoute, path: "registration"),
-      // Need to be returner Page for OTP
-      CustomRoute<PhoneAuthCredential>(transitionsBuilder: TransitionsBuilders.noTransition, page: OTP, path: "otp/:phone"),
+      CustomRoute<PhoneAuthCredential>(transitionsBuilder: TransitionsBuilders.noTransition, page: OTP, path: "otp/:phone"), // DM
     ]),
   ],
 )

@@ -73,7 +73,7 @@ class _ListHomeRouteState extends State<ListHomeRoute> {
                             id: Xid().toString(), name: text, details: []));
                       }
                     },
-                    child: const Icon(Icons.add, size: 32),
+                    child: const Icon(Icons.add, size: 32, color: Colors.white),
                   ),
                 ),
               ],
@@ -150,8 +150,7 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<ListBloc>().changeUserList(detail);
-        context.router.pushNamed('/list/single');
+        context.router.pushNamed('/list/detail/' + detail.id);
       },
       child: Container(
         decoration: BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/main.dart';
@@ -34,6 +35,7 @@ class SearchPageRoute extends StatefulWidget {
 class _SearchPageRouteState extends State<SearchPageRoute> {
   late CancelableOperation? _operation;
   final client = Client(typesenseConfig);
+  TextEditingController editingController = TextEditingController();
 
   @override
   void dispose() {
@@ -45,8 +47,8 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
     if (info.visibleFraction > 0.5) {
       _operation = CancelableOperation.fromFuture(context
               .read<SearchPageBloc>()
-              .getSearchResult(widget.params, widget.categoryId, widget.companyId,
-                  widget.subcategoryId, client))
+              .getSearchResult(widget.params, widget.categoryId,
+                  widget.companyId, widget.subcategoryId, client))
           .then((hits) {
         if (hits.length > 0) {
           final ctx = context.read<SearchPageBloc>();
@@ -63,6 +65,7 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
   @override
   void initState() {
     super.initState();
+    editingController.text = widget.params;
     _operation = CancelableOperation.fromFuture(context
             .read<SearchPageBloc>()
             .getSearchResult(widget.params, widget.categoryId, widget.companyId,
@@ -81,72 +84,107 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
     final gridCount = getSearchCardCount(w);
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: getContainerSize(w), vertical: 20),
-        child: BlocBuilder<GlobalBloc, GlobalState>(
-            builder: (globalContext, globalState) {
-          return BlocConsumer<SearchPageBloc, SearchPageState>(
-            listener: (ctx, state) {
-              if (state.search.length > 0) {
-                _operation = CancelableOperation.fromFuture(context
-                        .read<SearchPageBloc>()
-                        .getSearchResult(widget.params, widget.categoryId, widget.companyId,
-                            widget.subcategoryId, client))
-                    .then((hits) {
-                  var state = context.read<SearchPageBloc>().state;
-                  if (hits.length > 0) {
-                    context.read<SearchPageBloc>().set(state.copyWith(
-                          products: [...state.products, ...hits],
-                          currentPage: state.currentPage + 1,
-                          isSearching: false,
-                        ));
-                  }
-                });
-              }
-            },
-            listenWhen: (previous, current) => previous.search != current.search,
-            builder: (context, state) {
-              if (state.products.isEmpty && state.isSearching) {
-                return const Center(
-                    child: CircularProgressIndicator(
-                  color: Color(mainColor),
-                ));
-              }
-              if (state.products.isEmpty && !state.isSearching) {
-                return const Center(
-                  child: Text(
-                    "Nəticə tapılmadı",
-                    style: TextStyle(
-                      color: Color(mainColor),
-                      fontSize: 20,
-                    ),
-                  ),
-                );
-              }
-              return LayoutBuilder(builder: (context, constraints) {
-                return Column(
-                  children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      padding:
-                          const EdgeInsets.only(left: 10, right: 10, bottom: 20),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: gridCount,
-                          childAspectRatio: (200 / 350),
-                          mainAxisSpacing: 15,
-                          crossAxisSpacing: 15),
-                      itemCount: state.products.length,
-                      itemBuilder: (context, index) {
-                        final data = state.products[index];
-                        if (index == state.products.length - 1)
-                          return VisibilityDetector(
-                              key: Key(data.id),
-                              child: DiscountCard(
+    return Material(
+      color: Colors.white,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: getContainerSize(w), vertical: 20),
+          child: BlocBuilder<GlobalBloc, GlobalState>(
+              builder: (globalContext, globalState) {
+            return BlocConsumer<SearchPageBloc, SearchPageState>(
+              listener: (ctx, state) {
+                if (state.search.length > 0) {
+                  _operation = CancelableOperation.fromFuture(context
+                          .read<SearchPageBloc>()
+                          .getSearchResult(widget.params, widget.categoryId,
+                              widget.companyId, widget.subcategoryId, client))
+                      .then((hits) {
+                    var state = context.read<SearchPageBloc>().state;
+                    if (hits.length > 0) {
+                      context.read<SearchPageBloc>().set(state.copyWith(
+                            products: [...state.products, ...hits],
+                            currentPage: state.currentPage + 1,
+                            isSearching: false,
+                          ));
+                    }
+                  });
+                }
+              },
+              listenWhen: (previous, current) =>
+                  previous.search != current.search,
+              builder: (context, state) {
+                return LayoutBuilder(builder: (context, constraints) {
+                  return Column(
+                    children: [
+                      if (w < 1024)
+                        TopBar(
+                            size: size, editingController: editingController),
+                      if (state.products.isEmpty && state.isSearching)
+                        const Center(
+                            child: CircularProgressIndicator(
+                          color: Color(mainColor),
+                        )),
+                      if (state.products.isEmpty && !state.isSearching)
+                        const Center(
+                          child: Text(
+                            "Nəticə tapılmadı",
+                            style: TextStyle(
+                              color: Color(mainColor),
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      if (state.products.isNotEmpty)
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 20),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: gridCount,
+                                  childAspectRatio: (200 / 350),
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 15),
+                          itemCount: state.products.length,
+                          itemBuilder: (context, index) {
+                            final data = state.products[index];
+                            if (index == state.products.length - 1)
+                              return VisibilityDetector(
+                                  key: Key(data.id),
+                                  child: DiscountCard(
+                                      product: Product(
+                                          availablePlaces: [],
+                                          category: globalState.categories
+                                              .where((element) =>
+                                                  "categories/${element.id}" ==
+                                                  data.category)
+                                              .first,
+                                          company: globalState.companies
+                                              .where((element) =>
+                                                  "companies/${element.id}" ==
+                                                  data.company)
+                                              .first,
+                                          createdAt: data.createdAt,
+                                          deadline: data.deadline,
+                                          isPrime: false,
+                                          discount: data.discount,
+                                          discountedPrice: data.discountedPrice,
+                                          id: data.id,
+                                          images: [],
+                                          primaryImage: data.primaryImage,
+                                          name: data.name,
+                                          price: data.price,
+                                          subcategory: null,
+                                          link: null)),
+                                  onVisibilityChanged: onVisible);
+                            else
+                              return DiscountCard(
                                   product: Product(
                                       availablePlaces: [],
                                       category: globalState.categories
@@ -170,48 +208,22 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
                                       name: data.name,
                                       price: data.price,
                                       subcategory: null,
-                                      link: null)),
-                              onVisibilityChanged: onVisible);
-                        else
-                          return DiscountCard(
-                              product: Product(
-                                  availablePlaces: [],
-                                  category: globalState.categories
-                                      .where((element) =>
-                                          "categories/${element.id}" ==
-                                          data.category)
-                                      .first,
-                                  company: globalState.companies
-                                      .where((element) =>
-                                          "companies/${element.id}" ==
-                                          data.company)
-                                      .first,
-                                  createdAt: data.createdAt,
-                                  deadline: data.deadline,
-                                  isPrime: false,
-                                  discount: data.discount,
-                                  discountedPrice: data.discountedPrice,
-                                  id: data.id,
-                                  images: [],
-                                  primaryImage: data.primaryImage,
-                                  name: data.name,
-                                  price: data.price,
-                                  subcategory: null,
-                                  link: null));
-                      },
-                    ),
-                    if (state.products.isNotEmpty && !state.isLastPage)
-                      const Center(
-                          child: CircularProgressIndicator(
-                        color: Color(mainColor),
-                      )),
-                    const SizedBox(height: 120)
-                  ],
-                );
-              });
-            },
-          );
-        }),
+                                      link: null));
+                          },
+                        ),
+                      if (state.products.isNotEmpty && !state.isLastPage)
+                        const Center(
+                            child: CircularProgressIndicator(
+                          color: Color(mainColor),
+                        )),
+                      const SizedBox(height: 120)
+                    ],
+                  );
+                });
+              },
+            );
+          }),
+        ),
       ),
     );
   }

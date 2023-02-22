@@ -124,6 +124,10 @@ class GlobalBloc extends Parent {
     emit(state.copyWith(authStatus: status));
   }
 
+  void set(GlobalState state){
+    emit(state);
+  }
+
   void loadUtils() {
     FirebaseFirestore.instance
         .collection("utils")
@@ -250,41 +254,7 @@ class GlobalBloc extends Parent {
       ));
     });
 
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        emit(GlobalState()
-            .copyWith(authStatus: GlobalAuthStatus.notLoggedIn, user: null));
-      } else if (!user.isAnonymous &&
-          FirebaseAuth.instance.currentUser != null) {
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get()
-            .then((value) {
-          if (value.exists && value.data() != null) {
-            var data = UserData.fromJson(value.data()!);
-            NotificationCrud.getNotifications(
-                    data.subscribedCompanies, data.createdAt)
-                .then((notifications) {
-              int count = notifications
-                  .where((element) =>
-                      element.createdAt > data.notificationSeenTime)
-                  .length;
-              emit(state.copyWith(
-                  notifications: notifications,
-                  unseenNotificationCount: count,
-                  authStatus: GlobalAuthStatus.loggedIn,
-                  user: user,
-                  userData: data));
-            });
-          }
-        });
-      } else {
-        // FirebaseAuth.instance.setPersistence(Persistence.NONE);
-        emit(GlobalState()
-            .copyWith(authStatus: GlobalAuthStatus.loggedIn, user: null));
-      }
-    });
+
   }
 
   void setFirstEnter() {

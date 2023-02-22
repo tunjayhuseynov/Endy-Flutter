@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:endy/route/route.gr.dart';
 
 class CameraRoute extends StatefulWidget {
   const CameraRoute({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class CameraRouteState extends State<CameraRoute> {
               } else {
                 final String code = barcodes[0].rawValue!;
                 controller.stop();
-                context.router.pushNamed("/bonus/add/" + code);
+                context.router.replace(BonusAddRoute(code: code));
               }
             }),
         _getCustomPaintOverlay(context),

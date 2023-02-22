@@ -14,10 +14,9 @@ class FavoriteMainRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    return ScaffoldWrapper(
-      hPadding: 0,
-      backgroundColor: Colors.white,
-      body: ListView(
+    return Material(
+      color: Colors.white,
+      child: ListView(
         shrinkWrap: true,
         children: [
           const SizedBox(height: 25),

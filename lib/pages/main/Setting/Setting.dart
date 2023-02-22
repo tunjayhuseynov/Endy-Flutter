@@ -54,7 +54,6 @@ class SettingRoute extends StatelessWidget {
                           height: 35,
                           child: TextButton(
                             onPressed: () async => {
-                              context.read<GlobalBloc>().logout(),
                               await FirebaseAuth.instance.signOut(),
                               context.router.pushNamed("/sign/main")
                             },
