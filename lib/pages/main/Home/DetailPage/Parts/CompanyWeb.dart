@@ -42,7 +42,7 @@ class _CompanyWebState extends State<CompanyWeb> {
           InkWell(
               mouseCursor: SystemMouseCursors.click,
               onTap: () =>
-                  context.router.pushNamed('/company/list/' + company.id),
+                  context.router.pushNamed('/company/products/' + company.id + "/all"),
               child: Text("Mağazaya get",
                   style: const TextStyle(
                       fontSize: 14,

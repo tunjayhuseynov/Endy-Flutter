@@ -11,105 +11,106 @@
 // ignore_for_file: type=lint
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i32;
-import 'package:firebase_auth/firebase_auth.dart' as _i36;
-import 'package:flutter/material.dart' as _i33;
+import 'package:auto_route/auto_route.dart' as _i33;
+import 'package:firebase_auth/firebase_auth.dart' as _i37;
+import 'package:flutter/material.dart' as _i34;
 
 import '../components/GlobalWidget.dart' as _i1;
-import '../Pages/main/Bonus/BonusAdd.dart' as _i25;
-import '../Pages/main/Bonus/BonusDetail.dart' as _i22;
-import '../Pages/main/Bonus/BonusHome.dart' as _i23;
-import '../Pages/main/Bonus/CameraQrScanner.dart' as _i24;
+import '../Pages/main/Bonus/BonusAdd.dart' as _i26;
+import '../Pages/main/Bonus/BonusDetail.dart' as _i23;
+import '../Pages/main/Bonus/BonusHome.dart' as _i24;
+import '../Pages/main/Bonus/CameraQrScanner.dart' as _i25;
 import '../Pages/main/Catalog/CatalogDetail.dart' as _i8;
 import '../Pages/main/Catalog/CatalogMain.dart' as _i6;
 import '../Pages/main/Catalog/CatalogSingle.dart' as _i7;
 import '../Pages/main/Favorite/FavoriteMain.dart' as _i5;
-import '../Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart' as _i13;
+import '../Pages/main/Home/CategoryGrid/CategoryBlocProvider.dart' as _i14;
 import '../Pages/main/Home/CategorySelectionList/CategoryList.dart' as _i10;
+import '../Pages/main/Home/CategorySelectionList/CompanyLabelList.dart' as _i13;
 import '../Pages/main/Home/CategorySelectionList/SubcategoryAndCompanyList.dart'
     as _i11;
 import '../Pages/main/Home/DetailPage/DetailPageContainer.dart' as _i12;
-import '../Pages/main/Home/DetailPage/Map.dart' as _i15;
-import '../Pages/main/Home/FilterPage/FilterPageScaffold.dart' as _i14;
+import '../Pages/main/Home/DetailPage/Map.dart' as _i16;
+import '../Pages/main/Home/FilterPage/FilterPageScaffold.dart' as _i15;
 import '../Pages/main/Home/HomePage/HomePage.dart' as _i4;
 import '../Pages/main/Home/HomePage/HomePageContainer.dart' as _i3;
-import '../Pages/main/Home/SearchPage/Search.dart' as _i20;
-import '../Pages/main/List/ListDetail.dart' as _i26;
-import '../Pages/main/List/ListHome.dart' as _i27;
-import '../Pages/main/NeedRegister/index.dart' as _i16;
-import '../Pages/main/Onboard/Onboard.dart' as _i17;
+import '../Pages/main/Home/SearchPage/Search.dart' as _i21;
+import '../Pages/main/List/ListDetail.dart' as _i27;
+import '../Pages/main/List/ListHome.dart' as _i28;
+import '../Pages/main/NeedRegister/index.dart' as _i17;
+import '../Pages/main/Onboard/Onboard.dart' as _i18;
 import '../Pages/main/Setting/AboutUs.dart' as _i9;
-import '../Pages/main/Setting/Notification.dart' as _i18;
-import '../Pages/main/Setting/Profile.dart' as _i21;
-import '../Pages/main/Setting/Setting.dart' as _i19;
-import '../Pages/Sign/Main.dart' as _i28;
-import '../Pages/Sign/OTP/OTP.dart' as _i31;
-import '../Pages/Sign/Register/RegistrationContainer.dart' as _i30;
-import '../Pages/Sign/SignIn/SignIn.dart' as _i29;
+import '../Pages/main/Setting/Notification.dart' as _i19;
+import '../Pages/main/Setting/Profile.dart' as _i22;
+import '../Pages/main/Setting/Setting.dart' as _i20;
+import '../Pages/Sign/Main.dart' as _i29;
+import '../Pages/Sign/OTP/OTP.dart' as _i32;
+import '../Pages/Sign/Register/RegistrationContainer.dart' as _i31;
+import '../Pages/Sign/SignIn/SignIn.dart' as _i30;
 import '../Pages/Sign/Wrapper.dart' as _i2;
-import 'guard.dart' as _i34;
-import 'permission.dart' as _i35;
+import 'guard.dart' as _i35;
+import 'permission.dart' as _i36;
 
-class AppRouter extends _i32.RootStackRouter {
+class AppRouter extends _i33.RootStackRouter {
   AppRouter({
-    _i33.GlobalKey<_i33.NavigatorState>? navigatorKey,
+    _i34.GlobalKey<_i34.NavigatorState>? navigatorKey,
     required this.authGuard,
     required this.permissionGuard,
   }) : super(navigatorKey);
 
-  final _i34.AuthGuard authGuard;
+  final _i35.AuthGuard authGuard;
 
-  final _i35.PermissionGuard permissionGuard;
+  final _i36.PermissionGuard permissionGuard;
 
   @override
-  final Map<String, _i32.PageFactory> pagesMap = {
+  final Map<String, _i33.PageFactory> pagesMap = {
     GlobalWidgetRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i1.GlobalWidgetRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     SingWrapper.name: (routeData) {
-      return _i32.MaterialPageX<dynamic>(
+      return _i33.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.SingWrapper(),
       );
     },
     MainContainerRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i3.MainContainerRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     HomeRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i4.HomePage(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     FavoriteMainRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i5.FavoriteMainRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     CatalogMainRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i6.CatalogMainRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -118,13 +119,13 @@ class AppRouter extends _i32.RootStackRouter {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<CatalogSingleRouteArgs>(
           orElse: () => CatalogSingleRouteArgs(id: pathParams.optString('id')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: _i7.CatalogSingleRoute(
           key: args.key,
           id: args.id,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -134,31 +135,31 @@ class AppRouter extends _i32.RootStackRouter {
       final args = routeData.argsAs<CatalogDetailRouteArgs>(
           orElse: () => CatalogDetailRouteArgs(
               companyId: pathParams.optString('companyId')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: _i8.CatalogDetailRoute(
           key: args.key,
           companyId: args.companyId,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     AboutUsRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i9.AboutUsRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     CategoryListRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i10.CategoryListRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -170,14 +171,14 @@ class AppRouter extends _i32.RootStackRouter {
                 id: pathParams.optString('id'),
                 type: pathParams.optString('type'),
               ));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: _i11.SubcategoryListRoute(
           key: args.key,
           id: args.id,
           type: args.type,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -190,13 +191,22 @@ class AppRouter extends _i32.RootStackRouter {
                 'id',
                 "",
               )));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
         child: _i12.DetailPageContainerRoute(
           key: args.key,
           id: args.id,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
+        opaque: true,
+        barrierDismissible: false,
+      );
+    },
+    CompanyLabelListRoute.name: (routeData) {
+      return _i33.CustomPage<dynamic>(
+        routeData: routeData,
+        child: const _i13.CompanyLabelListRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -209,24 +219,24 @@ class AppRouter extends _i32.RootStackRouter {
                 subcategoryId: pathParams.optString('subcategoryId'),
                 type: pathParams.getString('type'),
               ));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i13.CategoryBlocProviderRoute(
+        child: _i14.CategoryBlocProviderRoute(
           key: args.key,
           id: args.id,
           subcategoryId: args.subcategoryId,
           type: args.type,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     FilterRouteScaffoldRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i14.FilterPageScaffoldRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i15.FilterPageScaffoldRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -235,13 +245,13 @@ class AppRouter extends _i32.RootStackRouter {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<MapRouteRouteArgs>(
           orElse: () => MapRouteRouteArgs(id: pathParams.optString('id')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i15.MapPageRoute(
+        child: _i16.MapPageRoute(
           key: args.key,
           id: args.id,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -249,40 +259,40 @@ class AppRouter extends _i32.RootStackRouter {
     NeedRegisterRoute.name: (routeData) {
       final args = routeData.argsAs<NeedRegisterRouteArgs>(
           orElse: () => const NeedRegisterRouteArgs());
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i16.NeedRegisterRoute(
+        child: _i17.NeedRegisterRoute(
           key: args.key,
           deactivateTab: args.deactivateTab,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     OnboardRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i17.OnboardRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i18.OnboardRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     NotificationRouteRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i18.NotificationPageRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i19.NotificationPageRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     SettingRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i19.SettingRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i20.SettingRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -299,25 +309,25 @@ class AppRouter extends _i32.RootStackRouter {
                   '',
                 ),
               ));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i20.SearchPageRoute(
+        child: _i21.SearchPageRoute(
           key: args.key,
           categoryId: args.categoryId,
           subcategoryId: args.subcategoryId,
           companyId: args.companyId,
           params: args.params,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     ProfileRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i21.ProfileRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i22.ProfileRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -327,31 +337,31 @@ class AppRouter extends _i32.RootStackRouter {
       final args = routeData.argsAs<BonusDetailRouteRouteArgs>(
           orElse: () =>
               BonusDetailRouteRouteArgs(id: pathParams.optString('id')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i22.BonusDetailPageRoute(
+        child: _i23.BonusDetailPageRoute(
           key: args.key,
           id: args.id,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     BonusHomeRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i23.BonusHomeRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i24.BonusHomeRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     CameraRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i24.CameraRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i25.CameraRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -360,13 +370,13 @@ class AppRouter extends _i32.RootStackRouter {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<BonusAddRouteArgs>(
           orElse: () => BonusAddRouteArgs(code: pathParams.optString('code')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i25.BonusAddRoute(
+        child: _i26.BonusAddRoute(
           key: args.key,
           code: args.code,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -375,49 +385,49 @@ class AppRouter extends _i32.RootStackRouter {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<ListDetailRouteArgs>(
           orElse: () => ListDetailRouteArgs(id: pathParams.optString('id')));
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i26.ListDetailRoute(
+        child: _i27.ListDetailRoute(
           key: args.key,
           id: args.id,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     ListHomeRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i27.ListHomeRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i28.ListHomeRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     SignRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i28.SignRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i29.SignRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     SignInRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i29.SignInRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i30.SignInRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     RegistrationContainerRoute.name: (routeData) {
-      return _i32.CustomPage<dynamic>(
+      return _i33.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i30.RegistrationContainerRoute(),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        child: const _i31.RegistrationContainerRoute(),
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -430,13 +440,13 @@ class AppRouter extends _i32.RootStackRouter {
                 'phone',
                 "",
               )));
-      return _i32.CustomPage<_i36.PhoneAuthCredential>(
+      return _i33.CustomPage<_i37.PhoneAuthCredential>(
         routeData: routeData,
-        child: _i31.OTP(
+        child: _i32.OTP(
           key: args.key,
           phone: args.phone,
         ),
-        transitionsBuilder: _i32.TransitionsBuilders.noTransition,
+        transitionsBuilder: _i33.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
@@ -444,140 +454,145 @@ class AppRouter extends _i32.RootStackRouter {
   };
 
   @override
-  List<_i32.RouteConfig> get routes => [
-        _i32.RouteConfig(
+  List<_i33.RouteConfig> get routes => [
+        _i33.RouteConfig(
           GlobalWidgetRoute.name,
           path: '/',
           guards: [authGuard],
           children: [
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               MainContainerRoute.name,
               path: '',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               HomeRoute.name,
               path: 'home',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               FavoriteMainRoute.name,
               path: 'favorite',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               CatalogMainRoute.name,
               path: 'catalog',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               CatalogSingleRoute.name,
               path: 'catalog/single/:id',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               CatalogDetailRoute.name,
               path: 'catalog/detail/:companyId',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               AboutUsRoute.name,
               path: 'about',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               CategoryListRoute.name,
               path: 'category/list',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               SubcategoryListRoute.name,
               path: ':type/list/:id',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               DetailRouteContainerRoute.name,
               path: 'home/detail/:id',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
+              CompanyLabelListRoute.name,
+              path: 'companyLabel/list',
+              parent: GlobalWidgetRoute.name,
+            ),
+            _i33.RouteConfig(
               CategoryBlocProviderRoute.name,
               path: ':type/products/:id/:subcategoryId',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               FilterRouteScaffoldRoute.name,
               path: 'home/filter',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               MapRouteRoute.name,
               path: 'detail/map/:id',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               NeedRegisterRoute.name,
               path: 'needRegister',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               OnboardRoute.name,
               path: 'onboard',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               NotificationRouteRoute.name,
               path: 'notification',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               SettingRoute.name,
               path: 'setting',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               SearchRouteRoute.name,
               path: 'search',
               parent: GlobalWidgetRoute.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               ProfileRoute.name,
               path: 'profile',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               BonusDetailRouteRoute.name,
               path: 'bonus/detail/:id',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               BonusHomeRoute.name,
               path: 'bonus',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               CameraRoute.name,
               path: 'bonus/camera',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               BonusAddRoute.name,
               path: 'bonus/add/:code',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               ListDetailRoute.name,
               path: 'list/detail/:id',
               parent: GlobalWidgetRoute.name,
               guards: [permissionGuard],
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               ListHomeRoute.name,
               path: 'list',
               parent: GlobalWidgetRoute.name,
@@ -585,26 +600,26 @@ class AppRouter extends _i32.RootStackRouter {
             ),
           ],
         ),
-        _i32.RouteConfig(
+        _i33.RouteConfig(
           SingWrapper.name,
           path: '/sign',
           children: [
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               SignRoute.name,
               path: 'main',
               parent: SingWrapper.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               SignInRoute.name,
               path: 'signin',
               parent: SingWrapper.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               RegistrationContainerRoute.name,
               path: 'registration',
               parent: SingWrapper.name,
             ),
-            _i32.RouteConfig(
+            _i33.RouteConfig(
               OTP.name,
               path: 'otp/:phone',
               parent: SingWrapper.name,
@@ -616,8 +631,8 @@ class AppRouter extends _i32.RootStackRouter {
 
 /// generated route for
 /// [_i1.GlobalWidgetRoute]
-class GlobalWidgetRoute extends _i32.PageRouteInfo<void> {
-  const GlobalWidgetRoute({List<_i32.PageRouteInfo>? children})
+class GlobalWidgetRoute extends _i33.PageRouteInfo<void> {
+  const GlobalWidgetRoute({List<_i33.PageRouteInfo>? children})
       : super(
           GlobalWidgetRoute.name,
           path: '/',
@@ -629,8 +644,8 @@ class GlobalWidgetRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.SingWrapper]
-class SingWrapper extends _i32.PageRouteInfo<void> {
-  const SingWrapper({List<_i32.PageRouteInfo>? children})
+class SingWrapper extends _i33.PageRouteInfo<void> {
+  const SingWrapper({List<_i33.PageRouteInfo>? children})
       : super(
           SingWrapper.name,
           path: '/sign',
@@ -642,7 +657,7 @@ class SingWrapper extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.MainContainerRoute]
-class MainContainerRoute extends _i32.PageRouteInfo<void> {
+class MainContainerRoute extends _i33.PageRouteInfo<void> {
   const MainContainerRoute()
       : super(
           MainContainerRoute.name,
@@ -654,7 +669,7 @@ class MainContainerRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.HomePage]
-class HomeRoute extends _i32.PageRouteInfo<void> {
+class HomeRoute extends _i33.PageRouteInfo<void> {
   const HomeRoute()
       : super(
           HomeRoute.name,
@@ -666,7 +681,7 @@ class HomeRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.FavoriteMainRoute]
-class FavoriteMainRoute extends _i32.PageRouteInfo<void> {
+class FavoriteMainRoute extends _i33.PageRouteInfo<void> {
   const FavoriteMainRoute()
       : super(
           FavoriteMainRoute.name,
@@ -678,7 +693,7 @@ class FavoriteMainRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i6.CatalogMainRoute]
-class CatalogMainRoute extends _i32.PageRouteInfo<void> {
+class CatalogMainRoute extends _i33.PageRouteInfo<void> {
   const CatalogMainRoute()
       : super(
           CatalogMainRoute.name,
@@ -690,9 +705,9 @@ class CatalogMainRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.CatalogSingleRoute]
-class CatalogSingleRoute extends _i32.PageRouteInfo<CatalogSingleRouteArgs> {
+class CatalogSingleRoute extends _i33.PageRouteInfo<CatalogSingleRouteArgs> {
   CatalogSingleRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? id,
   }) : super(
           CatalogSingleRoute.name,
@@ -713,7 +728,7 @@ class CatalogSingleRouteArgs {
     this.id,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -725,9 +740,9 @@ class CatalogSingleRouteArgs {
 
 /// generated route for
 /// [_i8.CatalogDetailRoute]
-class CatalogDetailRoute extends _i32.PageRouteInfo<CatalogDetailRouteArgs> {
+class CatalogDetailRoute extends _i33.PageRouteInfo<CatalogDetailRouteArgs> {
   CatalogDetailRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? companyId,
   }) : super(
           CatalogDetailRoute.name,
@@ -748,7 +763,7 @@ class CatalogDetailRouteArgs {
     this.companyId,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? companyId;
 
@@ -760,7 +775,7 @@ class CatalogDetailRouteArgs {
 
 /// generated route for
 /// [_i9.AboutUsRoute]
-class AboutUsRoute extends _i32.PageRouteInfo<void> {
+class AboutUsRoute extends _i33.PageRouteInfo<void> {
   const AboutUsRoute()
       : super(
           AboutUsRoute.name,
@@ -772,7 +787,7 @@ class AboutUsRoute extends _i32.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.CategoryListRoute]
-class CategoryListRoute extends _i32.PageRouteInfo<void> {
+class CategoryListRoute extends _i33.PageRouteInfo<void> {
   const CategoryListRoute()
       : super(
           CategoryListRoute.name,
@@ -785,9 +800,9 @@ class CategoryListRoute extends _i32.PageRouteInfo<void> {
 /// generated route for
 /// [_i11.SubcategoryListRoute]
 class SubcategoryListRoute
-    extends _i32.PageRouteInfo<SubcategoryListRouteArgs> {
+    extends _i33.PageRouteInfo<SubcategoryListRouteArgs> {
   SubcategoryListRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? id,
     String? type,
   }) : super(
@@ -814,7 +829,7 @@ class SubcategoryListRouteArgs {
     this.type,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -829,9 +844,9 @@ class SubcategoryListRouteArgs {
 /// generated route for
 /// [_i12.DetailPageContainerRoute]
 class DetailRouteContainerRoute
-    extends _i32.PageRouteInfo<DetailRouteContainerRouteArgs> {
+    extends _i33.PageRouteInfo<DetailRouteContainerRouteArgs> {
   DetailRouteContainerRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String id = "",
   }) : super(
           DetailRouteContainerRoute.name,
@@ -852,7 +867,7 @@ class DetailRouteContainerRouteArgs {
     this.id = "",
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String id;
 
@@ -863,11 +878,23 @@ class DetailRouteContainerRouteArgs {
 }
 
 /// generated route for
-/// [_i13.CategoryBlocProviderRoute]
+/// [_i13.CompanyLabelListRoute]
+class CompanyLabelListRoute extends _i33.PageRouteInfo<void> {
+  const CompanyLabelListRoute()
+      : super(
+          CompanyLabelListRoute.name,
+          path: 'companyLabel/list',
+        );
+
+  static const String name = 'CompanyLabelListRoute';
+}
+
+/// generated route for
+/// [_i14.CategoryBlocProviderRoute]
 class CategoryBlocProviderRoute
-    extends _i32.PageRouteInfo<CategoryBlocProviderRouteArgs> {
+    extends _i33.PageRouteInfo<CategoryBlocProviderRouteArgs> {
   CategoryBlocProviderRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? id,
     String? subcategoryId,
     required String type,
@@ -898,7 +925,7 @@ class CategoryBlocProviderRouteArgs {
     required this.type,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -913,8 +940,8 @@ class CategoryBlocProviderRouteArgs {
 }
 
 /// generated route for
-/// [_i14.FilterPageScaffoldRoute]
-class FilterRouteScaffoldRoute extends _i32.PageRouteInfo<void> {
+/// [_i15.FilterPageScaffoldRoute]
+class FilterRouteScaffoldRoute extends _i33.PageRouteInfo<void> {
   const FilterRouteScaffoldRoute()
       : super(
           FilterRouteScaffoldRoute.name,
@@ -925,10 +952,10 @@ class FilterRouteScaffoldRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i15.MapPageRoute]
-class MapRouteRoute extends _i32.PageRouteInfo<MapRouteRouteArgs> {
+/// [_i16.MapPageRoute]
+class MapRouteRoute extends _i33.PageRouteInfo<MapRouteRouteArgs> {
   MapRouteRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     required String? id,
   }) : super(
           MapRouteRoute.name,
@@ -949,7 +976,7 @@ class MapRouteRouteArgs {
     required this.id,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -960,10 +987,10 @@ class MapRouteRouteArgs {
 }
 
 /// generated route for
-/// [_i16.NeedRegisterRoute]
-class NeedRegisterRoute extends _i32.PageRouteInfo<NeedRegisterRouteArgs> {
+/// [_i17.NeedRegisterRoute]
+class NeedRegisterRoute extends _i33.PageRouteInfo<NeedRegisterRouteArgs> {
   NeedRegisterRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     bool? deactivateTab,
   }) : super(
           NeedRegisterRoute.name,
@@ -983,7 +1010,7 @@ class NeedRegisterRouteArgs {
     this.deactivateTab,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final bool? deactivateTab;
 
@@ -994,8 +1021,8 @@ class NeedRegisterRouteArgs {
 }
 
 /// generated route for
-/// [_i17.OnboardRoute]
-class OnboardRoute extends _i32.PageRouteInfo<void> {
+/// [_i18.OnboardRoute]
+class OnboardRoute extends _i33.PageRouteInfo<void> {
   const OnboardRoute()
       : super(
           OnboardRoute.name,
@@ -1006,8 +1033,8 @@ class OnboardRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i18.NotificationPageRoute]
-class NotificationRouteRoute extends _i32.PageRouteInfo<void> {
+/// [_i19.NotificationPageRoute]
+class NotificationRouteRoute extends _i33.PageRouteInfo<void> {
   const NotificationRouteRoute()
       : super(
           NotificationRouteRoute.name,
@@ -1018,8 +1045,8 @@ class NotificationRouteRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i19.SettingRoute]
-class SettingRoute extends _i32.PageRouteInfo<void> {
+/// [_i20.SettingRoute]
+class SettingRoute extends _i33.PageRouteInfo<void> {
   const SettingRoute()
       : super(
           SettingRoute.name,
@@ -1030,10 +1057,10 @@ class SettingRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i20.SearchPageRoute]
-class SearchRouteRoute extends _i32.PageRouteInfo<SearchRouteRouteArgs> {
+/// [_i21.SearchPageRoute]
+class SearchRouteRoute extends _i33.PageRouteInfo<SearchRouteRouteArgs> {
   SearchRouteRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? categoryId,
     String? subcategoryId,
     String? companyId,
@@ -1068,7 +1095,7 @@ class SearchRouteRouteArgs {
     this.params = '',
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? categoryId;
 
@@ -1085,8 +1112,8 @@ class SearchRouteRouteArgs {
 }
 
 /// generated route for
-/// [_i21.ProfileRoute]
-class ProfileRoute extends _i32.PageRouteInfo<void> {
+/// [_i22.ProfileRoute]
+class ProfileRoute extends _i33.PageRouteInfo<void> {
   const ProfileRoute()
       : super(
           ProfileRoute.name,
@@ -1097,11 +1124,11 @@ class ProfileRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i22.BonusDetailPageRoute]
+/// [_i23.BonusDetailPageRoute]
 class BonusDetailRouteRoute
-    extends _i32.PageRouteInfo<BonusDetailRouteRouteArgs> {
+    extends _i33.PageRouteInfo<BonusDetailRouteRouteArgs> {
   BonusDetailRouteRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? id,
   }) : super(
           BonusDetailRouteRoute.name,
@@ -1122,7 +1149,7 @@ class BonusDetailRouteRouteArgs {
     this.id,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -1133,8 +1160,8 @@ class BonusDetailRouteRouteArgs {
 }
 
 /// generated route for
-/// [_i23.BonusHomeRoute]
-class BonusHomeRoute extends _i32.PageRouteInfo<void> {
+/// [_i24.BonusHomeRoute]
+class BonusHomeRoute extends _i33.PageRouteInfo<void> {
   const BonusHomeRoute()
       : super(
           BonusHomeRoute.name,
@@ -1145,8 +1172,8 @@ class BonusHomeRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i24.CameraRoute]
-class CameraRoute extends _i32.PageRouteInfo<void> {
+/// [_i25.CameraRoute]
+class CameraRoute extends _i33.PageRouteInfo<void> {
   const CameraRoute()
       : super(
           CameraRoute.name,
@@ -1157,10 +1184,10 @@ class CameraRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i25.BonusAddRoute]
-class BonusAddRoute extends _i32.PageRouteInfo<BonusAddRouteArgs> {
+/// [_i26.BonusAddRoute]
+class BonusAddRoute extends _i33.PageRouteInfo<BonusAddRouteArgs> {
   BonusAddRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? code,
   }) : super(
           BonusAddRoute.name,
@@ -1181,7 +1208,7 @@ class BonusAddRouteArgs {
     this.code,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? code;
 
@@ -1192,10 +1219,10 @@ class BonusAddRouteArgs {
 }
 
 /// generated route for
-/// [_i26.ListDetailRoute]
-class ListDetailRoute extends _i32.PageRouteInfo<ListDetailRouteArgs> {
+/// [_i27.ListDetailRoute]
+class ListDetailRoute extends _i33.PageRouteInfo<ListDetailRouteArgs> {
   ListDetailRoute({
-    _i33.Key? key,
+    _i34.Key? key,
     String? id,
   }) : super(
           ListDetailRoute.name,
@@ -1216,7 +1243,7 @@ class ListDetailRouteArgs {
     this.id,
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String? id;
 
@@ -1227,8 +1254,8 @@ class ListDetailRouteArgs {
 }
 
 /// generated route for
-/// [_i27.ListHomeRoute]
-class ListHomeRoute extends _i32.PageRouteInfo<void> {
+/// [_i28.ListHomeRoute]
+class ListHomeRoute extends _i33.PageRouteInfo<void> {
   const ListHomeRoute()
       : super(
           ListHomeRoute.name,
@@ -1239,8 +1266,8 @@ class ListHomeRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i28.SignRoute]
-class SignRoute extends _i32.PageRouteInfo<void> {
+/// [_i29.SignRoute]
+class SignRoute extends _i33.PageRouteInfo<void> {
   const SignRoute()
       : super(
           SignRoute.name,
@@ -1251,8 +1278,8 @@ class SignRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i29.SignInRoute]
-class SignInRoute extends _i32.PageRouteInfo<void> {
+/// [_i30.SignInRoute]
+class SignInRoute extends _i33.PageRouteInfo<void> {
   const SignInRoute()
       : super(
           SignInRoute.name,
@@ -1263,8 +1290,8 @@ class SignInRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i30.RegistrationContainerRoute]
-class RegistrationContainerRoute extends _i32.PageRouteInfo<void> {
+/// [_i31.RegistrationContainerRoute]
+class RegistrationContainerRoute extends _i33.PageRouteInfo<void> {
   const RegistrationContainerRoute()
       : super(
           RegistrationContainerRoute.name,
@@ -1275,10 +1302,10 @@ class RegistrationContainerRoute extends _i32.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i31.OTP]
-class OTP extends _i32.PageRouteInfo<OTPArgs> {
+/// [_i32.OTP]
+class OTP extends _i33.PageRouteInfo<OTPArgs> {
   OTP({
-    _i33.Key? key,
+    _i34.Key? key,
     String phone = "",
   }) : super(
           OTP.name,
@@ -1299,7 +1326,7 @@ class OTPArgs {
     this.phone = "",
   });
 
-  final _i33.Key? key;
+  final _i34.Key? key;
 
   final String phone;
 

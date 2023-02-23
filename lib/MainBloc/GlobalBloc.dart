@@ -32,6 +32,7 @@ class GlobalState {
   final List<NotificationMessage> notifications;
   final int unseenNotificationCount;
   final List<Company> companies;
+  final List<CompanyLabel> companyLabels;
   final List<Category> categories;
   final List<Subcategory> subcategories;
   final List<Panel> panels;
@@ -49,6 +50,7 @@ class GlobalState {
     this.unseenNotificationCount = 0,
     this.subcategories = const [],
     this.companies = const [],
+    this.companyLabels = const [],
     this.panels = const [],
     this.catalogs = const [],
     this.aboutApp = "",
@@ -63,6 +65,7 @@ class GlobalState {
       UserData? userData,
       int? reset,
       List<Company>? companies,
+      List<CompanyLabel>? companyLabels,
       List<NotificationMessage>? notifications,
       int? unseenNotificationCount,
       List<Category>? categories,
@@ -82,6 +85,7 @@ class GlobalState {
       unseenNotificationCount:
           unseenNotificationCount ?? this.unseenNotificationCount,
       companies: companies ?? this.companies,
+      companyLabels: companyLabels ?? this.companyLabels,
       catalogs: catalogs ?? this.catalogs,
       categories: categories ?? this.categories,
       subcategories: subcategories ?? this.subcategories,
@@ -99,6 +103,7 @@ class GlobalState {
         categories,
         subcategories,
         companies,
+        companyLabels,
         panels,
         user,
         userData,
@@ -240,7 +245,8 @@ class GlobalBloc extends Parent {
       CategoryCrud.getCategories(),
       PanelCrud.getPanels(),
       PanelCrud.getAbout(),
-      CatalogsCrud.getCatalogs()
+      CatalogsCrud.getCatalogs(),
+      CompanyCrud.getCompanyLabels(),
       // SubcategoryCrud.getSubcategories(),
     ]).then((value) {
       emit(state.copyWith(
@@ -250,6 +256,7 @@ class GlobalBloc extends Parent {
         panels: value[2] as List<Panel>,
         aboutApp: value[3] as String,
         catalogs: value[4] as List<Catalog>,
+        companyLabels: value[5] as List<CompanyLabel>,
         // subcategories: value[2] as List<Subcategory>,
       ));
     });

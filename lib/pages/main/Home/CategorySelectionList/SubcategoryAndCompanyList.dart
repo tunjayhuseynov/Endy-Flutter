@@ -49,7 +49,14 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
             .state
             .categories
             .firstWhereOrNull((element) => element.id == widget.id);
-        var companies = context.read<GlobalBloc>().state.companies;
+        var companies = widget.id != "all"
+            ? context
+                .read<GlobalBloc>()
+                .state
+                .companies
+                .where((element) => element.label == widget.id)
+                .toList()
+            : context.read<GlobalBloc>().state.companies;
         return state.copyWith(
           isBrand: isBrand,
           isSubcategory: isSubcategory,

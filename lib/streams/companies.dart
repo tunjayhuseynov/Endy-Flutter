@@ -34,6 +34,12 @@ class CompanyCrud {
         .then((snapshot) => Company.fromJson(snapshot.data() ?? {}));
   }
 
+  static Future<List<CompanyLabel>> getCompanyLabels() {
+    return FirebaseFirestore.instance.collection('companyLabels').get().then(
+        (snapshot) =>
+            snapshot.docs.map((e) => CompanyLabel.fromJson(e.data())).toList());
+  }
+
   static Future<List<Company>> getCompanies() async {
     final companies = await FirebaseFirestore.instance
         .collection('companies')

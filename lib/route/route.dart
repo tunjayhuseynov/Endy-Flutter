@@ -34,6 +34,8 @@ import 'package:endy/route/guard.dart';
 import 'package:endy/route/permission.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../Pages/main/Home/CategorySelectionList/CompanyLabelList.dart';
+
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
@@ -51,6 +53,7 @@ import 'package:firebase_auth/firebase_auth.dart';
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SubcategoryListRoute, path: ":type/list/:id"), // DM - params: Company List or Subcategory List
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: DetailPageContainerRoute, path: "home/detail/:id"), // DM
       
+      CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CompanyLabelListRoute, path: "companyLabel/list"),
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: CategoryBlocProviderRoute, path: ":type/products/:id/:subcategoryId"), // D
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: FilterPageScaffoldRoute, path: "home/filter"), // Need modal for Web - M
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: MapPageRoute, path: "detail/map/:id"), // M
@@ -73,6 +76,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
     ]),
     // Need to add 2 guards: 1 for auth redirect if logged in, 2 for showing web users that you need to download app in order to use these features
+    // And also test dynamic routes if wrong params goes
+    // Also add a not found page
     AutoRoute(path: "/sign", page: SingWrapper, children: [
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignRoute, path: "main"), // DM
       CustomRoute(transitionsBuilder: TransitionsBuilders.noTransition, page: SignInRoute, path: "signin"), // DM
