@@ -29,7 +29,7 @@ class CategoryGridBody extends StatefulWidget {
 }
 
 class _CategoryGridBodyState extends State<CategoryGridBody> {
-  fetch() {
+  Future<void> fetch() async {
     CategoryFetchBloc.fetch(context, widget.client, widget.categoryId,
         widget.companyId, widget.subcategoryId,
         resetProduct: true);
@@ -61,76 +61,81 @@ class _CategoryGridBodyState extends State<CategoryGridBody> {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
     final gridCount = getCategoryCardCount(w);
 
-    return BlocListener<FilterPageBloc, FilterPageState>(
-      listener: (context, state) {
-        fetch();
-      },
-      listenWhen: (previous, current) => previous != current,
-      child: BlocBuilder<CategoryGridBloc, CategoryGridState>(
-        builder: (context, state) {
-          return BlocBuilder<CategoryFetchBloc, CategoryFetchState>(
-            builder: (cacheContext, cacheState) {
-              if (cacheState.isSearching && cacheState.products.isEmpty) {
-                return const Center(
-                    child: CircularProgressIndicator(
-                  color: Color(mainColor),
-                ));
-              }
-              return ListView(
-                shrinkWrap: true,
-                children: [
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: ScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: gridCount,
-                        childAspectRatio: (200 / 350),
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15),
-                    itemCount: cacheState.products.length,
-                    itemBuilder: (context, index) {
-                      if (index == cacheState.products.length - 1)
-                        return VisibilityDetector(
-                          onVisibilityChanged: onVisible,
-                          key: Key('item $index'),
-                          child: DiscountCard(
-                            product: cacheState.products[index],
-                          ),
-                        );
-
-                      return DiscountCard(
-                        product: cacheState.products[index],
-                      );
-                    },
-                  ),
-                  if (cacheState.isSearching && cacheState.products.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: const Center(
-                          child: CircularProgressIndicator(
-                        color: Color(mainColor),
-                      )),
-                    ),
-                  if (!cacheState.isSearching && cacheState.products.isEmpty)
-                    const Center(
-                      child: Text(
-                        'Məhsul tapılmadı',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+    return Container(
+      constraints: BoxConstraints(minHeight: size.height - 175),
+      child: BlocListener<FilterPageBloc, FilterPageState>(
+        listener: (context, state) {
+          fetch();
+        },
+        listenWhen: (previous, current) => previous != current,
+        child: BlocBuilder<CategoryGridBloc, CategoryGridState>(
+          builder: (context, state) {
+            return BlocBuilder<CategoryFetchBloc, CategoryFetchState>(
+              builder: (cacheContext, cacheState) {
+                if (cacheState.isSearching && cacheState.products.isEmpty) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color(mainColor),
+                  ));
+                }
+                if (!cacheState.isSearching && cacheState.products.isEmpty)
+                  return const Center(
+                    child: Text(
+                      'Məhsul tapılmadı',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                ],
-              );
-            },
-          );
-        },
+                  );
+                return Column(
+                  children: [
+                    GridView.builder(
+                      shrinkWrap: true,
+                      primary: true,
+                      physics: ScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: gridCount,
+                          childAspectRatio: (200 / 350),
+                          mainAxisSpacing: 15,
+                          crossAxisSpacing: 15),
+                      itemCount: cacheState.products.length,
+                      itemBuilder: (context, index) {
+                        if (index == cacheState.products.length - 1)
+                          return VisibilityDetector(
+                            onVisibilityChanged: onVisible,
+                            key: Key('item $index'),
+                            child: DiscountCard(
+                              product: cacheState.products[index],
+                            ),
+                          );
+
+                        return DiscountCard(
+                          product: cacheState.products[index],
+                        );
+                      },
+                    ),
+                    if (cacheState.isSearching &&
+                        cacheState.products.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: const Center(
+                            child: CircularProgressIndicator(
+                          color: Color(mainColor),
+                        )),
+                      ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

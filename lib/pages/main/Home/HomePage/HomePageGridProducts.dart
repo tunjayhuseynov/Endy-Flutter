@@ -17,7 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:typesense/typesense.dart';
 
 class HomePageGridProducts extends StatefulWidget {
-  HomePageGridProducts({
+  const HomePageGridProducts({
     Key? key,
   }) : super(key: key);
 
@@ -100,7 +100,8 @@ class _HomePageGridProductsState extends State<HomePageGridProducts> {
             return Container(
                 child: ListView(
               shrinkWrap: true,
-              physics: const ScrollPhysics(),
+              primary: false,
+              // physics: const NeverScrollableScrollPhysics(),
               children: [
                 if (isLoading)
                   const Center(

@@ -84,27 +84,19 @@ class _GlobalWidgetRouteState extends State<GlobalWidgetRoute> {
                 )
               : Scaffold(
                   backgroundColor: Colors.white,
-                  body: Column(
-                      // controller: controller,
-                      // shrinkWrap: true,
-                      children: [
-                        Navbar(),
-                        Flexible(
-                          child: AutoRouter(
-                            placeholder: (c) {
-                              return Align(
-                                alignment: Alignment.center,
-                                child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator(
-                                      color: Color(mainColor),
-                                    )),
-                              );
-                            },
-                          ),
-                        ),
-                      ]),
+                  body: AutoRouter(
+                    placeholder: (c) {
+                      return Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              color: Color(mainColor),
+                            )),
+                      );
+                    },
+                  ),
                 );
         },
       ),

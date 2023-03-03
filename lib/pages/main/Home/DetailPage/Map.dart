@@ -38,7 +38,8 @@ class _MapPageRouteState extends State<MapPageRoute> {
 
   @override
   void initState() {
-    _operation = CancelableOperation.fromFuture(loadData(widget.id ?? "0")).then((p0) => setState(() {}));
+    _operation = CancelableOperation.fromFuture(loadData(widget.id ?? "0"))
+        .then((p0) => setState(() {}));
     super.initState();
   }
 
@@ -90,11 +91,13 @@ class _MapPageRouteState extends State<MapPageRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final w = MediaQuery.of(context).size.width;
+    return ScaffoldWrapper(
+      hPadding: 0,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 175),
+          Container(
+            padding: w >= 1024 ? null : const EdgeInsets.only(bottom: 175),
             child: GoogleMap(
               mapType: MapType.terrain,
               rotateGesturesEnabled: false,
@@ -111,7 +114,12 @@ class _MapPageRouteState extends State<MapPageRoute> {
               top: 20,
               child: IconButton(
                   onPressed: () {
-                    context.router.pop(context);
+                    if (context.router.stackData.length == 1) {
+                      context.router
+                          .pushNamed("/home/detail/" + (widget.id ?? ""));
+                    } else {
+                      context.router.pop();
+                    }
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios_outlined,
@@ -124,47 +132,50 @@ class _MapPageRouteState extends State<MapPageRoute> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 350),
               height: _height,
-              width: MediaQuery.of(context).size.width,
+              width: w >= 1024 ? w * 0.33 : w,
               color: Colors.grey[100],
               child: Flex(
                 direction: Axis.vertical,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _height =
-                            _height == MediaQuery.of(context).size.height * 0.8
-                                ? _const_height
-                                : MediaQuery.of(context).size.height * 0.8;
-                      });
-                    },
-                    onVerticalDragStart: (details) {
-                      setState(() {
-                        _height =
-                            _height == MediaQuery.of(context).size.height * 0.8
-                                ? _const_height
-                                : MediaQuery.of(context).size.height * 0.8;
-                      });
-                    },
-                    child: Container(
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            spreadRadius: 5,
-                            offset: Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Məkan siyahısı",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _height =
+                              _height == MediaQuery.of(context).size.height * 0.8
+                                  ? _const_height
+                                  : MediaQuery.of(context).size.height * 0.8;
+                        });
+                      },
+                      onVerticalDragStart: (details) {
+                        setState(() {
+                          _height =
+                              _height == MediaQuery.of(context).size.height * 0.8
+                                  ? _const_height
+                                  : MediaQuery.of(context).size.height * 0.8;
+                        });
+                      },
+                      child: Container(
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              spreadRadius: 5,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "Məkan siyahısı",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),

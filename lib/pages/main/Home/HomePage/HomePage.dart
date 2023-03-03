@@ -8,6 +8,8 @@ import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/ScrollableCategoriesHome.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePageGridProducts.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
@@ -53,17 +55,19 @@ class _HomePageState extends State<HomePage> {
               triggerMode: RefreshIndicatorTriggerMode.anywhere,
               onRefresh: () async =>
                   {context.read<HomePageCacheBloc>().deleteCache()},
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: getContainerSize(size.width)),
-                child: Column(
-                  children: [
-                    SizedBox(height: 30),
-                    if (size.width < 1024)
-                      TopBar(size: size, editingController: editingController),
-                    state.search.isNotEmpty && size.width < 1024
-                        ? SearchPageRoute()
-                        : Column(
+              child: Column(
+                children: [
+                  if (size.width >= 1024) const Navbar(),
+                  SizedBox(height: 30),
+                  if (size.width < 1024)
+                    TopBar(editingController: editingController),
+                  state.search.isNotEmpty && size.width < 1024
+                      ? SearchPageRoute()
+                      : Container(
+                          constraints: BoxConstraints(minHeight: size.height),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: getContainerSize(size.width)),
+                          child: Column(
                             children: [
                               const Padding(padding: EdgeInsets.only(top: 5)),
                               Container(
@@ -76,11 +80,12 @@ class _HomePageState extends State<HomePage> {
                                   list: gState.categories,
                                   allBrands: gState.companies),
                               // const Padding(padding: EdgeInsets.only(top: 15)),
-                              HomePageGridProducts()
+                              const HomePageGridProducts()
                             ],
-                          )
-                  ],
-                ),
+                          ),
+                        ),
+                  if (size.width >= 1024) const Footer(),
+                ],
               ),
             );
           },
@@ -91,14 +96,12 @@ class _HomePageState extends State<HomePage> {
 }
 
 class TopBar extends StatefulWidget {
-  TopBar({
+  const TopBar({
     Key? key,
-    required this.size,
     required this.editingController,
   }) : super(key: key);
 
-  final Size size;
-  final TextEditingController editingController;
+  final TextEditingController? editingController;
 
   @override
   State<TopBar> createState() => _TopBarState();
@@ -115,16 +118,17 @@ class _TopBarState extends State<TopBar> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
-      padding: widget.size.width < 1024
+      padding: size.width < 1024
           ? const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20)
           : null,
-      width: widget.size.width < 1024 ? widget.size.width : null,
+      width: size.width < 1024 ? size.width : null,
       height: 80,
-      alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
+      alignment: size.width >= 1024 ? Alignment.bottomCenter : null,
       child: Container(
         height: 40,
-        alignment: widget.size.width >= 1024 ? Alignment.bottomCenter : null,
+        alignment: size.width >= 1024 ? Alignment.bottomCenter : null,
         child: CupertinoSearchTextField(
           placeholder: "Axtarış",
           onSuffixTap: () {
@@ -135,7 +139,7 @@ class _TopBarState extends State<TopBar> {
                 .path;
             context.router
                 .pushNamed(context.routeData.path == path ? "/" : path);
-            widget.editingController.clear();
+            widget.editingController?.clear();
           },
           onChanged: (value) {
             if (_debounce != null || _debounce?.isActive == true) {

@@ -3,6 +3,7 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
@@ -96,6 +97,7 @@ class _MyAppState extends State<MyApp> {
           lazy: false, create: (context) => GlobalBloc()..loadUtils()),
       BlocProvider<HomePageNavBloc>(create: (context) => HomePageNavBloc()),
       BlocProvider<BonusAddBloc>(create: (context) => BonusAddBloc()),
+      BlocProvider<CompanyLabelListBloc>(create: (context) => CompanyLabelListBloc()),
       BlocProvider<SearchPageBloc>(create: (context) => SearchPageBloc()),
       BlocProvider<OTPBloc>(create: (context) => OTPBloc()),
       BlocProvider<CategoryGridBloc>(create: (context) => CategoryGridBloc()),

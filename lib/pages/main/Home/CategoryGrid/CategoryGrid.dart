@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
@@ -6,8 +7,13 @@ import 'package:endy/Pages/main/Home/CategoryGrid/CategoryGridBody.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bar_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/ScrollableCategoryList.dart';
+import 'package:endy/Pages/main/Home/FilterPage/FilterPage.dart';
+import 'package:endy/Pages/main/Home/FilterPage/FilterPageScaffold.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
@@ -15,6 +21,8 @@ import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
+import 'package:tap_canvas/tap_canvas.dart';
 import 'package:typesense/typesense.dart';
 import 'package:endy/Pages/main/Home/CategoryGrid/TabBar.dart' as tab;
 import 'package:collection/collection.dart';
@@ -36,34 +44,34 @@ class CategoryGrid extends StatefulWidget {
 }
 
 class _CategoryGridState extends State<CategoryGrid> {
+  CancelableOperation? _operation;
   TextEditingController editingController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
   final client = Client(typesenseConfig);
   var focusNode = FocusNode();
   Company? company = null;
   Category? category = null;
   Subcategory? subcategory = null;
 
-  fetchData() async {
-    var state = context.read<GlobalBloc>().state;
-    if (widget.categoryId != null) {
+  Future<void> fetchData(
+      {String? categoryId,
+      String? companyId,
+      String? subcategoryId,
+      required GlobalState state}) async {
+    if (categoryId != null) {
       category = state.categories
-          .firstWhereOrNull((element) => element.id == widget.categoryId);
+          .firstWhereOrNull((element) => element.id == categoryId);
     }
 
-    if (widget.companyId != null) {
+    if (companyId != null) {
       company = state.companies
-          .firstWhereOrNull((element) => element.id == widget.companyId);
+          .firstWhereOrNull((element) => element.id == companyId);
     }
 
-    if (widget.subcategoryId != null) {
+    if (subcategoryId != null) {
       subcategory = state.subcategories
-          .firstWhereOrNull((element) => element.id == widget.subcategoryId);
-      context
-          .read<CategoryGridBloc>()
-          .setSelectedId(widget.subcategoryId ?? "");
+          .firstWhereOrNull((element) => element.id == subcategoryId);
+      context.read<CategoryGridBloc>().setSelectedId(subcategoryId);
     }
-    setState(() {});
   }
 
   @override
@@ -71,96 +79,111 @@ class _CategoryGridState extends State<CategoryGrid> {
     if (context.router.stackData.length > 1) {
       context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
     }
-    fetchData();
+    _operation = CancelableOperation.fromFuture(fetchData(
+            state: context.read<GlobalBloc>().state,
+            categoryId: widget.categoryId,
+            companyId: widget.companyId,
+            subcategoryId: widget.subcategoryId))
+        .then((value) => setState(() {}));
     super.initState();
   }
-
-  // Future<void> filterClick(CategoryGridState state) async {
-  //   await context.router.pushNamed("/home/filter");
-
-  //   if (state != FilterPageState.none) {
-  //     // final ctx = context.read<CategoryCacheBloc>();
-  //     // ctx.reset();
-
-  //     CategoryCacheBloc.fetch(context, client, resetProduct: true);
-  //   }
-  // }
 
   @override
   void dispose() {
     // context.read<CategoryCacheBloc>().setClose();
     editingController.dispose();
-    scrollController.dispose();
     focusNode.dispose();
+    _operation?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    return BlocBuilder<SearchPageBloc, SearchPageState>(
-      buildWhen: (previous, current) => previous.search != current.search,
-      builder: (searchContext, searchState) {
-        return BlocBuilder<CategoryGridBloc, CategoryGridState>(
-          builder: (context, state) {
-            return ScaffoldWrapper(
-              hPadding: 0,
-              appBar: AppBarCategoryList(
-                  category: category,
-                  company: company,
-                  subcategory: subcategory,
-                  focusNode: focusNode,
-                  editingController: editingController,
-                  w: w),
-              backgroundColor: Colors.white,
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    if (company == null &&
-                        category == null &&
-                        subcategory == null)
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: Color(mainColor),
-                        ),
-                      ),
-                    if (company != null ||
-                        category != null ||
-                        subcategory != null)
-                      ListView(
-                        shrinkWrap: true,
-                        controller: scrollController,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: getContainerSize(w)),
-                        children: [
-                          if (w >= 1024)
-                            const Padding(padding: EdgeInsets.only(top: 50)),
-                          Visibility(
-                              visible: category != null,
-                              child: ScrollableCategoryList(
-                                category: category,
-                                subcategory: subcategory,
-                                selectedId: state.selectedId,
-                                company: company,
-                                client: client,
-                              )),
-                          const Padding(padding: EdgeInsets.only(top: 20)),
-                          TopBody(company: company),
-                          CategoryGridBody(
-                            client: client,
-                            categoryId: widget.categoryId,
-                            subcategoryId: widget.subcategoryId,
-                            companyId: widget.companyId,
-                          )
-                        ],
-                      )
-                  ],
+    return BlocBuilder<CategoryGridBloc, CategoryGridState>(
+      builder: (context, state) {
+        return ScaffoldWrapper(
+          hPadding: 0,
+          appBar: AppBarCategoryList(
+              category: category,
+              company: company,
+              subcategory: subcategory,
+              focusNode: focusNode,
+              editingController: editingController,
+              w: w),
+          backgroundColor: Colors.white,
+          body: w < 1024
+              ? Column(
+                  children: buildBody(selectedId: state.selectedId, w: w),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: buildBody(selectedId: state.selectedId, w: w),
+                  ),
                 ),
-              ),
-            );
-          },
         );
       },
+    );
+  }
+
+  List<Widget> buildBody({
+    required String selectedId,
+    required double w,
+  }) {
+    return [
+      if (w >= 1024) const Navbar(),
+      if (company == null && category == null && subcategory == null)
+        Center(
+          child: CircularProgressIndicator(
+            color: Color(mainColor),
+          ),
+        ),
+      if (w < 1024 &&
+          (company != null || category != null || subcategory != null))
+        Expanded(child: body(w, selectedId)),
+      if (w >= 1024 &&
+          (company != null || category != null || subcategory != null))
+        body(w, selectedId),
+      if (w >= 1024) const Footer(),
+    ];
+  }
+
+  Widget body(double w, String selectedId) {
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+      children: [
+        if (w >= 1024) const Padding(padding: EdgeInsets.only(top: 50)),
+        Visibility(
+            visible: category != null,
+            child: ScrollableCategoryList(
+              category: category,
+              subcategory: subcategory,
+              selectedId: selectedId,
+              company: company,
+              client: client,
+            )),
+        const Padding(padding: EdgeInsets.only(top: 20)),
+        TopBody(company: company),
+        BlocBuilder<SearchPageBloc, SearchPageState>(
+            buildWhen: (previous, current) => previous.search != current.search,
+            builder: (context, searchState) {
+              return searchState.search.isNotEmpty
+                  ? SearchPageRoute(
+                      categoryId: widget.categoryId,
+                      companyId: widget.companyId,
+                      noTabbar: true,
+                      subcategoryId: widget.subcategoryId,
+                      params: searchState.search,
+                    )
+                  : CategoryGridBody(
+                      client: client,
+                      categoryId: widget.categoryId,
+                      subcategoryId: widget.subcategoryId,
+                      companyId: widget.companyId,
+                    );
+            })
+      ],
     );
   }
 }
@@ -241,9 +264,37 @@ class AppBarCategoryList extends StatelessWidget
   Size get preferredSize => Size(w, 80);
 }
 
-class TopBody extends StatelessWidget {
+class TopBody extends StatefulWidget {
   final Company? company;
   const TopBody({super.key, required this.company});
+
+  @override
+  State<TopBody> createState() => _TopBodyState();
+}
+
+class _TopBodyState extends State<TopBody> {
+  bool isFilterOpened = false;
+
+  Widget FilterIcon(double w) {
+    return InkWell(
+      mouseCursor: SystemMouseCursors.click,
+      hoverColor: Colors.transparent,
+      onTap: () {
+        if (w < 1024)
+          context.router.pushNamed("/home/filter");
+        else {
+          setState(() {
+            isFilterOpened = !isFilterOpened;
+          });
+        }
+      },
+      child: Image.asset(
+        "assets/icons/filter.png",
+        height: 20,
+        width: 20,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,21 +313,45 @@ class TopBody extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              InkWell(
-                mouseCursor: SystemMouseCursors.click,
-                hoverColor: Colors.transparent,
-                onTap: () {
-                  context.router.pushNamed("/home/filter");
-                },
-                child: Image.asset(
-                  "assets/icons/filter.png",
-                  height: 20,
+              if (w >= 1024)
+                PortalTarget(
+                    visible: isFilterOpened,
+                    anchor: Aligned(
+                        offset: Offset(0, 330),
+                        follower: Alignment.bottomCenter,
+                        target: Alignment.center),
+                    portalFollower: TapOutsideDetectorWidget(
+                      onTappedOutside: () => setState(() {
+                        isFilterOpened = false;
+                      }),
+                      child: Container(
+                        width: 400,
+                        height: 300,
+                        //Card shadow
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: FilterPage(isModal: true),
+                      ),
+                    ),
+                    child: FilterIcon(w)),
+              if (w < 1024) FilterIcon(w),
+              if (w >= 1024)
+                const SizedBox(
                   width: 20,
                 ),
-              ),
-              if (company != null)
+              if (widget.company != null)
                 CachedNetworkImage(
-                  imageUrl: company?.logo ?? "",
+                  imageUrl: widget.company?.logo ?? "",
                   width: 40,
                 ),
             ],

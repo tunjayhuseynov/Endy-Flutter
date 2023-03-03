@@ -92,6 +92,7 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
       setSearching(false);
       return [];
     }
+    if (state.isSearching == true && state.products.isNotEmpty) return [];
 
     setSearching(true);
 
@@ -112,7 +113,7 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
         currentPage: state.currentPage + 1,
         isSearching: false,
         isLastPage:
-            (rawHits['found'] / state.per_page).ceil() == state.currentPage,
+            (rawHits['found'] / state.per_page).ceil() == state.currentPage + 1,
       ));
 
       return hits;

@@ -4,6 +4,8 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
@@ -19,9 +21,11 @@ class SearchPageRoute extends StatefulWidget {
   final String? subcategoryId;
   final String? companyId;
   final String params;
+  final bool? noTabbar;
 
   SearchPageRoute({
     super.key,
+    this.noTabbar,
     @queryParam this.categoryId,
     @queryParam this.subcategoryId,
     @queryParam this.companyId,
@@ -91,73 +95,108 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
     return Material(
       color: Colors.white,
       child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: getContainerSize(w), vertical: 20),
-          child: BlocBuilder<GlobalBloc, GlobalState>(
-              builder: (globalContext, globalState) {
-            return BlocConsumer<SearchPageBloc, SearchPageState>(
-              listener: (ctx, state) {
-                if (state.search.length > 0) {
-                  _operation = CancelableOperation.fromFuture(context
-                          .read<SearchPageBloc>()
-                          .getSearchResult(widget.params, widget.categoryId,
-                              widget.companyId, widget.subcategoryId, client))
-                      .then((hits) {
-                    var state = context.read<SearchPageBloc>().state;
-                    if (hits.length > 0) {
-                      context.read<SearchPageBloc>().set(state.copyWith(
-                            products: [...state.products, ...hits],
-                            currentPage: state.currentPage + 1,
-                            isSearching: false,
-                          ));
-                    }
-                  });
-                }
-              },
-              listenWhen: (previous, current) =>
-                  previous.search != current.search,
-              builder: (context, state) {
-                return LayoutBuilder(builder: (context, constraints) {
-                  return Column(
-                    children: [
-                      if (w < 1024)
-                        TopBar(
-                            size: size, editingController: editingController),
-                      if (state.products.isEmpty && state.isSearching)
-                        const Center(
-                            child: CircularProgressIndicator(
-                          color: Color(mainColor),
-                        )),
-                      if (state.products.isEmpty && !state.isSearching)
-                        const Center(
-                          child: Text(
-                            "Nəticə tapılmadı",
-                            style: TextStyle(
+        child: Column(
+          children: [
+            if (w >= 1024) const Navbar(),
+            Container(
+              constraints: w >= 1024 ? BoxConstraints(minHeight: size.height - 75) : null,
+              padding: EdgeInsets.symmetric(
+                  horizontal: getContainerSize(w), vertical: 20),
+              child: BlocBuilder<GlobalBloc, GlobalState>(
+                  builder: (globalContext, globalState) {
+                return BlocConsumer<SearchPageBloc, SearchPageState>(
+                  listener: (ctx, state) {
+                    // if (state.search.length > 0) {
+                    //   _operation = CancelableOperation.fromFuture(context
+                    //           .read<SearchPageBloc>()
+                    //           .getSearchResult(
+                    //               widget.params,
+                    //               widget.categoryId,
+                    //               widget.companyId,
+                    //               widget.subcategoryId,
+                    //               client))
+                    //       .then((hits) {
+                    //     var state = context.read<SearchPageBloc>().state;
+                    //     if (hits.length > 0) {
+                    //       context.read<SearchPageBloc>().set(state.copyWith(
+                    //             products: [...state.products, ...hits],
+                    //             currentPage: state.currentPage + 1,
+                    //             isSearching: false,
+                    //           ));
+                    //     }
+                    //   });
+                    // }
+                  },
+                  listenWhen: (previous, current) =>
+                      previous.search != current.search,
+                  builder: (context, state) {
+                    return LayoutBuilder(builder: (context, constraints) {
+                      return Column(
+                        children: [
+                          if (w < 1024 && widget.noTabbar != true)
+                            TopBar(editingController: editingController),
+                          if (state.products.isEmpty && state.isSearching)
+                            const Center(
+                                child: CircularProgressIndicator(
                               color: Color(mainColor),
-                              fontSize: 20,
+                            )),
+                          if (state.products.isEmpty && !state.isSearching)
+                            const Center(
+                              child: Text(
+                                "Nəticə tapılmadı",
+                                style: TextStyle(
+                                  color: Color(mainColor),
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      if (state.products.isNotEmpty)
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 20),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: gridCount,
-                                  childAspectRatio: (200 / 350),
-                                  mainAxisSpacing: 15,
-                                  crossAxisSpacing: 15),
-                          itemCount: state.products.length,
-                          itemBuilder: (context, index) {
-                            final data = state.products[index];
-                            if (index == state.products.length - 1)
-                              return VisibilityDetector(
-                                  key: Key(data.id),
-                                  child: DiscountCard(
+                          if (state.products.isNotEmpty)
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, bottom: 20),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: gridCount,
+                                      childAspectRatio: (200 / 350),
+                                      mainAxisSpacing: 15,
+                                      crossAxisSpacing: 15),
+                              itemCount: state.products.length,
+                              itemBuilder: (context, index) {
+                                final data = state.products[index];
+                                if (index == state.products.length - 1)
+                                  return VisibilityDetector(
+                                      key: Key(data.id),
+                                      child: DiscountCard(
+                                          product: Product(
+                                              availablePlaces: [],
+                                              category: globalState.categories
+                                                  .where((element) =>
+                                                      "categories/${element.id}" ==
+                                                      data.category)
+                                                  .first,
+                                              company: globalState.companies
+                                                  .where((element) =>
+                                                      "companies/${element.id}" ==
+                                                      data.company)
+                                                  .first,
+                                              createdAt: data.createdAt,
+                                              deadline: data.deadline,
+                                              isPrime: false,
+                                              discount: data.discount,
+                                              discountedPrice:
+                                                  data.discountedPrice,
+                                              id: data.id,
+                                              images: [],
+                                              primaryImage: data.primaryImage,
+                                              name: data.name,
+                                              price: data.price,
+                                              subcategory: null,
+                                              link: null)),
+                                      onVisibilityChanged: onVisible);
+                                else
+                                  return DiscountCard(
                                       product: Product(
                                           availablePlaces: [],
                                           category: globalState.categories
@@ -181,48 +220,24 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
                                           name: data.name,
                                           price: data.price,
                                           subcategory: null,
-                                          link: null)),
-                                  onVisibilityChanged: onVisible);
-                            else
-                              return DiscountCard(
-                                  product: Product(
-                                      availablePlaces: [],
-                                      category: globalState.categories
-                                          .where((element) =>
-                                              "categories/${element.id}" ==
-                                              data.category)
-                                          .first,
-                                      company: globalState.companies
-                                          .where((element) =>
-                                              "companies/${element.id}" ==
-                                              data.company)
-                                          .first,
-                                      createdAt: data.createdAt,
-                                      deadline: data.deadline,
-                                      isPrime: false,
-                                      discount: data.discount,
-                                      discountedPrice: data.discountedPrice,
-                                      id: data.id,
-                                      images: [],
-                                      primaryImage: data.primaryImage,
-                                      name: data.name,
-                                      price: data.price,
-                                      subcategory: null,
-                                      link: null));
-                          },
-                        ),
-                      if (state.products.isNotEmpty && !state.isLastPage)
-                        const Center(
-                            child: CircularProgressIndicator(
-                          color: Color(mainColor),
-                        )),
-                      const SizedBox(height: 120)
-                    ],
-                  );
-                });
-              },
-            );
-          }),
+                                          link: null));
+                              },
+                            ),
+                          if (state.products.isNotEmpty && !state.isLastPage)
+                            const Center(
+                                child: CircularProgressIndicator(
+                              color: Color(mainColor),
+                            )),
+                          const SizedBox(height: 120),
+                        ],
+                      );
+                    });
+                  },
+                );
+              }),
+            ),
+            if (w >= 1024) const Footer()
+          ],
         ),
       ),
     );

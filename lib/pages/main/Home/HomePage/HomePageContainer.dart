@@ -38,49 +38,46 @@ class _MainContainerRouteState extends State<MainContainerRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GlobalBloc, GlobalState>(
-      buildWhen: (previous, current) =>
-          current.authStatus == GlobalAuthStatus.loggedIn,
-      builder: (globalContext, globalState) {
-        final disallowed =
-            globalState.authStatus == GlobalAuthStatus.loggedIn &&
-                globalState.userData == null;
-        return BlocBuilder<HomePageNavBloc, int>(builder: (context, state) {
-          return BlocBuilder<SearchPageBloc, SearchPageState>(
-            buildWhen: (previous, current) => previous.search != current.search,
-            builder: (searchContext, searchState) {
-              return WillPopScope(
-                  child: ScaffoldWrapper(
-                    hPadding: 0,
-                    backgroundColor: Colors.white,
-                    extendBody: true,
-                    bottomNavigationBar: SizedBox(
-                      height: 80,
-                      child: Nav(),
-                    ),
-                    body: blacklist.contains(state) && disallowed
-                        ? NeedRegisterRoute(
-                            deactivateTab: true,
-                          )
-                        : SingleChildScrollView(
-                            child: _children(context)[state]),
+    return Container(
+      color: Colors.white,
+      child: BlocBuilder<GlobalBloc, GlobalState>(
+        buildWhen: (previous, current) =>
+            current.authStatus == GlobalAuthStatus.loggedIn,
+        builder: (globalContext, globalState) {
+          final disallowed =
+              globalState.authStatus == GlobalAuthStatus.loggedIn &&
+                  globalState.userData == null;
+          return BlocBuilder<HomePageNavBloc, int>(builder: (context, state) {
+            return WillPopScope(
+                child: ScaffoldWrapper(
+                  hPadding: 0,
+                  backgroundColor: Colors.white,
+                  extendBody: true,
+                  bottomNavigationBar: SizedBox(
+                    height: 80,
+                    child: Nav(),
                   ),
-                  onWillPop: () async {
-                    if (searchState.search.isNotEmpty) {
-                      searchContext.read<SearchPageBloc>().reset();
-                      return false;
-                    }
-                    if (Platform.isAndroid) {
-                      await SystemNavigator.pop();
-                    } else if (Platform.isIOS) {
-                      exit(0);
-                    }
-                    return true;
-                  });
-            },
-          );
-        });
-      },
+                  body: blacklist.contains(state) && disallowed
+                      ? NeedRegisterRoute(
+                          deactivateTab: true,
+                        )
+                      : SingleChildScrollView(child: _children(context)[state]),
+                ),
+                onWillPop: () async {
+                  if (context.read<SearchPageBloc>().state.search.isNotEmpty) {
+                    context.read<SearchPageBloc>().reset();
+                    return false;
+                  }
+                  if (Platform.isAndroid) {
+                    await SystemNavigator.pop();
+                  } else if (Platform.isIOS) {
+                    exit(0);
+                  }
+                  return true;
+                });
+          });
+        },
+      ),
     );
   }
 }

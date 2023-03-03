@@ -34,6 +34,8 @@ class ScrollableCategoriesHome extends StatelessWidget {
       isAllCategories: false,
       isAllBrands: true,
       createdAt: 0);
+
+      
   ScrollableCategoriesHome(
       {Key? key,
       required List<Category> list,
@@ -128,7 +130,7 @@ class _CategoryCardState extends State<CategoryCard> {
     }else if (widget.category.id == "200") {
       // context.read<CategoryListBloc>().setTypeAndList(widget.category);
 
-      context.router.pushNamed("/company/list/all");
+      context.router.pushNamed("/companyLabel/list");
     } else {
       context.router.pushNamed("/subcategory/list/${widget.category.id}");
     }

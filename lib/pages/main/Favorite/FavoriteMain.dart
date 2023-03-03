@@ -1,5 +1,7 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
@@ -13,12 +15,14 @@ class FavoriteMainRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
     return Material(
       color: Colors.white,
       child: ListView(
         shrinkWrap: true,
         children: [
+          if (w >= 1024) const Navbar(),
           const SizedBox(height: 25),
           Align(
             alignment: w < 1024 ? Alignment.centerLeft : Alignment.center,
@@ -35,6 +39,7 @@ class FavoriteMainRoute extends StatelessWidget {
           ),
           const SizedBox(height: 25),
           Container(
+              constraints: BoxConstraints(minHeight: size.height),
               padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
               child: FutureBuilder<List<Product>>(
                   future: ProductsCrud.getSpecificProducts(
@@ -65,9 +70,13 @@ class FavoriteMainRoute extends StatelessWidget {
                         ),
                       );
                     }
-                    return const Text('Məlumat tapılmadı', textAlign: TextAlign.center,);
+                    return const Text(
+                      'Məlumat tapılmadı',
+                      textAlign: TextAlign.center,
+                    );
                   })),
           const SizedBox(height: 25),
+          if (w >= 1024) const Footer(),
         ],
       ),
     );

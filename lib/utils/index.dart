@@ -96,7 +96,8 @@ class ScaffoldWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return width >= 1024
-        ? Padding(
+        ? Container(
+            color: backgroundColor,
             padding: EdgeInsets.symmetric(horizontal: hPadding ?? getContainerSize(width)),
             child: body)
         : Scaffold(

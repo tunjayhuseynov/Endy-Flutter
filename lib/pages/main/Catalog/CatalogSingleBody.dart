@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,90 +37,105 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    return ScaffoldWrapper(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                context.router.pop();
-              }),
-          title: Text(widget.catalog.name, style: TextStyle(color: Colors.black),),
-          // leading: const CupertinoNavigationBarBackButton(),
-          actions: [
-            Container(
-                margin: const EdgeInsets.only(right: 20),
-                child: Center(
-                    child: Text(
-                        "${currentPage + 1}/${widget.catalog.images.length} səhifə")))
-          ],
-        ),
-        body: Stack(
-          children: [
-            Container(
-              height: w < 1024 ? null : 700,
-              padding: EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80),
-              margin: EdgeInsets.only(top: w < 1024 ? 0 : 75),
-              child: SizedBox.expand(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.zoomIn,
-                  child: PhotoViewGallery.builder(
-                    pageController: _pageController,
-                    itemCount: widget.catalog.images.length,
-                    builder: (context, index) {
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: CachedNetworkImageProvider(
-                            widget.catalog.images[index]),
-                        minScale: PhotoViewComputedScale.contained * 1,
-                        maxScale: PhotoViewComputedScale.contained * 4,
-                      );
-                    },
-                    scrollDirection: Axis.horizontal,
-                    onPageChanged: ((index) {
-                      setState(() {
-                        currentPage = index;
-                      });
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
+    return Column(
+      children: [
+        if (w >= 1024) const Navbar(),
+        Expanded(
+          child: ScaffoldWrapper(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      context.router.pop();
                     }),
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    backgroundDecoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                  ),
+                title: Text(
+                  widget.catalog.name,
+                  style: TextStyle(color: Colors.black),
                 ),
+                // leading: const CupertinoNavigationBarBackButton(),
+                actions: [
+                  Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: Center(
+                          child: Text(
+                              "${currentPage + 1}/${widget.catalog.images.length} səhifə")))
+                ],
               ),
-            ),
-            if (w >= 1024)
-              Positioned(
-                  left: 0,
-                  top: 350,
-                  child: IconButton(
-                      mouseCursor: SystemMouseCursors.click,
-                      onPressed: () {
-                        _pageController.previousPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.linear);
-                      },
-                      icon: Icon(
-                        CupertinoIcons.back,
-                        color: Colors.black,
-                      ))),
-            if (w >= 1024)
-              Positioned(
-                  right: 0,
-                  top: 350,
-                  child: IconButton(
-                      mouseCursor: SystemMouseCursors.click,
-                      onPressed: () {
-                        _pageController.nextPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.linear);
-                      },
-                      icon: Icon(
-                        CupertinoIcons.forward,
-                        color: Colors.black,
-                      )))
-          ],
-        ));
+              body: Container(
+                constraints: BoxConstraints(minHeight: size.height - 75),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: w < 1024 ? null : 700,
+                      padding: EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80),
+                      margin: EdgeInsets.only(top: w < 1024 ? 0 : 75),
+                      child: SizedBox.expand(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.zoomIn,
+                          child: PhotoViewGallery.builder(
+                            pageController: _pageController,
+                            itemCount: widget.catalog.images.length,
+                            builder: (context, index) {
+                              return PhotoViewGalleryPageOptions(
+                                imageProvider: CachedNetworkImageProvider(
+                                    widget.catalog.images[index]),
+                                minScale: PhotoViewComputedScale.contained * 1,
+                                maxScale: PhotoViewComputedScale.contained * 4,
+                              );
+                            },
+                            scrollDirection: Axis.horizontal,
+                            onPageChanged: ((index) {
+                              setState(() {
+                                currentPage = index;
+                              });
+                            }),
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            backgroundDecoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (w >= 1024)
+                      Positioned(
+                          left: 0,
+                          top: 350,
+                          child: IconButton(
+                              mouseCursor: SystemMouseCursors.click,
+                              onPressed: () {
+                                _pageController.previousPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.linear);
+                              },
+                              icon: Icon(
+                                CupertinoIcons.back,
+                                color: Colors.black,
+                              ))),
+                    if (w >= 1024)
+                      Positioned(
+                          right: 0,
+                          top: 350,
+                          child: IconButton(
+                              mouseCursor: SystemMouseCursors.click,
+                              onPressed: () {
+                                _pageController.nextPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.linear);
+                              },
+                              icon: Icon(
+                                CupertinoIcons.forward,
+                                color: Colors.black,
+                              )))
+                  ],
+                ),
+              )),
+        ),
+        if (w >= 1024) const Footer(),
+      ],
+    );
   }
 }

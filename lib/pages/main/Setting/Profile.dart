@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
 import 'package:endy/Pages/main/Setting/Profile_Bloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
+import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -68,6 +71,7 @@ class _ProfileRouteState extends State<ProfileRoute> {
             builder: (context, state) {
               return ScaffoldWrapper(
                   backgroundColor: Colors.white,
+                  hPadding: 0,
                   body: state.isComponentLoading
                       ? Center(
                           child: Container(
@@ -80,10 +84,11 @@ class _ProfileRouteState extends State<ProfileRoute> {
                             ),
                           ),
                         )
-                      : ListView(
-                          shrinkWrap: true,
+                      : Column(
+                          // shrinkWrap: true,
                           children: [
-                            SizedBox(height: size.height * 0.02),
+                            if(!mobile) const Navbar(),
+                            SizedBox(height: size.height * 0.015),
                             if (mobile)
                               Row(
                                 children: [
@@ -101,48 +106,51 @@ class _ProfileRouteState extends State<ProfileRoute> {
                                 ],
                               ),
                             if (!mobile)
-                              Center(
-                                  child: SizedBox(
-                                width: size.width * 0.85,
-                                height:
-                                    mobile ? size.height : size.height * 0.85,
-                                child: Flex(
-                                  direction:
-                                      mobile ? Axis.vertical : Axis.horizontal,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 85),
-                                          child: ProfileHeader(
-                                              img: img,
-                                              editEnabled: !mobile
-                                                  ? true
-                                                  : state.editEnabled,
-                                              name: globalState.userData?.name ??
-                                                  "",
-                                              phone:
-                                                  globalState.userData?.phone ??
-                                                      ""),
+                              Expanded(
+                                child: Center(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
+                                  width: size.width * 0.85,
+                                  height:
+                                      mobile ? size.height : null,
+                                  child: Flex(
+                                    direction:
+                                        mobile ? Axis.vertical : Axis.horizontal,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 85),
+                                            child: ProfileHeader(
+                                                img: img,
+                                                editEnabled: !mobile
+                                                    ? true
+                                                    : state.editEnabled,
+                                                name: globalState.userData?.name ??
+                                                    "",
+                                                phone:
+                                                    globalState.userData?.phone ??
+                                                        ""),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: ProfileBody(
-                                          size: size,
-                                          name: name,
-                                          mail: mail,
-                                          editEnabled: !mobile
-                                              ? true
-                                              : state.editEnabled,
-                                          isLoading: state.isLoading,
-                                          userData: globalState.userData,
-                                          selectedDate: state.selectedDate),
-                                    ),
-                                  ],
-                                ),
-                              )),
+                                      Expanded(
+                                        child: ProfileBody(
+                                            size: size,
+                                            name: name,
+                                            mail: mail,
+                                            editEnabled: !mobile
+                                                ? true
+                                                : state.editEnabled,
+                                            isLoading: state.isLoading,
+                                            userData: globalState.userData,
+                                            selectedDate: state.selectedDate),
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                              ),
                             if (mobile)
                               Center(
                                   child: SizedBox(
@@ -170,7 +178,8 @@ class _ProfileRouteState extends State<ProfileRoute> {
                                     ),
                                   ],
                                 ),
-                              ))
+                              )),
+                              if(!mobile) const Footer()
                           ],
                         ));
             },

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/Pages/main/Catalog/CatalogSingleBody.dart';
 import 'package:endy/streams/catalogs.dart';

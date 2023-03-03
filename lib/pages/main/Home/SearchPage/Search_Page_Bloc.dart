@@ -18,7 +18,7 @@ class SearchPageState {
       this.products = const [],
       this.currentPage = 1,
       this.isLastPage = false,
-      this.isSearching = false,
+      this.isSearching = true,
       this.isClosed = false,
       this.per_page = f.kIsWeb ? 10 : 5});
 
@@ -78,7 +78,7 @@ class SearchPageBloc extends Cubit<SearchPageState> {
       String? subcategoryId, Client client,
       {int? per_page, int? current_page}) async {
     if (search == '') return [];
-    if (state.isSearching) return [];
+    if(state.isSearching == true && state.products.isNotEmpty) return [];
     if (state.isLastPage) {
       setIsSearching(false);
       return [];

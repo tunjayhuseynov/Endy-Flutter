@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
-import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +48,8 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            return true;
+            context.router.pushNamed('/');
+            return false;
           },
           child: Scaffold(
             backgroundColor: Colors.white,
@@ -117,7 +116,7 @@ class CompanyLabelItem extends StatelessWidget {
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
         onTap: () {
-          context.router.pushNamed('/company/list/${label.id}');
+          context.router.pushNamed('/company/list/${label.label}');
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

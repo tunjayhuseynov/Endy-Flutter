@@ -23,10 +23,17 @@ class SubcategoryListRoute extends StatefulWidget {
 
 class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
   TextEditingController editingController = TextEditingController();
+  String? id;
 
   @override
   void initState() {
     super.initState();
+    if (context.router.stackData.length > 1 && widget.id != "all") {
+      id = Uri.decodeComponent(widget.id ?? "");
+    }
+    if (context.router.stackData.length == 1 && widget.id != "all") {
+      id = Uri.decodeQueryComponent(Uri.decodeComponent(widget.id ?? ""));
+    }
     context.read<CategorySelectionListBloc>().search("");
   }
 
@@ -48,13 +55,13 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
             .read<GlobalBloc>()
             .state
             .categories
-            .firstWhereOrNull((element) => element.id == widget.id);
-        var companies = widget.id != "all"
+            .firstWhereOrNull((element) => element.id == id);
+        var companies = id != "all"
             ? context
                 .read<GlobalBloc>()
                 .state
                 .companies
-                .where((element) => element.label == widget.id)
+                .where((element) => element.label == id)
                 .toList()
             : context.read<GlobalBloc>().state.companies;
         return state.copyWith(

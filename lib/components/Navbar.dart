@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
-import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/navbar.dart';
@@ -89,7 +88,7 @@ class NavbarState extends State<Navbar> {
               ),
               Expanded(
                 flex: getNavbarSearchFlex(w),
-                child: TopBar(size: size, editingController: editingController),
+                child: TopBar(editingController: editingController),
               ),
               Flexible(
                 flex: getNavbarImageAndMenuFlex(w),

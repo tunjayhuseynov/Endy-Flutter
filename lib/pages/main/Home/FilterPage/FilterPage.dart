@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterPage extends StatefulWidget {
-  const FilterPage({Key? key}) : super(key: key);
+  final bool? isModal;
+  const FilterPage({Key? key, this.isModal}) : super(key: key);
 
   @override
   State<FilterPage> createState() => _FilterPageState();
@@ -22,7 +23,12 @@ class _FilterPageState extends State<FilterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FilterPageBloc, FilterPageState>(
+    return BlocConsumer<FilterPageBloc, FilterPageState>(
+      listener: (context, state) {
+          setState(() {
+            selectedInput = state;
+          });
+      },
       builder: (context, state) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
@@ -122,7 +128,9 @@ class _FilterPageState extends State<FilterPage> {
                           context
                               .read<FilterPageBloc>()
                               .changeFilter(selectedInput);
-                          context.router.pop(context);
+                          if (widget.isModal != true) {
+                            context.router.pop(context);
+                          }
                         },
                         child: Text("Təsdiqlə",
                             style: const TextStyle(

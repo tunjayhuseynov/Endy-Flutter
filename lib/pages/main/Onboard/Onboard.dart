@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
+import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -56,6 +57,7 @@ class _OnboardRouteState extends State<OnboardRoute> {
                       bottom: 75,
                       child: PrimaryButton(
                           text: "Növbəti",
+                          width: 200,
                           fn: () async => {
                                 if (controller.page != null &&
                                     controller.page! < 2)
@@ -79,7 +81,7 @@ class _OnboardRouteState extends State<OnboardRoute> {
 
 Widget _page(
     String image, double offset, String head, String subtext, Size size) {
-  return Column(children: [
+  return Column(mainAxisAlignment: MainAxisAlignment.center ,children: [
     const SizedBox(height: 75),
     SizedBox(child: Image.asset(image)),
     const SizedBox(height: 25),
@@ -87,7 +89,7 @@ Widget _page(
         child: SmoothIndicator(
       offset: offset,
       count: 3,
-      effect: const SlideEffect(dotWidth: 8, dotHeight: 8),
+      effect: const SlideEffect(dotWidth: 8, dotHeight: 8, activeDotColor: Color(mainColor)),
     )),
     const SizedBox(height: 35),
     Text(head,

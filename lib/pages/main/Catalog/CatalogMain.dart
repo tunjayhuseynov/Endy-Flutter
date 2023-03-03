@@ -1,5 +1,7 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Catalog/CompanyCard.dart';
+import 'package:endy/components/Footer.dart';
+import 'package:endy/components/Navbar.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,8 @@ class CatalogMainRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         var companies = state.companies
@@ -22,6 +25,7 @@ class CatalogMainRoute extends StatelessWidget {
             shrinkWrap: true,
             physics: const ScrollPhysics(),
             children: [
+              if(w >= 1024) const Navbar(),
               const SizedBox(height: 25),
               if (w < 1024)
                 Container(
@@ -37,6 +41,7 @@ class CatalogMainRoute extends StatelessWidget {
                 ),
               const SizedBox(height: 20),
               Container(
+                constraints: BoxConstraints(minHeight: size.height),
                 padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
                 child: GridView.builder(
                     shrinkWrap: true,
@@ -54,6 +59,7 @@ class CatalogMainRoute extends StatelessWidget {
                     })),
               ),
               const SizedBox(height: 50),
+              if(w >= 1024) const Footer(),
             ],
           ),
         );

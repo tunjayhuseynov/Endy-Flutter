@@ -33,58 +33,55 @@ class _AdSliderState extends State<AdSlider> {
                   child: Container(
                       child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
-                    child: Stack(alignment: AlignmentDirectional.center, children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(milliseconds: 4000),
-                            viewportFraction: 1,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _current = index;
-                              });
-                            }),
-                        items: context
-                            .read<GlobalBloc>()
-                            .state
-                            .panels
-                            .map((item) => Center(
-                                child: CachedNetworkImage(
-                                    imageUrl: item.photo,
-                                    fit: BoxFit.cover,
-                                    width: 1000)))
-                            .toList(),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: context
-                                .read<GlobalBloc>()
-                                .state
-                                .panels
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                              return GestureDetector(
-                                onTap: () => _controller.animateToPage(entry.key),
-                                child: Container(
-                                  width: 12.0,
-                                  height: 12.0,
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 4.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (_current != entry.key
-                                              ? Colors.black12
-                                              : const Color(mainColor))
-                                          .withOpacity(
-                                              _current == entry.key ? 1 : 0.4)),
-                                ),
-                              );
-                            }).toList(),
-                          ))
-                    ]),
+                    child: Stack(
+                        alignment: AlignmentDirectional.center,
+                        children: [
+                          CarouselSlider(
+                            options: CarouselOptions(
+                                autoPlay: true,
+                                autoPlayInterval:
+                                    const Duration(milliseconds: 4000),
+                                viewportFraction: 1,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _current = index;
+                                  });
+                                }),
+                            items: state.panels
+                                .map((item) => Center(
+                                    child: CachedNetworkImage(
+                                        imageUrl: item.photo,
+                                        fit: BoxFit.cover,
+                                        width: 1000)))
+                                .toList(),
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                    state.panels.asMap().entries.map((entry) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        _controller.animateToPage(entry.key),
+                                    child: Container(
+                                      width: 12.0,
+                                      height: 12.0,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: (_current != entry.key
+                                                  ? Colors.black12
+                                                  : const Color(mainColor))
+                                              .withOpacity(_current == entry.key
+                                                  ? 1
+                                                  : 0.4)),
+                                    ),
+                                  );
+                                }).toList(),
+                              ))
+                        ]),
                   )),
                 ),
               ),
