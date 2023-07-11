@@ -43,6 +43,7 @@ class CompanyCrud {
   static Future<List<Company>> getCompanies() async {
     final companies = await FirebaseFirestore.instance
         .collection('companies')
+        .where("isVisible", isEqualTo: true)
         .orderBy('name')
         .get();
 

@@ -74,11 +74,11 @@ class SearchPageBloc extends Cubit<SearchPageState> {
 
   void set(SearchPageState state) => emit(state);
 
-  Future<List<Product>> getSearchResult(String search, String? categoryId, String? companyId,
-      String? subcategoryId, Client client,
+  Future<List<Product>> getSearchResult(String search, String? categoryId,
+      String? companyId, String? subcategoryId, Client client,
       {int? per_page, int? current_page}) async {
     if (search == '') return [];
-    if(state.isSearching == true && state.products.isNotEmpty) return [];
+    if (state.isSearching == true && state.products.isNotEmpty) return [];
     if (state.isLastPage) {
       setIsSearching(false);
       return [];
@@ -89,8 +89,8 @@ class SearchPageBloc extends Cubit<SearchPageState> {
       final rawHits = await ProductsCrud.getProductsFromTypesense(
         client,
         search,
-        state.currentPage,
-        state.per_page,
+        current_page: state.currentPage,
+        per_page: state.per_page,
         categoryId: categoryId,
         companyId: companyId,
         subcategoryId: subcategoryId,
@@ -105,7 +105,7 @@ class SearchPageBloc extends Cubit<SearchPageState> {
           .toList();
       emit(state.copyWith(
         isLastPage:
-            (rawHits['found'] / state.per_page).ceil() == state.currentPage,
+            (rawHits['out_of'] / state.per_page).ceil() == state.currentPage,
       ));
 
       return hits;

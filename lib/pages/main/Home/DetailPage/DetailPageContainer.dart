@@ -8,9 +8,10 @@ import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+ 
 class DetailPageContainerRoute extends StatefulWidget {
   final String id;
-  const DetailPageContainerRoute({Key? key, @pathParam this.id = ""})
+  const DetailPageContainerRoute({Key? key,   this.id = ""})
       : super(key: key);
 
   @override

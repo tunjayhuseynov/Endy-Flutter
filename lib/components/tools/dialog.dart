@@ -1,5 +1,6 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Dialogs {
   static showRemoveDialog(BuildContext context) {
@@ -23,7 +24,7 @@ class Dialogs {
                   foregroundColor: MaterialStateProperty.all(Colors.black)),
               child: const Text('Ləvğ et'),
               onPressed: () {
-                context.router.pop(false);
+                context.pop(false);
               },
             ),
             TextButton(
@@ -31,7 +32,7 @@ class Dialogs {
                   foregroundColor: MaterialStateProperty.all(Colors.red)),
               child: const Text('Sil'),
               onPressed: () {
-                context.router.pop(true);
+                context.pop(true);
               },
             ),
           ],

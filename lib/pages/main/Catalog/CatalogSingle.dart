@@ -1,14 +1,15 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/Pages/main/Catalog/CatalogSingleBody.dart';
 import 'package:endy/streams/catalogs.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 
+ 
 class CatalogSingleRoute extends StatefulWidget {
   final String? id;
 
-  CatalogSingleRoute({super.key, @pathParam this.id});
+  CatalogSingleRoute({super.key,   this.id});
 
   @override
   State<CatalogSingleRoute> createState() => _CatalogSingleRouteState();

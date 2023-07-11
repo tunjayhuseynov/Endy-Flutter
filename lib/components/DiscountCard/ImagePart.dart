@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
@@ -24,14 +24,10 @@ class _ImagePartState extends State<ImagePart> {
   bool heartHover = false;
 
   onClick(bool isLiked, GlobalState state) {
-    if (state.userData == null) {
-      context.router.pushNamed('/needregister');
+    if (!isLiked) {
+      context.read<GlobalBloc>().addFavorite(widget.widget.product);
     } else {
-      if (!isLiked) {
-        context.read<GlobalBloc>().addFavorite(widget.widget.product);
-      } else {
-        context.read<GlobalBloc>().removeFavorite(widget.widget.product);
-      }
+      context.read<GlobalBloc>().removeFavorite(widget.widget.product);
     }
   }
 
@@ -82,7 +78,7 @@ class _ImagePartState extends State<ImagePart> {
             child: BlocBuilder<GlobalBloc, GlobalState>(
               builder: (context, state) {
                 final isLiked = state.userData != null &&
-                    state.userData!.liked.contains(FirebaseFirestore.instance
+                    state.userData!.liked.contains(state.isAnonymous ? widget.widget.product.id : FirebaseFirestore.instance
                         .collection('products')
                         .doc(widget.widget.product.id));
                 return MouseRegion(

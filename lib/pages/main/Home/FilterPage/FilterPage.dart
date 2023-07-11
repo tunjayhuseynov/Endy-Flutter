@@ -1,8 +1,9 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FilterPage extends StatefulWidget {
   final bool? isModal;
@@ -129,7 +130,7 @@ class _FilterPageState extends State<FilterPage> {
                               .read<FilterPageBloc>()
                               .changeFilter(selectedInput);
                           if (widget.isModal != true) {
-                            context.router.pop(context);
+                            context.pop(context);
                           }
                         },
                         child: Text("Təsdiqlə",

@@ -1,13 +1,15 @@
 import 'dart:ui';
 
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -49,7 +51,7 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                      context.router.pop();
+                      context.pop();
                     }),
                 title: Text(
                   widget.catalog.name,
@@ -70,21 +72,51 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
                   children: [
                     Container(
                       height: w < 1024 ? null : 700,
-                      padding: EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: w < 1024 ? 0 : 80),
                       margin: EdgeInsets.only(top: w < 1024 ? 0 : 75),
                       child: SizedBox.expand(
                         child: MouseRegion(
-                          cursor: SystemMouseCursors.zoomIn,
+                          cursor: SystemMouseCursors.click,
                           child: PhotoViewGallery.builder(
+                            loadingBuilder: (context, event) {
+                              return Center(
+                                child: Container(
+                                  width: 25,
+                                  height: 25,
+                                  child: CircularProgressIndicator(
+                                    color: Color(mainColor),
+                                    value: event == null
+                                        ? 0
+                                        : event.cumulativeBytesLoaded /
+                                            (event.expectedTotalBytes ?? 1),
+                                  ),
+                                ),
+                              );
+                            },
                             pageController: _pageController,
                             itemCount: widget.catalog.images.length,
                             builder: (context, index) {
                               return PhotoViewGalleryPageOptions(
-                                imageProvider: CachedNetworkImageProvider(
-                                    widget.catalog.images[index]),
-                                minScale: PhotoViewComputedScale.contained * 1,
-                                maxScale: PhotoViewComputedScale.contained * 4,
-                              );
+                                  onTapUp: (c, p, v) async {
+                                    if (kIsWeb) {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (_) => ImageDialog(
+                                                image: widget
+                                                    .catalog.images[index],
+                                              ));
+                                    }
+                                  },
+                                  imageProvider: CachedNetworkImageProvider(
+                                      widget.catalog.images[index]),
+                                  minScale:
+                                      PhotoViewComputedScale.contained * 1,
+                                  maxScale:
+                                      PhotoViewComputedScale.contained * 4,
+                                  // heroAttributes: PhotoViewHeroAttributes(
+                                  //     tag: index.toString())
+                                      );
                             },
                             scrollDirection: Axis.horizontal,
                             onPageChanged: ((index) {
@@ -136,6 +168,31 @@ class _CatalogSingleBodyState extends State<CatalogSingleBody> {
         ),
         if (w >= 1024) const Footer(),
       ],
+    );
+  }
+}
+
+class ImageDialog extends StatelessWidget {
+  final String image;
+  ImageDialog({required this.image});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: AspectRatio(
+        aspectRatio: 2 / 3,
+        child: Container(
+          height: size.height * 0.9,
+          // width: size.width * 0.5,
+          decoration: BoxDecoration(
+              color: Colors.transparent,
+              image: DecorationImage(
+                  image: CachedNetworkImageProvider(image),
+                  fit: BoxFit.contain)),
+        ),
+      ),
     );
   }
 }

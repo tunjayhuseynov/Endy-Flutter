@@ -1,10 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class SignRoute extends StatefulWidget {
@@ -20,7 +21,7 @@ class _SignRouteState extends State<SignRoute> {
       await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
       context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loggedIn);
-      context.router.pushNamed("/");
+      context.pushNamed(APP_PAGE.HOME.toName);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":
@@ -82,20 +83,21 @@ class _SignRouteState extends State<SignRoute> {
                       color: Color(mainColor), fontWeight: FontWeight.w500)),
             ),
             const SizedBox(height: 20),
-            PrimaryButton(
-              width: size.width < 768 ? size.width * 0.75 : null,
-              text: "Daxil ol",
-              fn: () async => {context.router.pushNamed('/sign/signin')},
-            ),
-            const SizedBox(height: 20),
-            SecondaryButton(
-                text: "Hesab aç",
-                width: size.width < 768 ? size.width * 0.75 : null,
-                fn: () => {context.router.pushNamed("/sign/registration")}),
-            const SizedBox(height: 20),
+            // PrimaryButton(
+            //   width: size.width < 768 ? size.width * 0.75 : null,
+            //   text: "Daxil ol",
+            //   fn: () async => {context.router.pushNamed('/sign/signin')},
+            // ),
+            // const SizedBox(height: 20),
+            // SecondaryButton(
+            //     text: "Hesab aç",
+            //     width: size.width < 768 ? size.width * 0.75 : null,
+            //     fn: () => {context.router.pushNamed("/sign/registration")}),
+            // const SizedBox(height: 20),
             SecondaryButton(
                 color: 0xFFFFFFFF,
-                text: "Qeydiyyatsız dəvam et",
+                text: "Davam et",
+                // text: "Qeydiyyatsız dəvam et",
                 width: size.width < 768 ? size.width * 0.75 : null,
                 fn: () => {anonymSignIn()}),
           ],

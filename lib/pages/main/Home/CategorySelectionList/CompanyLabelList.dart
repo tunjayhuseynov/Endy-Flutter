@@ -1,10 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CompanyLabelListRoute extends StatefulWidget {
   const CompanyLabelListRoute({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            context.router.pushNamed('/');
+            context.pushNamed(APP_PAGE.HOME.toName);
             return false;
           },
           child: Scaffold(
@@ -59,7 +60,7 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    context.router.pop(context);
+                    context.pop(context);
                   }),
               title: Text("Brend Növləri",
                   style: const TextStyle(
@@ -116,7 +117,8 @@ class CompanyLabelItem extends StatelessWidget {
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
         onTap: () {
-          context.router.pushNamed('/company/list/${label.label}');
+          context.pushNamed(APP_PAGE.COMPANY_LIST.toName,
+              pathParameters: {"id": label.label});
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

@@ -1,13 +1,14 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/HomePage/HomePageContainer.dart';
+import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/Pages/main/Onboard/Onboard.dart';
 import 'package:endy/Pages/sign/Main.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class MainProvider extends StatefulWidget {
   const MainProvider({Key? key}) : super(key: key);
@@ -22,7 +23,8 @@ class _MainProviderState extends State<MainProvider> {
     if (!kIsWeb) {
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         if (message.data["onClick"] != null) {
-          context.router.pushNamed("/home/detail/" + message.data["onClick"]);
+          context.pushNamed(APP_PAGE.PRODUCT_DETAIL.toName,
+              pathParameters: {"id": message.data["onClick"]});
         }
       });
     }
@@ -63,7 +65,7 @@ class _MainProviderState extends State<MainProvider> {
             }
             return state.userData != null && state.userData!.isFirstEnter
                 ? const OnboardRoute()
-                : const MainContainerRoute();
+                : const HomePage();
           }
           return const SignRoute();
         });

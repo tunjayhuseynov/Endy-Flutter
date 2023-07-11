@@ -1,6 +1,6 @@
 import 'package:endy/FirebaseMessaging.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
@@ -72,7 +72,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+  
 
   @override
   void initState() {

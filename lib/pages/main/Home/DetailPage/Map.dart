@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:endy/route/router_names.dart';
+
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
@@ -16,7 +18,7 @@ import 'package:maps_launcher/maps_launcher.dart';
 class MapPageRoute extends StatefulWidget {
   final String? id;
 
-  const MapPageRoute({Key? key, @pathParam required this.id}) : super(key: key);
+  const MapPageRoute({Key? key, required this.id}) : super(key: key);
 
   @override
   State<MapPageRoute> createState() => _MapPageRouteState();
@@ -114,12 +116,8 @@ class _MapPageRouteState extends State<MapPageRoute> {
               top: 20,
               child: IconButton(
                   onPressed: () {
-                    if (context.router.stackData.length == 1) {
-                      context.router
-                          .pushNamed("/home/detail/" + (widget.id ?? ""));
-                    } else {
-                      context.router.pop();
-                    }
+                    context.pushNamed(APP_PAGE.PRODUCT_DETAIL.toName,
+                        pathParameters: {"id": widget.id ?? ""});
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios_outlined,
@@ -142,18 +140,18 @@ class _MapPageRouteState extends State<MapPageRoute> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          _height =
-                              _height == MediaQuery.of(context).size.height * 0.8
-                                  ? _const_height
-                                  : MediaQuery.of(context).size.height * 0.8;
+                          _height = _height ==
+                                  MediaQuery.of(context).size.height * 0.8
+                              ? _const_height
+                              : MediaQuery.of(context).size.height * 0.8;
                         });
                       },
                       onVerticalDragStart: (details) {
                         setState(() {
-                          _height =
-                              _height == MediaQuery.of(context).size.height * 0.8
-                                  ? _const_height
-                                  : MediaQuery.of(context).size.height * 0.8;
+                          _height = _height ==
+                                  MediaQuery.of(context).size.height * 0.8
+                              ? _const_height
+                              : MediaQuery.of(context).size.height * 0.8;
                         });
                       },
                       child: Container(

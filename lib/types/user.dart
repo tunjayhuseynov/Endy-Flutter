@@ -14,7 +14,7 @@ class UserData {
 
   late List<UserList> list;
   late List<BonusCard> bonusCard;
-  late List<DocumentReference<Object?>> liked = [];
+  late List<dynamic> liked = [];
   late List<String> subscribedCompanies;
   late List<Notification> notifications;
   late int notificationSeenTime;
@@ -74,8 +74,8 @@ class UserData {
         .map((e) => BonusCard.fromJson(e))
         .toList();
     liked = (json['liked'] as List<dynamic>)
-        .map((e) => (e as DocumentReference))
-        .toList();
+            .map((e) => (e))
+            .toList();
     subscribedCompanies = json['subscribedCompanies']?.cast<String>();
     notifications = json['notifications']?.cast<Notification>();
     createdAt = json['created_at'];

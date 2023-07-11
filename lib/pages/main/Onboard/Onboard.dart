@@ -1,9 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardRoute extends StatefulWidget {
@@ -70,7 +70,7 @@ class _OnboardRouteState extends State<OnboardRoute> {
                                 else
                                   {
                                     context.read<GlobalBloc>().setFirstEnter(),
-                                    context.router.pushNamed("/")
+                                    context.pushNamed("/")
                                   }
                               })),
                 ])));
@@ -81,15 +81,17 @@ class _OnboardRouteState extends State<OnboardRoute> {
 
 Widget _page(
     String image, double offset, String head, String subtext, Size size) {
-  return Column(mainAxisAlignment: MainAxisAlignment.center ,children: [
+  return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
     const SizedBox(height: 75),
     SizedBox(child: Image.asset(image)),
     const SizedBox(height: 25),
     Center(
         child: SmoothIndicator(
+      size: Size(10, 10),
       offset: offset,
       count: 3,
-      effect: const SlideEffect(dotWidth: 8, dotHeight: 8, activeDotColor: Color(mainColor)),
+      effect: const SlideEffect(
+          dotWidth: 8, dotHeight: 8, activeDotColor: Color(mainColor)),
     )),
     const SizedBox(height: 35),
     Text(head,

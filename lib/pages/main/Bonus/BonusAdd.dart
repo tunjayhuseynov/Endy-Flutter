@@ -1,21 +1,24 @@
 // import 'dart:html' as html;
 import 'dart:io';
 
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/Pages/main/bonus/Bonus_Add_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 
 class BonusAddRoute extends StatefulWidget {
   final String? code;
-  const BonusAddRoute({Key? key, @pathParam this.code}) : super(key: key);
+  const BonusAddRoute({Key? key,  this.code}) : super(key: key);
 
   @override
   State<BonusAddRoute> createState() => _BonusAddRouteState();
@@ -51,7 +54,7 @@ class _BonusAddRouteState extends State<BonusAddRoute>
           bonusController.text);
       if (!mounted) return;
       context.read<GlobalBloc>().addBonusCard(card);
-      context.router.pop(context);
+      context.pop(context);
     } catch (e) {
       print(e);
       ShowTopSnackBar(
@@ -61,7 +64,7 @@ class _BonusAddRouteState extends State<BonusAddRoute>
 
   onScan() async {
     if (!kIsWeb && await Permission.camera.request().isGranted) {
-      await context.router.pushNamed('/bonus/camera');
+      await context.pushNamed(APP_PAGE.BONUS_CARD_CAMERA.toName);
     }
 
     // if (kIsWeb) {

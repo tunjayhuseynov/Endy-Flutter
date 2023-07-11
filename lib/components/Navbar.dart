@@ -1,12 +1,13 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
 import 'dart:math' as Math;
 
@@ -20,19 +21,19 @@ class Navbar extends StatefulWidget implements PreferredSizeWidget {
   Size get preferredSize => Size(double.infinity, 75);
 }
 
-getRouteIndex(String route) {
+int getRouteIndex(String route) {
   if (route == "/") {
     return 0;
-  } else if (route == "/catalog") {
+  } else if (route.contains("/catalog")) {
     return 1;
-  } else if (route == "/cart") {
+  } else if (route.contains("/cart")) {
     return 2;
-  } else if (route == "/profile") {
+  } else if (route.contains("/profile")) {
     return 3;
-  } else if (route == "/favorite") {
-    return 3;
-  } else if (route == "/about") {
-    return 3;
+  } else if (route.contains("/favorite")) {
+    return 4;
+  } else if (route.contains("/about")) {
+    return 5;
   } else {
     return 0;
   }
@@ -43,7 +44,8 @@ class NavbarState extends State<Navbar> {
   @override
   void initState() {
     super.initState();
-    editingController.text = context.routeData.queryParams.getString("params", "");
+    // editingController.text =
+    //     context.routeData.queryParams.getString("params", "");
   }
 
   @override
@@ -56,7 +58,7 @@ class NavbarState extends State<Navbar> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final w = size.width;
-    final route = getRouteIndex(ModalRoute.of(context)?.settings.name ?? "/");
+    // final route = getRouteIndex(context.currentPath);
 
     return BlocBuilder<GlobalBloc, GlobalState>(builder: (context, state) {
       return Material(
@@ -75,7 +77,7 @@ class NavbarState extends State<Navbar> {
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => context.router.pushNamed("/"),
+                    onTap: () => context.pushNamed(APP_PAGE.HOME.toName),
                     child: Container(
                         alignment: Alignment.bottomCenter,
                         padding: const EdgeInsets.only(right: 40),
@@ -86,10 +88,10 @@ class NavbarState extends State<Navbar> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: getNavbarSearchFlex(w),
-                child: TopBar(editingController: editingController),
-              ),
+              // Expanded(
+              //   flex: getNavbarSearchFlex(w),
+              //   child: TopBar(editingController: editingController),
+              // ),
               Flexible(
                 flex: getNavbarImageAndMenuFlex(w),
                 fit: FlexFit.loose,
@@ -102,11 +104,12 @@ class NavbarState extends State<Navbar> {
                     height: 35,
                     mode: PlutoMenuBarMode.hover,
                     itemStyle: PlutoMenuItemStyle(
-                      selectedTopMenuTextStyle:
-                          TextStyle(color: Color(mainColor)),
                       enableSelectedTopMenu: true,
-                      initialSelectedTopMenuIndex: route,
+                      // initialSelectedTopMenuIndex: route,
                       selectedTopMenuIconColor: Color(mainColor),
+                      selectedTopMenuTextStyle: TextStyle(
+                        color: Color(mainColor),
+                      ),
                     ),
                     borderColor: Colors.transparent,
                     menus: [
@@ -114,14 +117,14 @@ class NavbarState extends State<Navbar> {
                         title: "Ana səhifə",
                         icon: Icons.home,
                         onTap: () {
-                          context.router.pushNamed("/");
+                          context.pushNamed(APP_PAGE.HOME.toName);
                         },
                       ),
                       PlutoMenuItem(
                         title: "Kataloq",
                         icon: Icons.menu_book_rounded,
                         onTap: () {
-                          context.router.pushNamed("/catalog");
+                          context.pushNamed(APP_PAGE.CATALOG.toName);
                         },
                       ),
                       PlutoMenuItem(
@@ -129,42 +132,42 @@ class NavbarState extends State<Navbar> {
                         icon: Icons.more_horiz,
                         enable: false,
                         children: [
-                          if (state.userData != null)
+                          if (!state.isAnonymous)
                             PlutoMenuItem(
                               title: "Profil",
                               icon: Icons.person,
                               onTap: () {
-                                context.router.pushNamed("/profile");
+                                context.pushNamed(APP_PAGE.PROFILE.toName);
                               },
                             ),
-                          if (state.userData == null)
+                          if (state.isAnonymous)
                             PlutoMenuItem(
                               title: "Daxil ol",
                               icon: Icons.login,
                               onTap: () {
                                 FirebaseAuth.instance.signOut();
-                                context.router.pushNamed("/sign/main");
+                                context.pushNamed(APP_PAGE.SIGN_MAIN.toName);
                               },
                             ),
                           PlutoMenuItem(
                             title: "Seçimlərim",
                             icon: Icons.favorite,
                             onTap: () {
-                              context.router.pushNamed("/favorite");
+                              context.pushNamed(APP_PAGE.FAVORITE.toName);
                             },
                           ),
-                          // PlutoMenuItem(
-                          //   title: "Alış-veriş listim",
-                          //   icon: Icons.list,
-                          //   onTap: () {
-                          //     context.router.pushNamed("/list");
-                          //   },
-                          // ),
+                          PlutoMenuItem(
+                            title: "Alış-veriş listim",
+                            icon: Icons.list,
+                            onTap: () {
+                              context.pushNamed(APP_PAGE.SHOPPING_LIST.toName);
+                            },
+                          ),
                           PlutoMenuItem(
                             title: "Haqqımızda",
                             icon: Icons.info,
                             onTap: () {
-                              context.router.pushNamed("/about");
+                              context.pushNamed(APP_PAGE.ABOUT.toName);
                             },
                           ),
                         ],

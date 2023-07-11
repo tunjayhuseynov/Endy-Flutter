@@ -1,9 +1,10 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapWidget extends StatelessWidget {
@@ -54,11 +55,9 @@ class ProductMapWidget extends StatelessWidget {
             context,
             "Zəhmət olmasa lokasyon servisini aktivləşdirin");
       }
-
-      context.router.pushNamed('/detail/map/' + product!.id);
-    } else {
-      context.router.pushNamed('/detail/map/' + product!.id);
     }
+    context.pushNamed(APP_PAGE.PRODUCT_MAP.toName,
+        pathParameters: {"id": product!.id});
   }
 
   @override

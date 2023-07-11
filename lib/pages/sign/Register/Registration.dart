@@ -1,13 +1,14 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/Pages/Sign/Register/Register_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -38,7 +39,8 @@ class _RegistrationState extends State<Registration> {
         return;
       }
       await context.read<RegisterBloc>().phoneVerification(name);
-      var result = await context.router.pushNamed('/sign/otp/' + phone);
+      var result = await context
+          .pushNamed(APP_PAGE.OTP.toName, pathParameters: {"phone": phone});
       if (result != null) {
         var data = await FirebaseAuth.instance
             .signInWithCredential(result as PhoneAuthCredential);
@@ -65,7 +67,7 @@ class _RegistrationState extends State<Registration> {
             .collection("users")
             .doc(data.user?.uid)
             .set(newUser.toJson());
-        context.router.pushNamed('/');
+        context.pushNamed(APP_PAGE.HOME.toName);
       }
     } catch (e) {
       showTopSnackBar(
@@ -111,7 +113,7 @@ class _RegistrationState extends State<Registration> {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            context.router.pushNamed("/sign/main");
+            context.pushNamed(APP_PAGE.SIGN_MAIN.toName);
             return false;
           },
           child: Scaffold(
@@ -287,7 +289,7 @@ class _RegistrationState extends State<Registration> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                context.router.pushNamed('/sign/signin');
+                                context.pushNamed(APP_PAGE.SIGN_IN.toName);
                               },
                               child: const Text(
                                 "Daxil olun",

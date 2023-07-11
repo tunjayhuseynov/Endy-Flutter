@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/OTP/OTP_Bloc.dart';
 import 'package:endy/utils/index.dart';
@@ -8,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 
 class OTP extends StatefulWidget {
   final String phone;
-  const OTP({Key? key, @pathParam this.phone = ""}) : super(key: key);
+  const OTP({Key? key, this.phone = ""}) : super(key: key);
 
   @override
   State<OTP> createState() => _OTPState();
@@ -40,7 +40,7 @@ class _OTPState extends State<OTP> {
     try {
       context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loading);
       PhoneAuthCredential c = await context.read<OTPBloc>().verify(pin, code);
-      await context.router.pop<PhoneAuthCredential>(c);
+      context.pop<PhoneAuthCredential>(c);
     } catch (e) {
       context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.notLoggedIn);
       if (!mounted) return;

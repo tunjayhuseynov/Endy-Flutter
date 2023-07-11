@@ -1,4 +1,5 @@
 import 'package:endy/utils/responsivness/container.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -98,7 +99,8 @@ class ScaffoldWrapper extends StatelessWidget {
     return width >= 1024
         ? Container(
             color: backgroundColor,
-            padding: EdgeInsets.symmetric(horizontal: hPadding ?? getContainerSize(width)),
+            padding: EdgeInsets.symmetric(
+                horizontal: hPadding ?? getContainerSize(width)),
             child: body)
         : Scaffold(
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
@@ -109,4 +111,26 @@ class ScaffoldWrapper extends StatelessWidget {
             body: body,
           );
   }
+}
+
+void showCupertinoDatepickerDialog(Widget child, BuildContext context) {
+  showCupertinoModalPopup<void>(
+    context: context,
+    builder: (BuildContext context) => Container(
+      height: 216,
+      padding: const EdgeInsets.only(top: 6.0),
+      // The Bottom margin is provided to align the popup above the system
+      // navigation bar.
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      // Provide a background color for the popup.
+      color: CupertinoColors.systemBackground.resolveFrom(context),
+      // Use a SafeArea widget to avoid system overlaps.
+      child: SafeArea(
+        top: false,
+        child: child,
+      ),
+    ),
+  );
 }

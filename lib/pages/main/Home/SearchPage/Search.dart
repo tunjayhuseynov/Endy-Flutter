@@ -1,5 +1,5 @@
 import 'package:async/async.dart';
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+ 
 class SearchPageRoute extends StatefulWidget {
   final String? categoryId;
   final String? subcategoryId;
@@ -26,10 +27,10 @@ class SearchPageRoute extends StatefulWidget {
   SearchPageRoute({
     super.key,
     this.noTabbar,
-    @queryParam this.categoryId,
-    @queryParam this.subcategoryId,
-    @queryParam this.companyId,
-    @queryParam this.params = '',
+      this.categoryId,
+      this.subcategoryId,
+      this.companyId,
+      this.params = '',
   });
 
   @override
@@ -134,7 +135,7 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
                       return Column(
                         children: [
                           if (w < 1024 && widget.noTabbar != true)
-                            TopBar(editingController: editingController),
+                            // TopBar(editingController: editingController),
                           if (state.products.isEmpty && state.isSearching)
                             const Center(
                                 child: CircularProgressIndicator(

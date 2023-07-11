@@ -1,5 +1,4 @@
 import 'package:async/async.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/streams/products.dart';
 import 'package:endy/types/product.dart';
@@ -11,24 +10,22 @@ import 'package:typesense/typesense.dart';
 class CategoryFetchState {
   List<Product> products;
   bool isLastPage;
-  int currentPage;
+  int nextPage;
   int per_page;
   bool isSearching;
-  CancelableOperation<List<Product>>? cancellableOperation;
 
   CategoryFetchState({
     this.isLastPage = false,
     this.products = const [],
-    this.currentPage = 1,
-    this.per_page = kIsWeb ? 15 : 5,
+    this.nextPage = 1,
+    this.per_page = kIsWeb ? 15 : 6,
     this.isSearching = true,
-    this.cancellableOperation,
   });
 
   CategoryFetchState copyWith({
     List<Product>? products,
     bool? isLastPage,
-    int? currentPage,
+    int? nextPage,
     int? per_page,
     bool? isSearching,
     CancelableOperation<List<Product>>? cancellableOperation,
@@ -36,10 +33,9 @@ class CategoryFetchState {
     return CategoryFetchState(
       products: products ?? this.products,
       isLastPage: isLastPage ?? this.isLastPage,
-      currentPage: currentPage ?? this.currentPage,
+      nextPage: nextPage ?? this.nextPage,
       per_page: per_page ?? this.per_page,
       isSearching: isSearching ?? this.isSearching,
-      cancellableOperation: cancellableOperation ?? this.cancellableOperation,
     );
   }
 }
@@ -53,7 +49,7 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
 
   void set() {
     emit(state.copyWith(
-        currentPage: 1, isLastPage: false, products: [], isSearching: true));
+        nextPage: 1, isLastPage: false, products: [], isSearching: true));
   }
 
   void reset({bool? isSearch}) =>
@@ -62,32 +58,28 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
   void setSearching(bool isSearching) =>
       emit(state.copyWith(isSearching: isSearching));
 
-  void setCancelableoperation(
-      CancelableOperation<List<Product>>? cancellableOperation) {
-    state.cancellableOperation = cancellableOperation;
-  }
-
-  static fetch(BuildContext context, Client client, String? categoryId,
-      String? companyId, String? subcategoryId,
-      {bool? resetProduct}) {
+  static fetch(
+      {required BuildContext context,
+      required Client client,
+      String? categoryId,
+      String? companyId,
+      String? subcategoryId,
+      bool? resetProduct}) {
     var ctx = context.read<CategoryFetchBloc>();
     var filterState = context.read<FilterPageBloc>().state;
-    if (ctx.state.cancellableOperation != null) {
-      ctx.state.cancellableOperation!.cancel();
-    }
+
     if (resetProduct == true) {
       ctx.reset();
     }
-    var c = CancelableOperation.fromFuture(context
-        .read<CategoryFetchBloc>()
-        .getResult(categoryId, companyId, subcategoryId, client,
-            mode: filterState, resetProduct: resetProduct));
-    ctx.setCancelableoperation(c);
+    context.read<CategoryFetchBloc>().getResult(
+        categoryId, companyId, subcategoryId, client,
+        mode: filterState, resetProduct: resetProduct);
   }
 
   Future<List<Product>> getResult(String? categoryId, String? companyId,
       String? subcategoryId, Client client,
       {FilterPageState mode = FilterPageState.none, bool? resetProduct}) async {
+    print(state.isLastPage);
     if (state.isLastPage) {
       setSearching(false);
       return [];
@@ -97,8 +89,9 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
     setSearching(true);
 
     try {
-      final rawHits = await ProductsCrud.getProductsFromTypesense(
-          client, "", state.currentPage, state.per_page,
+      final rawHits = await ProductsCrud.getProductsFromTypesense(client, "",
+          current_page: state.nextPage,
+          per_page: state.per_page,
           categoryId: categoryId,
           companyId: companyId,
           subcategoryId: subcategoryId,
@@ -110,10 +103,10 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
 
       setState(state.copyWith(
         products: [...state.products, ...hits],
-        currentPage: state.currentPage + 1,
+        nextPage: state.nextPage + 1,
         isSearching: false,
         isLastPage:
-            (rawHits['found'] / state.per_page).ceil() == state.currentPage + 1,
+            (rawHits['out_of'] / state.per_page).ceil() == state.nextPage + 1,
       ));
 
       return hits;

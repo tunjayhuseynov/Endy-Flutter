@@ -1,6 +1,7 @@
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Fetch_Bloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Fetch_Bloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/categoryCard.dart';
 import 'package:flutter/material.dart';
@@ -8,30 +9,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../FilterPage/Filter_Page_Bloc.dart';
-
-class CategoryGridBody extends StatefulWidget {
+class GridBody extends StatefulWidget {
   final Client client;
   late final String? companyId;
   late final String? categoryId;
   late final String? subcategoryId;
 
-  CategoryGridBody({
+  GridBody({
     Key? key,
     required this.client,
-    this.categoryId,
     this.companyId,
     this.subcategoryId,
+    this.categoryId
   }) : super(key: key);
 
   @override
-  State<CategoryGridBody> createState() => _CategoryGridBodyState();
+  State<GridBody> createState() => _GridBodyState();
 }
 
-class _CategoryGridBodyState extends State<CategoryGridBody> {
+class _GridBodyState extends State<GridBody> {
   Future<void> fetch() async {
-    CategoryFetchBloc.fetch(context, widget.client, widget.categoryId,
-        widget.companyId, widget.subcategoryId,
+    CategoryFetchBloc.fetch(
+        context: context,
+        client: widget.client,
+        categoryId: widget.categoryId,
+        companyId: widget.companyId,
+        subcategoryId: widget.subcategoryId,
         resetProduct: true);
   }
 
@@ -41,21 +44,19 @@ class _CategoryGridBodyState extends State<CategoryGridBody> {
     super.initState();
   }
 
-  void onVisible(VisibilityInfo info) {
+  void onVisible(VisibilityInfo info, String subcategoryId) {
     if (info.visibleFraction > 0.5) {
-      CategoryFetchBloc.fetch(context, widget.client, widget.categoryId,
-          widget.companyId, widget.subcategoryId);
+      CategoryFetchBloc.fetch(
+          context: context,
+          client: widget.client,
+          categoryId: widget.categoryId,
+          companyId: widget.companyId,
+          subcategoryId: subcategoryId);
     }
   }
 
   @override
   void dispose() {
-    // var ctx = context.read<CategoryFetchBloc>();
-    // if (ctx.state.cancellableOperation != null &&
-    //     ctx.state.cancellableOperation!.isCompleted == false &&
-    //     ctx.state.cancellableOperation!.isCanceled == false) {
-    //   ctx.state.cancellableOperation!.cancel();
-    // }
     super.dispose();
   }
 
@@ -109,7 +110,8 @@ class _CategoryGridBodyState extends State<CategoryGridBody> {
                       itemBuilder: (context, index) {
                         if (index == cacheState.products.length - 1)
                           return VisibilityDetector(
-                            onVisibilityChanged: onVisible,
+                            onVisibilityChanged: (info) =>
+                                onVisible(info, state.selectedId),
                             key: Key('item $index'),
                             child: DiscountCard(
                               product: cacheState.products[index],
@@ -122,6 +124,7 @@ class _CategoryGridBodyState extends State<CategoryGridBody> {
                       },
                     ),
                     if (cacheState.isSearching &&
+                        cacheState.isLastPage == false &&
                         cacheState.products.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.all(15.0),

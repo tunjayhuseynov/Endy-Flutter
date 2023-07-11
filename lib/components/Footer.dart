@@ -1,9 +1,11 @@
-import 'package:auto_route/auto_route.dart';
+ 
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Footer extends StatelessWidget {
-  const Footer({Key? key}) : super(key: key); 
+  const Footer({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
@@ -37,13 +39,13 @@ class Footer extends StatelessWidget {
       onTap: () {
         switch (title) {
           case "Ana səhifə":
-            context.router.pushNamed("/");
+            context.pushNamed(APP_PAGE.HOME.toName);
             break;
           case "Kataloq":
-            context.router.pushNamed("/catalog");
+            context.pushNamed(APP_PAGE.CATALOG.toName);
             break;
           case "Haqqımızda":
-            context.router.pushNamed("/about");
+            context.pushNamed(APP_PAGE.ABOUT.toName);
             break;
           default:
         }

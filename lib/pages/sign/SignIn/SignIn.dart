@@ -1,12 +1,13 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/Sign/SignIn/Signin_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -27,7 +28,8 @@ class SignInRouteWrapper extends StatelessWidget {
       BuildContext context, BuildContext stateContext, String phone) async {
     try {
       await stateContext.read<SigninBloc>().login();
-      var c = await context.router.pushNamed('/sign/otp/' + phone);
+      var c = await context
+          .pushNamed(APP_PAGE.OTP.toName, pathParameters: {"phone": phone});
       if (c != null) {
         context.read<SigninBloc>().setLoading(true);
 
@@ -42,7 +44,7 @@ class SignInRouteWrapper extends StatelessWidget {
         await FirebaseAuth.instance
             .signInWithCredential(c as PhoneAuthCredential);
         stateContext.read<GlobalBloc>().setAll();
-        context.router.pushNamed('/');
+        context.pushNamed(APP_PAGE.HOME.toName);
       }
     } catch (e) {
       print(e);

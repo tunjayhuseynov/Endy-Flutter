@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
@@ -8,15 +8,17 @@ import 'package:endy/Pages/main/Setting/Profile_Bloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 extension E on String {
   String lastChars(int n) => substring(length - n);
 }
 
+ 
 class ProfileRoute extends StatefulWidget {
   const ProfileRoute({Key? key}) : super(key: key);
 
@@ -57,7 +59,8 @@ class _ProfileRouteState extends State<ProfileRoute> {
 
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (globalContext, globalState) {
-        ImageProvider img = (globalState.userData != null &&
+        ImageProvider img = (globalState.isAnonymous == false &&
+                globalState.userData != null &&
                 globalState.userData!.profilePic != null &&
                 globalState.userData!.profilePic!.isNotEmpty)
             ? NetworkImage(globalState.userData!.profilePic!)
@@ -87,14 +90,14 @@ class _ProfileRouteState extends State<ProfileRoute> {
                       : Column(
                           // shrinkWrap: true,
                           children: [
-                            if(!mobile) const Navbar(),
+                            if (!mobile) const Navbar(),
                             SizedBox(height: size.height * 0.015),
                             if (mobile)
                               Row(
                                 children: [
                                   IconButton(
                                       onPressed: () {
-                                        context.router.pop(context);
+                                        context.pop(context);
                                       },
                                       icon: const Icon(Icons.arrow_back_ios)),
                                   const Text('Profil',
@@ -109,29 +112,32 @@ class _ProfileRouteState extends State<ProfileRoute> {
                               Expanded(
                                 child: Center(
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: getContainerSize(size.width)),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: getContainerSize(size.width)),
                                   width: size.width * 0.85,
-                                  height:
-                                      mobile ? size.height : null,
+                                  height: mobile ? size.height : null,
                                   child: Flex(
-                                    direction:
-                                        mobile ? Axis.vertical : Axis.horizontal,
+                                    direction: mobile
+                                        ? Axis.vertical
+                                        : Axis.horizontal,
                                     children: [
                                       Expanded(
                                         child: Container(
                                           alignment: Alignment.center,
                                           child: Padding(
-                                            padding: const EdgeInsets.only(bottom: 85),
+                                            padding: const EdgeInsets.only(
+                                                bottom: 85),
                                             child: ProfileHeader(
                                                 img: img,
                                                 editEnabled: !mobile
                                                     ? true
                                                     : state.editEnabled,
-                                                name: globalState.userData?.name ??
+                                                name: globalState
+                                                        .userData?.name ??
                                                     "",
-                                                phone:
-                                                    globalState.userData?.phone ??
-                                                        ""),
+                                                phone: globalState
+                                                        .userData?.phone ??
+                                                    ""),
                                           ),
                                         ),
                                       ),
@@ -179,7 +185,7 @@ class _ProfileRouteState extends State<ProfileRoute> {
                                   ],
                                 ),
                               )),
-                              if(!mobile) const Footer()
+                            if (!mobile) const Footer()
                           ],
                         ));
             },
@@ -284,15 +290,30 @@ class ProfileBody extends StatelessWidget {
                   }
                 }
                 if (size.width < 1024) {
-                  DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: DateTime(1950, 1, 1),
-                      maxTime: DateTime.now(),
-                      onChanged: (date) =>
-                          context.read<ProfileBloc>().setDate(date),
-                      onConfirm: (date) {},
-                      currentTime: selectedDate,
-                      locale: LocaleType.az);
+                  showCupertinoDatepickerDialog(
+                      CupertinoDatePicker(
+                        initialDateTime: DateTime.now(),
+                        mode: CupertinoDatePickerMode.date,
+                        use24hFormat: true,
+                        // This shows day of week alongside day of month
+                        showDayOfWeek: true,
+                        minimumDate: DateTime(1950, 1, 1),
+                        maximumDate: DateTime.now(),
+                        // This is called when the user changes the date.
+                        onDateTimeChanged: (DateTime newDate) {
+                          context.read<ProfileBloc>().setDate(newDate);
+                        },
+                      ),
+                      context);
+                  // DatePicker.showDatePicker(context,
+                  //     showTitleActions: true,
+                  //     minTime: DateTime(1950, 1, 1),
+                  //     maxTime: DateTime.now(),
+                  //     onChanged: (date) =>
+                  //         context.read<ProfileBloc>().setDate(date),
+                  //     onConfirm: (date) {},
+                  //     currentTime: selectedDate,
+                  //     locale: LocaleType.az);
                 }
               },
               child: Align(

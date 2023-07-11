@@ -1,12 +1,13 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Detail_Page_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ImagePart extends StatelessWidget {
   const ImagePart({
@@ -62,7 +63,7 @@ class ImagePart extends StatelessWidget {
               left: 10,
               child: IconButton(
                   onPressed: () {
-                    context.router.pop(context);
+                    context.pop(context);
                   },
                   icon: const Icon(Icons.arrow_back_ios)),
             ),
@@ -77,14 +78,15 @@ class ImagePart extends StatelessWidget {
                   child: BlocBuilder<GlobalBloc, GlobalState>(
                     builder: (context, state) {
                       final isLiked = state.userData != null &&
-                          state.userData!.liked.contains(FirebaseFirestore
-                              .instance
-                              .collection('products')
-                              .doc(product!.id));
+                          state.userData!.liked.contains(state.isAnonymous
+                              ? product!.id
+                              : FirebaseFirestore.instance
+                                  .collection('products')
+                                  .doc(product!.id));
                       return GestureDetector(
                         onTap: () => {
                           if (state.userData == null)
-                            {context.router.pushNamed('/needregister')}
+                            {context.pushNamed(APP_PAGE.UNAUTHORIZATION.toName)}
                           else
                             {
                               if (!isLiked)

@@ -182,9 +182,9 @@ class ProductsCrud {
 
   static Future<Map<String, dynamic>> getProductsFromTypesense(
     Client client,
-    String search,
-    int current_page,
-    int per_page, {
+    String search, {
+    required int current_page,
+    required int per_page,
     String? categoryId,
     String? companyId,
     String? subcategoryId,

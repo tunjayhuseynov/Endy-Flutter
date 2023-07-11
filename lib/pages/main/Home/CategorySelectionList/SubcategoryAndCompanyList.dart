@@ -1,7 +1,7 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
@@ -10,11 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
 
+ 
 class SubcategoryListRoute extends StatefulWidget {
   final String? id;
   final String? type;
   const SubcategoryListRoute(
-      {Key? key, @pathParam this.id, @pathParam this.type})
+      {Key? key,   this.id,   this.type})
       : super(key: key);
 
   @override
@@ -28,12 +29,12 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
   @override
   void initState() {
     super.initState();
-    if (context.router.stackData.length > 1 && widget.id != "all") {
-      id = Uri.decodeComponent(widget.id ?? "");
-    }
-    if (context.router.stackData.length == 1 && widget.id != "all") {
-      id = Uri.decodeQueryComponent(Uri.decodeComponent(widget.id ?? ""));
-    }
+    // if (context.router.stackData.length > 1 && widget.id != "all") {
+    //   id = Uri.decodeComponent(widget.id ?? "");
+    // }
+    // if (context.router.stackData.length == 1 && widget.id != "all") {
+    //   id = Uri.decodeQueryComponent(Uri.decodeComponent(widget.id ?? ""));
+    // }
     context.read<CategorySelectionListBloc>().search("");
   }
 
@@ -104,11 +105,11 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    if (context.router.stackData.length == 1) {
-                      context.router.pushNamed('/');
-                    } else {
-                      context.router.pop(context);
-                    }
+                    // if (context.router.stackData.length == 1) {
+                    //   context.router.pushNamed('/');
+                    // } else {
+                    //   context.router.pop(context);
+                    // }
                   }),
               title: Text(state.selectedCategory?.name ?? "",
                   style: const TextStyle(
@@ -182,10 +183,10 @@ class CompanyItem extends StatelessWidget {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () {
-        context
-            .read<CategoryGridBloc>()
-            .set(prevPath: context.router.currentPath);
-        context.router.pushNamed('company/products/${company.id}/all');
+        // context
+        //     .read<CategoryGridBloc>()
+        //     .set(prevPath: context.router.currentPath);
+        // context.router.pushNamed('company/products/${company.id}/all');
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -224,11 +225,11 @@ class SubcategoryItem extends StatelessWidget {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () async {
-        context
-            .read<CategoryGridBloc>()
-            .set(prevPath: context.router.currentPath);
-        context.router.pushNamed(
-            'category/products/${category.id}/${selectAll == true ? "all" : subcategory.id}');
+        // context
+        //     .read<CategoryGridBloc>()
+        //     .set(prevPath: context.router.currentPath);
+        // context.router.pushNamed(
+        //     'category/products/${category.id}/${selectAll == true ? "all" : subcategory.id}');
       },
       child: Container(
         height: 45,

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Parent extends Cubit<GlobalState> {
   Parent()
@@ -81,10 +84,16 @@ class Parent extends Cubit<GlobalState> {
   }
 
   Future<void> updateUser(UserData user, {bool? emitting}) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user.id)
-        .update(UserData.fromInstance(user).toJson());
+    if (state.isAnonymous) {
+      print(user.toJson());
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString("userData", json.encode(user.toJson()));
+    } else {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.id)
+          .update(UserData.fromInstance(user).toJson());
+    }
 
     if (emitting != null && emitting) {
       emit(state.copyWith(userData: user));

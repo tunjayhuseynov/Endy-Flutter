@@ -1,12 +1,14 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
-import 'package:endy/route/route.gr.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class NeedRegisterRoute extends StatelessWidget {
-  const NeedRegisterRoute({super.key, this.deactivateTab});
+ 
+class UnauthorizationRoute extends StatelessWidget {
+  const UnauthorizationRoute({super.key, this.deactivateTab});
   final bool? deactivateTab;
 
   @override
@@ -14,7 +16,7 @@ class NeedRegisterRoute extends StatelessWidget {
     final w = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () async {
-        context.router.push(MainContainerRoute());
+        context.pushNamed(APP_PAGE.HOME.toName);
         return false;
       },
       child: ScaffoldWrapper(
@@ -26,13 +28,13 @@ class NeedRegisterRoute extends StatelessWidget {
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                      context.router.push(MainContainerRoute());
+                      context.pushNamed(APP_PAGE.HOME.toName);
                     }),
               )
             : null,
         body: Column(
           children: [
-            if(w >= 1024) const Navbar(),
+            if (w >= 1024) const Navbar(),
             Expanded(
               child: Center(
                 child: Container(
@@ -51,7 +53,7 @@ class NeedRegisterRoute extends StatelessWidget {
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
-                          context.router.pushNamed("/sign/registration");
+                          context.pushNamed(APP_PAGE.SIGN_UP.toName);
                         },
                         child: const Text("Qeydiyyatdan keç",
                             style: TextStyle(
@@ -64,7 +66,7 @@ class NeedRegisterRoute extends StatelessWidget {
                 ),
               ),
             ),
-            if(w >= 1024) const Footer()
+            if (w >= 1024) const Footer()
           ],
         ),
       ),

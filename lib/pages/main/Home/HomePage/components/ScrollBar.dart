@@ -1,20 +1,21 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bloc.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 
-class ScrollableCategoriesHome extends StatelessWidget {
+class ScrollBar extends StatelessWidget {
   final ScrollController controller = ScrollController();
 
-  late final List<Category> list;
   final Category allcategory = Category(
       id: "100",
       name: "Kateqoriya",
@@ -35,71 +36,70 @@ class ScrollableCategoriesHome extends StatelessWidget {
       isAllBrands: true,
       createdAt: 0);
 
-      
-  ScrollableCategoriesHome(
-      {Key? key,
-      required List<Category> list,
-      required List<Company> allBrands})
-      : super(key: key) {
-    this.list = [allcategory, brands, ...list];
-    allcategory.subcategory = list;
-    brands.subcategory = allBrands;
-  }
+  ScrollBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    final count = w >= 1024 ? list.length - 1 : list.length;
-    return Container(
-      height: 100,
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: w >= 1024 ? 50 : 0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              controller: controller,
-              itemCount: count,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (_, index) {
-                return CategoryCard(
-                    category:
-                        w >= 1024 ? list.skip(1).toList()[index] : list[index]);
-              },
-            ),
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (context, state) {
+        var list = [allcategory, brands, ...state.categories];
+        allcategory.subcategory = list;
+        brands.subcategory = state.companies;
+        final count = w >= 1024 ? list.length - 1 : list.length;
+        return Container(
+          height: 100,
+          child: Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: w >= 1024 ? 50 : 0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  controller: controller,
+                  itemCount: count,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, index) {
+                    return CategoryCard(
+                        category: w >= 1024
+                            ? list.skip(1).toList()[index]
+                            : list[index]);
+                  },
+                ),
+              ),
+              if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
+                Positioned(
+                    left: 0,
+                    top: 20,
+                    child: IconButton(
+                        mouseCursor: SystemMouseCursors.click,
+                        onPressed: () {
+                          controller.animateTo(controller.offset - 100,
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.linear);
+                        },
+                        icon: Icon(
+                          CupertinoIcons.back,
+                          color: Colors.black,
+                        ))),
+              if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
+                Positioned(
+                    right: 0,
+                    top: 20,
+                    child: IconButton(
+                        mouseCursor: SystemMouseCursors.click,
+                        onPressed: () {
+                          controller.animateTo(controller.offset + 100,
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.linear);
+                        },
+                        icon: Icon(
+                          CupertinoIcons.forward,
+                          color: Colors.black,
+                        )))
+            ],
           ),
-          if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
-            Positioned(
-                left: 0,
-                top: 20,
-                child: IconButton(
-                    mouseCursor: SystemMouseCursors.click,
-                    onPressed: () {
-                      controller.animateTo(controller.offset - 100,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.linear);
-                    },
-                    icon: Icon(
-                      CupertinoIcons.back,
-                      color: Colors.black,
-                    ))),
-          if (w >= 1024 && count * 100 > w - (getContainerSize(w) * 2))
-            Positioned(
-                right: 0,
-                top: 20,
-                child: IconButton(
-                    mouseCursor: SystemMouseCursors.click,
-                    onPressed: () {
-                      controller.animateTo(controller.offset + 100,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.linear);
-                    },
-                    icon: Icon(
-                      CupertinoIcons.forward,
-                      color: Colors.black,
-                    )))
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -124,15 +124,16 @@ class _CategoryCardState extends State<CategoryCard> {
 
   onClickMobileV(double w) {
     if (widget.category.id == "100") {
-      // context.read<CategoryListBloc>().setTypeAndList(widget.category);
+      context.read<CategoryListBloc>().setTypeAndList(widget.category);
 
-      context.router.pushNamed("/category/list");
-    }else if (widget.category.id == "200") {
-      // context.read<CategoryListBloc>().setTypeAndList(widget.category);
+      context.pushNamed(APP_PAGE.CATEGORY_LIST.toName);
+    } else if (widget.category.id == "200") {
+      context.read<CategoryListBloc>().setTypeAndList(widget.category);
 
-      context.router.pushNamed("/companyLabel/list");
+      context.pushNamed(APP_PAGE.COMPANY_LABEL_LIST.toName);
     } else {
-      context.router.pushNamed("/subcategory/list/${widget.category.id}");
+      context.pushNamed(APP_PAGE.SUBCATEGORY_LIST.toName,
+          pathParameters: {"id": widget.category.id});
     }
   }
 
@@ -298,20 +299,17 @@ class _WebMenuItemState extends State<WebMenuItem> {
       },
       child: GestureDetector(
         onTap: () {
-          context
-              .read<CategoryGridBloc>()
-              .set(prevPath: context.router.currentPath);
+          context.read<CategoryGridBloc>().set(prevPath: "");
 
           var id =
               widget.isBrand == true ? widget.widget.id : widget.category.id;
-          var subId = widget.widget?.id == null ||
-                  widget.widget?.id == "" ||
-                  widget.isBrand == true
-              ? "all"
-              : widget.widget.id;
-
-          context.router.pushNamed(
-              '${widget.isBrand ? "company" : "category"}/products/${id}/${subId}');
+          if (widget.isBrand) {
+            context.pushNamed(APP_PAGE.COMPANY_PRODUCTS_LIST.toName,
+                pathParameters: {"id": id});
+          } else {
+            context.pushNamed(APP_PAGE.CATEGORY_PRODUCTS_LIST.toName,
+                pathParameters: {"id": id});
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),

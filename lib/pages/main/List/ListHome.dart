@@ -1,11 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/list/List_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:xid/xid.dart';
 
 class ListHomeRoute extends StatefulWidget {
@@ -25,7 +25,7 @@ class _ListHomeRouteState extends State<ListHomeRoute> {
           appBar: AppBar(
             leading: GestureDetector(
                 onTap: () {
-                  context.router.pop(context);
+                  context.pop(context);
                 },
                 child: const Icon(Icons.arrow_back_ios)),
             title: const Text("List",
@@ -60,7 +60,7 @@ class _ListHomeRouteState extends State<ListHomeRoute> {
                   right: 0,
                   bottom: 20,
                   child: FloatingActionButton(
-                    heroTag: "addList",
+                    // heroTag: "addList",
                     backgroundColor: const Color(mainColor),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
@@ -122,7 +122,7 @@ class _ListHomeRouteState extends State<ListHomeRoute> {
                   foregroundColor: MaterialStateProperty.all(Colors.black)),
               child: const Text('Ləvğ et'),
               onPressed: () {
-                context.router.pop();
+                context.pop(context);
               },
             ),
             TextButton(
@@ -131,7 +131,7 @@ class _ListHomeRouteState extends State<ListHomeRoute> {
               child: const Text('Hazır'),
               onPressed: () {
                 if (editingController.text.isNotEmpty) {
-                  context.router.pop(editingController.text);
+                  context.pop(editingController.text);
                 }
               },
             ),
@@ -150,7 +150,8 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.pushNamed('/list/detail/' + detail.id);
+        context.pushNamed(APP_PAGE.SHOPPING_LIST_DETAIL.toName,
+            pathParameters: {"id": detail.id});
       },
       child: Container(
         decoration: BoxDecoration(

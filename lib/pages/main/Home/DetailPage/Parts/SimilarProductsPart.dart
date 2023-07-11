@@ -18,8 +18,8 @@ class _SimilarProductsState extends State<SimilarProducts> {
   Client client = Client(typesenseConfig);
 
   Future<List<Product>> getProducts() async {
-    var list = await ProductsCrud.getProductsFromTypesense(client, "", 1, 5,
-        categoryId: widget.product.category.id);
+    var list = await ProductsCrud.getProductsFromTypesense(client, "",
+        current_page: 1, per_page: 5, categoryId: widget.product.category.id);
 
     List<Product> hits = await Future.wait(list['hits'].map<Future<Product>>(
         (e) => ProductsCrud.renderProduct(e["document"])));
@@ -31,7 +31,8 @@ class _SimilarProductsState extends State<SimilarProducts> {
     return Column(
       children: [
         Container(
-          child: Text("Bənzər məhsullar", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+          child: Text("Bənzər məhsullar",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
         ),
         const SizedBox(
           height: 20,
@@ -62,7 +63,8 @@ class _SimilarProductsState extends State<SimilarProducts> {
                           .toList(),
                     ),
                   );
-                } else if (snapshot.connectionState == ConnectionState.waiting) {
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return Container(
                     child: Center(
                       child: CircularProgressIndicator(color: Color(mainColor)),

@@ -1,3 +1,4 @@
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Catalog/CompanyCard.dart';
 import 'package:endy/components/Footer.dart';
@@ -7,6 +8,7 @@ import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+ 
 class CatalogMainRoute extends StatelessWidget {
   const CatalogMainRoute({super.key});
 

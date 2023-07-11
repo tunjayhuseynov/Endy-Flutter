@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
@@ -7,7 +7,9 @@ import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:go_router/go_router.dart';
 
+ 
 class AboutUsRoute extends StatelessWidget {
   const AboutUsRoute({Key? key}) : super(key: key);
 
@@ -24,7 +26,7 @@ class AboutUsRoute extends StatelessWidget {
             toolbarHeight: 80,
             leading: IconButton(
                 onPressed: () {
-                  context.router.pop(context);
+                  context.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
             title: const Text('Haqqımızda',

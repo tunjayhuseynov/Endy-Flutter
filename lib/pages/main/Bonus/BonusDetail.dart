@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:endy/types/user.dart';
 import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
 
+ 
 class BonusDetailPageRoute extends StatefulWidget {
   final String? id;
-  const BonusDetailPageRoute({Key? key, @pathParam this.id}) : super(key: key);
+  const BonusDetailPageRoute({Key? key,   this.id}) : super(key: key);
 
   @override
   State<BonusDetailPageRoute> createState() => _BonusDetailPageRouteState();
@@ -88,7 +90,7 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
                     if (card != null) {
                       context.read<GlobalBloc>().removeBonusCard(card!);
                     }
-                    context.router.pop(context);
+                    context.pop(context);
                   }
                 },
                 icon: const Icon(CupertinoIcons.delete, color: Colors.red),
@@ -96,7 +98,7 @@ class _BonusDetailPageRouteState extends State<BonusDetailPageRoute> {
             ],
             leading: IconButton(
                 onPressed: () {
-                  context.router.pop(context);
+                  context.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
           ),

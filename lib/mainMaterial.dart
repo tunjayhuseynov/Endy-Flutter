@@ -1,8 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/route/guard.dart';
-import 'package:endy/route/permission.dart';
-import 'package:endy/route/route.gr.dart';
+// import 'package:endy/route/guard.dart';
+// import 'package:endy/route/permission.dart';
+import 'package:endy/route/router.dart';
+// import 'package:endy/route/route.gr.dart';
 import 'package:endy/utils/FirebaseAuth.dart';
 import 'package:endy/utils/connection.dart';
 import 'package:endy/utils/scrollBehavior.dart';
@@ -50,43 +51,29 @@ class AppMaterialState extends State<AppMaterial> {
     super.dispose();
   }
 
-  final _appRouter = AppRouter(
-    authGuard: AuthGuard(),
-    permissionGuard: PermissionGuard(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Portal(
       child: MaterialApp.router(
         scrollBehavior: MyCustomScrollBehavior(),
         title: 'Endy',
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          Locale('en'),
-          Locale('az'),
-        ],
         theme: ThemeData(
             primarySwatch: Colors.red,
             useMaterial3: true,
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              },
+            ),
             textTheme: GoogleFonts.robotoTextTheme(Theme.of(context)
                 .textTheme
                 .copyWith(bodyLarge: const TextStyle())
                 .apply(
                   bodyColor: const Color.fromARGB(255, 48, 46, 46),
                 ))),
-        routerDelegate: _appRouter.delegate(),
-        routeInformationParser: _appRouter.defaultRouteParser(),
-        // initialRoute: FirebaseAuth.instance.currentUser == null ? "/sign/main" : '/',
-        // // home: GlobalWidget(child: const MainProvider(), disallowAnonym: false),
-        // onGenerateRoute: (RouteSettings setting) {
-        //   return CustomPageRoute(
-        //       builder: routerSwitch(setting), settings: setting);
-        // }
+        routerConfig:
+            CustomRouter(streams: [context.read<GlobalBloc>().stream]).router,
       ),
     );
   }

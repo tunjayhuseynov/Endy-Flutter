@@ -1,9 +1,11 @@
 
+ 
 import 'package:endy/Pages/Sign/Register/Register_Bloc.dart';
 import 'package:endy/Pages/Sign/Register/Registration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+ 
 class RegistrationContainerRoute extends StatelessWidget {
   const RegistrationContainerRoute({super.key});
 

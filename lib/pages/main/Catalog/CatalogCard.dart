@@ -1,8 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
@@ -27,7 +28,8 @@ class _CatalogCardState extends State<CatalogCard> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          context.router.pushNamed("/catalog/single/" + this.widget.catalog.id);
+          context.pushNamed(APP_PAGE.CATALOG_SINGLE.toName,
+              pathParameters: {"id": this.widget.catalog.id});
         },
         child: LayoutBuilder(
           builder: (ctx, con) {

@@ -1,10 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/components/DiscountCard/ImagePart.dart';
 import 'package:endy/components/DiscountCard/NamePart.dart';
 import 'package:endy/components/DiscountCard/PricePart.dart';
 import 'package:endy/components/DiscountCard/TimePart.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/product.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DiscountCard extends StatefulWidget {
   final Product product;
@@ -35,9 +36,8 @@ class _DiscountCardState extends State<DiscountCard> {
       },
       child: GestureDetector(
         onTap: () {
-          context.router.pushNamed(
-            '/home/detail/${widget.product.id}?name=${widget.product.name}',
-          );
+          context.pushNamed(APP_PAGE.PRODUCT_DETAIL.toName,
+              pathParameters: {"id": widget.product.id});
         },
         child: FittedBox(
           fit: BoxFit.contain,

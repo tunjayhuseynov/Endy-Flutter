@@ -1,11 +1,12 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CategoryListRoute extends StatefulWidget {
   const CategoryListRoute({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _CategoryListRouteState extends State<CategoryListRoute> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    context.router.pop(context);
+                    context.pop(context);
                   }),
               title: Text(state.selectedCategory?.name ?? "",
                   style: const TextStyle(
@@ -117,7 +118,8 @@ class CategoryItem extends StatelessWidget {
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
         onTap: () {
-          context.router.pushNamed('/subcategory/list/${category.id}');
+          context.pushNamed(APP_PAGE.SUBCATEGORY_LIST.toName,
+              pathParameters: {"categoryId": category.id});
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

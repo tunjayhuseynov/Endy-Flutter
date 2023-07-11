@@ -1,17 +1,20 @@
 // import 'dart:html';
 
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+ 
 class BonusHomeRoute extends StatefulWidget {
   const BonusHomeRoute({Key? key}) : super(key: key);
 
@@ -22,7 +25,7 @@ class BonusHomeRoute extends StatefulWidget {
 class _BonusHomeRouteState extends State<BonusHomeRoute> {
   onAdd() async {
     if (!kIsWeb && await Permission.camera.request().isGranted) {
-      await context.router.pushNamed('/bonus/camera');
+      await context.pushNamed(APP_PAGE.BONUS_CARD_CAMERA.toName);
     }
 
     // if (kIsWeb) {
@@ -114,8 +117,8 @@ class BonusState extends State<Bonus> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
-      onTap: () =>
-          context.router.pushNamed('/bonus/detail/' + widget.card.cardNumber),
+      onTap: () => print(""),
+          // context.router.pushNamed('/bonus/detail/' + widget.card.cardNumber),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(

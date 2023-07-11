@@ -1,7 +1,8 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:endy/Pages/main/Bonus/BonusAdd.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:endy/route/route.gr.dart';
 
 class CameraRoute extends StatefulWidget {
   const CameraRoute({Key? key}) : super(key: key);
@@ -32,7 +33,8 @@ class CameraRouteState extends State<CameraRoute> {
               } else {
                 final String code = barcodes[0].rawValue!;
                 controller.stop();
-                context.router.replace(BonusAddRoute(code: code));
+                context.replaceNamed(APP_PAGE.BONUS_CARD_ADD.toName,
+                    pathParameters: {"code": code});
               }
             }),
         _getCustomPaintOverlay(context),

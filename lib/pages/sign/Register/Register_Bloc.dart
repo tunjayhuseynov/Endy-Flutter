@@ -3,7 +3,6 @@ import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class RegisterState {
   DateTime? selectedDate;
@@ -86,15 +85,29 @@ class RegisterBloc extends Cubit<RegisterState> {
 
   void setDatePicker(BuildContext context) {
     if (MediaQuery.of(context).size.width < 1024) {
-      DatePicker.showDatePicker(context,
-          showTitleActions: true,
-          minTime: DateTime(1940, 1, 1),
-          maxTime: DateTime.now().add(Duration(days: 365 * -13)),
-          onChanged: (date) {}, onConfirm: (date) {
-        setSelectedDate(date);
-      },
-          currentTime: state.selectedDate ?? DateTime.now(),
-          locale: LocaleType.az);
+      showCupertinoDatepickerDialog(
+          CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.date,
+            use24hFormat: true,
+            // This shows day of week alongside day of month
+            showDayOfWeek: true,
+            minimumDate: DateTime(1940, 1, 1),
+            maximumDate: DateTime.now().add(Duration(days: 365 * -13)),
+            // This is called when the user changes the date.
+            onDateTimeChanged: (DateTime newDate) {
+              setSelectedDate(newDate);
+            },
+          ),
+          context);
+      // DatePicker.showDatePicker(context,
+      //     showTitleActions: true,
+      //     minTime: DateTime(1940, 1, 1),
+      //     maxTime: DateTime.now().add(Duration(days: 365 * -13)),
+      //     onChanged: (date) {}, onConfirm: (date) {
+      //   setSelectedDate(date);
+      // },
+      //     currentTime: state.selectedDate ?? DateTime.now(),
+      //     locale: LocaleType.az);
     } else {
       showDatePicker(
               context: context,

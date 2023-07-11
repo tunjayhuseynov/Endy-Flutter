@@ -4,6 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  file_selector_windows
+  firebase_core
   geolocator_windows
   maps_launcher
   permission_handler_windows

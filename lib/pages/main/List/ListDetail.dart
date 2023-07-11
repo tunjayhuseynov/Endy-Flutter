@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+ 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/dialog.dart';
 import 'package:endy/Pages/main/list/List_Bloc.dart';
@@ -7,13 +7,15 @@ import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:xid/xid.dart';
 import 'package:collection/collection.dart';
 
+ 
 class ListDetailRoute extends StatefulWidget {
   final String? id;
-  const ListDetailRoute({Key? key, @pathParam this.id}) : super(key: key);
+  const ListDetailRoute({Key? key,   this.id}) : super(key: key);
 
   @override
   State<ListDetailRoute> createState() => _ListDetailRouteState();
@@ -62,7 +64,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                 appBar: AppBar(
                     leading: GestureDetector(
                         onTap: () {
-                          context.router.pop(context);
+                          context.pop(context);
                         },
                         child: const Icon(Icons.arrow_back_ios)),
                     title: const Text("List",
@@ -79,7 +81,7 @@ class _ListDetailRouteState extends State<ListDetailRoute> {
                           if (response == true) {
                             if (!mounted) return;
                             context.read<GlobalBloc>().removeList(list!);
-                            context.router.pop(context);
+                            context.pop(context);
                           }
                         },
                       ),

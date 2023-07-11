@@ -25,6 +25,7 @@ class GlobalState {
   final int? reset;
   final String aboutApp;
   final bool internetConnectionLost;
+  final bool isAnonymous;
 
   final bool isMapDisabled;
   final bool isMostViewedDisabled;
@@ -41,6 +42,7 @@ class GlobalState {
   GlobalState({
     this.authStatus = GlobalAuthStatus.loading,
     this.userData,
+    this.isAnonymous = false,
     this.reset,
     this.user,
     this.isMapDisabled = false,
@@ -75,12 +77,14 @@ class GlobalState {
       String? aboutApp,
       bool? internetConnectionLost,
       bool? isMapDisabled,
+      bool? isAnonymous,
       bool? isMostViewedDisabled}) {
     return GlobalState(
       packageStatus: packageStatus ?? this.packageStatus,
       authStatus: authStatus ?? this.authStatus,
       user: user ?? this.user,
       userData: userData ?? this.userData,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
       notifications: notifications ?? this.notifications,
       unseenNotificationCount:
           unseenNotificationCount ?? this.unseenNotificationCount,
@@ -108,6 +112,7 @@ class GlobalState {
         user,
         userData,
         authStatus,
+        isAnonymous,
         notifications,
         catalogs,
         unseenNotificationCount,
@@ -129,25 +134,25 @@ class GlobalBloc extends Parent {
     emit(state.copyWith(authStatus: status));
   }
 
-  void set(GlobalState state){
+  void set(GlobalState state) {
     emit(state);
   }
 
-  void loadUtils() {
-    FirebaseFirestore.instance
+  Future<Map<String, bool>> loadUtils() async {
+    var mapStatus = await FirebaseFirestore.instance
         .collection("utils")
         .doc("isMapDisabled")
-        .get()
-        .then((doc) {
-      emit(state.copyWith(isMapDisabled: doc.data()?["value"] ?? false));
-    });
-    FirebaseFirestore.instance
+        .get();
+
+    var mostViewedStatus = await FirebaseFirestore.instance
         .collection("utils")
         .doc("isMostViewedDisabled")
-        .get()
-        .then((doc) {
-      emit(state.copyWith(isMostViewedDisabled: doc.data()?["value"] ?? false));
-    });
+        .get();
+
+    return {
+      "mapStatus": mapStatus.data()?["value"] ?? false,
+      "mostViewedStatus": mostViewedStatus.data()?["value"] ?? false
+    };
   }
 
   void setCompanies(List<Company> companies) {
@@ -193,16 +198,19 @@ class GlobalBloc extends Parent {
 
   void addFavorite(Product product) {
     var data = UserData.fromInstance(state.userData!);
-    data.liked
-        .add(FirebaseFirestore.instance.collection("products").doc(product.id));
+    print(data.liked);
+    data.liked.add(state.isAnonymous
+        ? product.id
+        : FirebaseFirestore.instance.collection("products").doc(product.id));
     emit(state.copyWith(userData: data));
     updateUser(data);
   }
 
   void removeFavorite(Product product) {
     var data = UserData.fromInstance(state.userData!);
-    data.liked.remove(
-        FirebaseFirestore.instance.collection("products").doc(product.id));
+    data.liked.remove(state.isAnonymous
+        ? product.id
+        : FirebaseFirestore.instance.collection("products").doc(product.id));
     emit(state.copyWith(userData: data));
     updateUser(data);
   }
@@ -247,6 +255,7 @@ class GlobalBloc extends Parent {
       PanelCrud.getAbout(),
       CatalogsCrud.getCatalogs(),
       CompanyCrud.getCompanyLabels(),
+      loadUtils()
       // SubcategoryCrud.getSubcategories(),
     ]).then((value) {
       emit(state.copyWith(
@@ -257,11 +266,12 @@ class GlobalBloc extends Parent {
         aboutApp: value[3] as String,
         catalogs: value[4] as List<Catalog>,
         companyLabels: value[5] as List<CompanyLabel>,
+        isMapDisabled: (value[6] as Map<String, bool>)["mapStatus"],
+        isMostViewedDisabled:
+            (value[6] as Map<String, bool>)["mostViewedStatus"],
         // subcategories: value[2] as List<Subcategory>,
       ));
     });
-
-
   }
 
   void setFirstEnter() {

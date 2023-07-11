@@ -1,7 +1,7 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationPageRoute extends StatefulWidget {
@@ -29,7 +29,7 @@ class _NotificationPageRouteState extends State<NotificationPageRoute> {
             toolbarHeight: 80,
             leading: IconButton(
                 onPressed: () {
-                  context.router.pop(context);
+                  context.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
             title: const Text('Bildirişlər',
@@ -61,7 +61,7 @@ class _NotificationPageRouteState extends State<NotificationPageRoute> {
                       : const Text(''),
                   onTap: () {
                     if (state.notifications[index].onClick != null) {
-                      context.router.pushNamed("/home/detail/" +
+                      context.pushNamed("/home/detail/" +
                           state.notifications[index].onClick!);
                     }
                   },

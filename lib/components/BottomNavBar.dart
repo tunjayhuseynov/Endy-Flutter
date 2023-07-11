@@ -1,12 +1,14 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Nav extends StatelessWidget {
-  Nav({Key? key}) : super(key: key);
+class BottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
+  BottomNavBar({Key? key, required this.currentIndex, required this.onTap})
+      : super(key: key);
 
   final iconsLeft = <Map>[
     {
@@ -24,12 +26,12 @@ class Nav extends StatelessWidget {
   final iconsRight = <Map>[
     {
       "icon": const AssetImage("assets/icons/navbar/catalog.png"),
-      "index": 2,
+      "index": 3,
       "title": "Kataloq"
     },
     {
       "icon": const AssetImage("assets/icons/navbar/dots.png"),
-      "index": 3,
+      "index": 4,
       "title": "Daha çox",
       "badge": "2"
     },
@@ -37,59 +39,55 @@ class Nav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = context.read<HomePageNavBloc>();
-
     final Size size = MediaQuery.of(context).size;
 
     generateMapping(GlobalState state) {
       return (e) => GestureDetector(
             onTap: () {
-              currentIndex.setIndex(e["index"]);
+              onTap(e["index"]);
             },
-            child: BlocBuilder<HomePageNavBloc, int>(
-              builder: (navContext, navState) {
-                return Container(
-                  // color: Colors.yellow,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      e["badge"] != null && state.unseenNotificationCount > 0
-                          ? badges.Badge(
-                              badgeContent: Text(
-                                  state.unseenNotificationCount.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400)),
-                              toAnimate: true,
-                              animationDuration:
-                                  const Duration(milliseconds: 500),
-                              animationType: badges.BadgeAnimationType.scale,
-                              badgeColor: const Color(mainColor),
-                              child: ImageIcon(
-                                e["icon"],
-                                color: navState == e["index"]
-                                    ? const Color(mainColor)
-                                    : Colors.grey.shade400,
-                              ))
-                          : ImageIcon(
-                              e["icon"],
-                              color: navState == e["index"]
-                                  ? const Color(mainColor)
-                                  : Colors.grey.shade400,
-                            ),
-                      Text(e["title"],
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: navState == e["index"]
+            child: Container(
+              // color: Colors.yellow,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  e["badge"] != null && state.unseenNotificationCount > 0
+                      ? badges.Badge(
+                          badgeContent: Text(
+                              state.unseenNotificationCount.toString(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400)),
+                          badgeAnimation: badges.BadgeAnimation.scale(
+                            toAnimate: true,
+                            animationDuration:
+                                const Duration(milliseconds: 500),
+                          ),
+                          badgeStyle: badges.BadgeStyle(
+                              badgeColor: const Color(mainColor)),
+                          child: ImageIcon(
+                            e["icon"],
+                            color: currentIndex == e["index"]
                                 ? const Color(mainColor)
                                 : Colors.grey.shade400,
                           ))
-                    ],
-                  ),
-                );
-              },
+                      : ImageIcon(
+                          e["icon"],
+                          color: currentIndex == e["index"]
+                              ? const Color(mainColor)
+                              : Colors.grey.shade400,
+                        ),
+                  Text(e["title"],
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: currentIndex == e["index"]
+                            ? const Color(mainColor)
+                            : Colors.grey.shade400,
+                      ))
+                ],
+              ),
             ),
           );
     }
@@ -116,13 +114,14 @@ class Nav extends StatelessWidget {
                       width: 65,
                       height: 65,
                       child: FloatingActionButton(
-                          heroTag: currentIndex.state,
+                          // heroTag: "actionButton",
                           shape: const CircleBorder(),
                           backgroundColor: const Color(mainColor),
                           elevation: 0.1,
-                          child: const Icon(Icons.favorite, size: 35, color: Colors.white),
+                          child: const Icon(Icons.favorite,
+                              size: 35, color: Colors.white),
                           onPressed: () {
-                            currentIndex.setIndex(4);
+                            onTap(2);
                           }),
                     ),
                   ),

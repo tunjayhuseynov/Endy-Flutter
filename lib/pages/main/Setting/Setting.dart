@@ -1,9 +1,10 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingRoute extends StatelessWidget {
   const SettingRoute({Key? key}) : super(key: key);
@@ -15,7 +16,8 @@ class SettingRoute extends StatelessWidget {
     return Center(
       child: BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
-          ImageProvider img = (state.userData != null &&
+          ImageProvider img = (state.isAnonymous == true &&
+                  state.userData != null &&
                   state.userData!.profilePic != null &&
                   state.userData!.profilePic!.isNotEmpty)
               ? NetworkImage(state.userData!.profilePic!)
@@ -50,45 +52,46 @@ class SettingRoute extends StatelessWidget {
                         state.userData?.name ?? "İstifadəçi",
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      SizedBox(
-                          height: 35,
-                          child: TextButton(
-                            onPressed: () async => {
-                              await FirebaseAuth.instance.signOut(),
-                              context.router.pushNamed("/sign/main")
-                            },
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.grey[500]),
-                                overlayColor: MaterialStateProperty.all<Color?>(
-                                    Colors.transparent)),
-                            child: Text(state.userData != null
-                                ? "Hesabdan çıxış"
-                                : "Daxil ol"),
-                          ))
+                      // SizedBox(
+                      //     height: 35,
+                      //     child: TextButton(
+                      //       onPressed: () async => {
+                      //         await FirebaseAuth.instance.signOut(),
+                      //         context.router.pushNamed("/sign/main")
+                      //       },
+                      //       style: ButtonStyle(
+                      //           foregroundColor:
+                      //               MaterialStateProperty.all(Colors.grey[500]),
+                      //           overlayColor: MaterialStateProperty.all<Color?>(
+                      //               Colors.transparent)),
+                      //       child: Text(state.isAnonymous != true
+                      //           ? "Hesabdan çıxış"
+                      //           : "Daxil ol"),
+                      //     ))
                     ],
                   ),
+                  const SizedBox(height: 16),
                   Column(
                     children: [
+                      // SizedBox(
+                      //   height: 45,
+                      //   child: ListTile(
+                      //     onTap: () {
+                      //       context.router.pushNamed('/profile');
+                      //     },
+                      //     contentPadding: const EdgeInsets.all(0),
+                      //     minLeadingWidth: 5,
+                      //     leading: Icon(Icons.person, color: Colors.grey[800]),
+                      //     title: const Text("Profil",
+                      //         style: TextStyle(letterSpacing: .75)),
+                      //   ),
+                      // ),
+                      // const Divider(thickness: 1),
                       SizedBox(
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            context.router.pushNamed('/profile');
-                          },
-                          contentPadding: const EdgeInsets.all(0),
-                          minLeadingWidth: 5,
-                          leading: Icon(Icons.person, color: Colors.grey[800]),
-                          title: const Text("Profil",
-                              style: TextStyle(letterSpacing: .75)),
-                        ),
-                      ),
-                      const Divider(thickness: 1),
-                      SizedBox(
-                        height: 45,
-                        child: ListTile(
-                          onTap: () {
-                            context.router.pushNamed('/list');
+                            context.pushNamed(APP_PAGE.SHOPPING_LIST.toName);
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -102,7 +105,7 @@ class SettingRoute extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            context.router.pushNamed('/notification');
+                            context.pushNamed(APP_PAGE.NOTIFICATION.toName);
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,
@@ -137,7 +140,7 @@ class SettingRoute extends StatelessWidget {
                         height: 45,
                         child: ListTile(
                           onTap: () {
-                            context.router.pushNamed('/about');
+                            context.pushNamed(APP_PAGE.ABOUT.toName);
                           },
                           contentPadding: const EdgeInsets.all(0),
                           minLeadingWidth: 5,

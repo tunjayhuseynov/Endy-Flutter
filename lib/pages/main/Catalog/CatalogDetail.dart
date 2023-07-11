@@ -10,10 +10,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../components/Footer.dart';
 
+ 
 class CatalogDetailRoute extends StatefulWidget {
   final String? companyId;
 
-  CatalogDetailRoute({super.key, @pathParam this.companyId});
+  CatalogDetailRoute({super.key,   this.companyId});
 
   @override
   State<CatalogDetailRoute> createState() => _CatalogDetailRouteState();

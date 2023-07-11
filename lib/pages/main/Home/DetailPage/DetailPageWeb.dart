@@ -113,8 +113,11 @@ class DetailState extends State<DetailPageWeb> {
                           child: PortalTarget(
                             visible: true,
                             anchor: Aligned(
-                                offset:
-                                    Offset(getContainerSize(size.width) / 2, 115),
+                                offset: Offset(
+                                    size.width >= 1440
+                                        ? getContainerSize(size.width) / 2
+                                        : 0,
+                                    115),
                                 follower: Alignment.center,
                                 target: Alignment.topRight),
                             portalFollower: CompanyWeb(product: product),

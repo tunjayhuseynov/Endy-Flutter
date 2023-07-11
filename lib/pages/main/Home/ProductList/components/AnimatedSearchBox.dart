@@ -1,4 +1,4 @@
-import 'package:endy/Pages/main/Home/CategoryGrid/Category_Grid_Bar_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bar_Bloc.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
