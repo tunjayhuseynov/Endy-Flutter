@@ -14,14 +14,14 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: SingleChildScrollView(
-          // physics: NeverScrollableScrollPhysics(),
-          child: Column(
-              children: [
+      // physics: NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
           if (context.read<GlobalBloc>().state.isMostViewedDisabled == false)
             MostViwed(),
           ProductListFourGrid(),
-              ],
-            ),
-        ));
+        ],
+      ),
+    ));
   }
 }

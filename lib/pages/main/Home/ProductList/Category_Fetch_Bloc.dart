@@ -58,20 +58,20 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
   void setSearching(bool isSearching) =>
       emit(state.copyWith(isSearching: isSearching));
 
-  static fetch(
+  static Future<void> fetch(
       {required BuildContext context,
       required Client client,
       String? categoryId,
       String? companyId,
       String? subcategoryId,
-      bool? resetProduct}) {
+      bool? resetProduct}) async {
     var ctx = context.read<CategoryFetchBloc>();
     var filterState = context.read<FilterPageBloc>().state;
 
     if (resetProduct == true) {
       ctx.reset();
     }
-    context.read<CategoryFetchBloc>().getResult(
+    await context.read<CategoryFetchBloc>().getResult(
         categoryId, companyId, subcategoryId, client,
         mode: filterState, resetProduct: resetProduct);
   }
@@ -90,7 +90,7 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
 
     try {
       final rawHits = await ProductsCrud.getProductsFromTypesense(client, "",
-          current_page: state.nextPage,
+          current_page: resetProduct == true ? 1 : state.nextPage,
           per_page: state.per_page,
           categoryId: categoryId,
           companyId: companyId,
@@ -101,9 +101,11 @@ class CategoryFetchBloc extends Cubit<CategoryFetchState> {
           .map<Future<Product>>(
               (e) => ProductsCrud.renderProduct(e["document"]))));
 
+      if (this.isClosed) return [];
+
       setState(state.copyWith(
-        products: [...state.products, ...hits],
-        nextPage: state.nextPage + 1,
+        products: resetProduct == true ? hits : [...state.products, ...hits],
+        nextPage: resetProduct == true ? 2 : state.nextPage + 1,
         isSearching: false,
         isLastPage:
             (rawHits['out_of'] / state.per_page).ceil() == state.nextPage + 1,

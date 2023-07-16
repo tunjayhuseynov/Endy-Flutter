@@ -138,6 +138,7 @@ class _CompanyGridState extends State<CompanyGrid> {
                     )
                   : GridBody(
                       client: client,
+                      companyId: company.id,
                     );
             })
       ],

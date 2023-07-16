@@ -1,5 +1,5 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/Labels/Company_Label_List_Bloc.dart';
 import 'package:endy/route/router_names.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,6 +35,10 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
     return BlocSelector<CompanyLabelListBloc, CompanyLabelListState,
         List<CompanyLabel>>(
       selector: (state) {
+        print(context
+            .read<GlobalBloc>()
+            .state
+            .companyLabels);
         return context
             .read<GlobalBloc>()
             .state
@@ -47,52 +51,46 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
             .toList();
       },
       builder: (context, state) {
-        return WillPopScope(
-          onWillPop: () async {
-            context.pushNamed(APP_PAGE.HOME.toName);
-            return false;
-          },
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              surfaceTintColor: Colors.white,
-              toolbarHeight: 80,
-              leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    context.pop(context);
-                  }),
-              title: Text("Brend Növləri",
-                  style: const TextStyle(
-                      fontSize: 25, fontWeight: FontWeight.w500)),
-            ),
-            body: Column(
-              children: [
-                Container(
-                  width: w < 768 ? null : 300,
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoSearchTextField(
-                    placeholder: "Axtarış",
-                    onChanged: (value) {
-                      context.read<CompanyLabelListBloc>().search(value);
-                    },
-                    controller: editingController,
-                    prefixInsets: const EdgeInsets.only(left: 20),
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  ),
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            surfaceTintColor: Colors.white,
+            toolbarHeight: 80,
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  context.pop(context);
+                }),
+            title: Text("Brend Növləri",
+                style: const TextStyle(
+                    fontSize: 25, fontWeight: FontWeight.w500)),
+          ),
+          body: Column(
+            children: [
+              Container(
+                width: w < 768 ? null : 300,
+                padding: const EdgeInsets.all(8.0),
+                child: CupertinoSearchTextField(
+                  placeholder: "Axtarış",
+                  onChanged: (value) {
+                    context.read<CompanyLabelListBloc>().search(value);
+                  },
+                  controller: editingController,
+                  prefixInsets: const EdgeInsets.only(left: 20),
+                  borderRadius: const BorderRadius.all(Radius.circular(50)),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CompanyLabelItem(
-                          label: state[index],
-                        );
-                      }),
-                ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CompanyLabelItem(
+                        label: state[index],
+                      );
+                    }),
+              ),
+            ],
           ),
         );
       },

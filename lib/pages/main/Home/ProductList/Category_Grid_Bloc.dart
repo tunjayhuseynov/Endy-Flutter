@@ -12,15 +12,14 @@ class CategoryGridState {
   // Company? company;
   // Category? category;
 
-  CategoryGridState(
-      {this.selectedId = "",
-      this.reset = 0,
-      this.prevPath = "",
-      // this.subcategory,
-      // this.company,
-      // this.category
-      
-      });
+  CategoryGridState({
+    this.selectedId = "",
+    this.reset = 0,
+    this.prevPath = "",
+    // this.subcategory,
+    // this.company,
+    // this.category
+  });
 
   CategoryGridState copyWith({
     String? selectedId,
@@ -61,43 +60,43 @@ class CategoryGridBloc extends Cubit<CategoryGridState> {
 
   void setSelectedId(String id) {
     emit(state.copyWith(
-        selectedId: id,
-        // subcategory: state.subcategory,
-        // company: state.company,
-        // category: state.category
-        ));
+      selectedId: id,
+      // subcategory: state.subcategory,
+      // company: state.company,
+      // category: state.category
+    ));
   }
 
   void setCompany(Company? company) {
     emit(state.copyWith(
-        company: company,
-        // category: state.category,
-        // subcategory: state.subcategory
-        ));
+      company: company,
+      // category: state.category,
+      // subcategory: state.subcategory
+    ));
   }
 
   void setCategory(Category? category) {
     emit(state.copyWith(
-        category: category,
-        // subcategory: state.subcategory,
-        // company: state.company
-        ));
+      category: category,
+      // subcategory: state.subcategory,
+      // company: state.company
+    ));
   }
 
   void setSubcategory(Subcategory? subcategory) {
     emit(state.copyWith(
-        subcategory: subcategory,
-        // category: state.category,
-        // company: state.company
-        ));
+      subcategory: subcategory,
+      // category: state.category,
+      // company: state.company
+    ));
   }
 
   void resetAll() {
     emit(state.copyWith(
-        reset: state.reset + 1,
-        // company: state.company,
-        // category: state.category,
-        // subcategory: state.subcategory
-        ));
+      reset: state.reset + 1,
+      // company: state.company,
+      // category: state.category,
+      // subcategory: state.subcategory
+    ));
   }
 }

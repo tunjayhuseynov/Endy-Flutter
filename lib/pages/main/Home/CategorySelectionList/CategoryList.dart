@@ -119,7 +119,7 @@ class CategoryItem extends StatelessWidget {
         mouseCursor: SystemMouseCursors.click,
         onTap: () {
           context.pushNamed(APP_PAGE.SUBCATEGORY_LIST.toName,
-              pathParameters: {"categoryId": category.id});
+              pathParameters: {"id": category.id});
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

@@ -1,5 +1,6 @@
 import 'package:endy/Pages/main/Home/ProductList/Category_Fetch_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bar_Bloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/category/CategoryGrid.dart';
 import 'package:endy/Pages/main/Home/ProductList/company/CompanyGrid.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
@@ -39,24 +40,27 @@ class ProductListPage extends StatelessWidget {
     // if (context.router.stackData.length == 1) {
     //   id = Uri.decodeQueryComponent(Uri.decodeComponent(id ?? ""));
     // }
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<SearchPageBloc>(
-            create: (context) => SearchPageBloc(),
-          ),
-          BlocProvider<CategoryGridBarBloc>(
-            create: (context) => CategoryGridBarBloc(),
-          ),
-          BlocProvider<CategoryFetchBloc>(
-            create: (context) => CategoryFetchBloc(),
-          ),
-        ],
-        child: type == "category"
-            ? CategoryGrid(
-                categoryId: type == "category" ? id : "",
-              )
-            : CompanyGrid(
-                companyId: type == 'company' ? id : "",
-              ));
+    return ScaffoldWrapper(
+      body: MultiBlocProvider(
+          providers: [
+            BlocProvider<SearchPageBloc>(
+              create: (context) => SearchPageBloc(),
+            ),
+            BlocProvider<CategoryGridBarBloc>(
+              create: (context) => CategoryGridBarBloc(),
+            ),
+            BlocProvider<CategoryFetchBloc>(
+              create: (context) => CategoryFetchBloc(),
+            ),
+          ],
+          child: type == "category"
+              ? CategoryGrid(
+                  categoryId: type == "category" ? id : "",
+                  subcategoryId: context.read<CategoryGridBloc>().state.selectedId,
+                )
+              : CompanyGrid(
+                  companyId: type == 'company' ? id : "",
+                )),
+    );
   }
 }

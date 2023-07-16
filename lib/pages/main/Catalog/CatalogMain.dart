@@ -23,46 +23,49 @@ class CatalogMainRoute extends StatelessWidget {
             .toList();
         return Material(
           color: Colors.white,
-          child: ListView(
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            children: [
-              if(w >= 1024) const Navbar(),
-              const SizedBox(height: 25),
-              if (w < 1024)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Kataloqlar",
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListView(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              children: [
+                if(w >= 1024) const Navbar(),
+                const SizedBox(height: 25),
+                if (w < 1024)
+                  Container(
+                    padding: EdgeInsets.only(left: getContainerSize(w)),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Kataloqlar",
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
+                    ),
                   ),
+                const SizedBox(height: 20),
+                Container(
+                  constraints: BoxConstraints(minHeight: size.height),
+                  padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+                  child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: companies.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: getCatalogMainGrid(w),
+                          childAspectRatio: 300 / 150, //(250 / 430),
+                          mainAxisSpacing: 15,
+                          crossAxisSpacing: 15),
+                      itemBuilder: ((context, index) {
+                        return CompanyCard(
+                          company: companies[index],
+                        );
+                      })),
                 ),
-              const SizedBox(height: 20),
-              Container(
-                constraints: BoxConstraints(minHeight: size.height),
-                padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
-                child: GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: companies.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: getCatalogMainGrid(w),
-                        childAspectRatio: 300 / 150, //(250 / 430),
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15),
-                    itemBuilder: ((context, index) {
-                      return CompanyCard(
-                        company: companies[index],
-                      );
-                    })),
-              ),
-              const SizedBox(height: 50),
-              if(w >= 1024) const Footer(),
-            ],
+                const SizedBox(height: 50),
+                if(w >= 1024) const Footer(),
+              ],
+            ),
           ),
         );
       },

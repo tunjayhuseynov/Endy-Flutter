@@ -29,12 +29,12 @@ class GridBody extends StatefulWidget {
 
 class _GridBodyState extends State<GridBody> {
   Future<void> fetch() async {
-    CategoryFetchBloc.fetch(
+    await CategoryFetchBloc.fetch(
         context: context,
         client: widget.client,
         categoryId: widget.categoryId,
         companyId: widget.companyId,
-        subcategoryId: widget.subcategoryId,
+        subcategoryId: context.read<CategoryGridBloc>().state.selectedId,
         resetProduct: true);
   }
 
@@ -123,8 +123,7 @@ class _GridBodyState extends State<GridBody> {
                         );
                       },
                     ),
-                    if (cacheState.isSearching &&
-                        cacheState.isLastPage == false &&
+                    if (cacheState.isLastPage == false &&
                         cacheState.products.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.all(15.0),

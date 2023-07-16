@@ -40,13 +40,13 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   Future<Map<String, dynamic>> fetchData(
       {required String categoryId,
-      String? subcategoryId,
+      // String? subcategoryId,
       required GlobalState state}) async {
-    if (subcategoryId != null) {
-      subcategory = state.subcategories
-          .firstWhereOrNull((element) => element.id == subcategoryId);
-      context.read<CategoryGridBloc>().setSelectedId(subcategoryId);
-    }
+    // if (subcategoryId != null) {
+    //   subcategory = state.subcategories
+    //       .firstWhereOrNull((element) => element.id == subcategoryId);
+    //   context.read<CategoryGridBloc>().setSelectedId(subcategoryId);
+    // }
 
     return {
       "category": state.categories
@@ -149,11 +149,15 @@ class _CategoryGridState extends State<CategoryGrid> {
             buildWhen: (previous, current) => previous.search != current.search,
             builder: (context, searchState) {
               return searchState.search.isNotEmpty
-                  ? SearchPageRoute(
-                      categoryId: widget.categoryId,
-                      noTabbar: true,
-                      subcategoryId: widget.subcategoryId,
-                      params: searchState.search,
+                  ? BlocBuilder<CategoryGridBloc, CategoryGridState>(
+                      builder: (context, gridState) {
+                        return SearchPageRoute(
+                          categoryId: widget.categoryId,
+                          noTabbar: true,
+                          subcategoryId: gridState.selectedId,
+                          params: searchState.search,
+                        );
+                      },
                     )
                   : GridBody(
                       client: client,

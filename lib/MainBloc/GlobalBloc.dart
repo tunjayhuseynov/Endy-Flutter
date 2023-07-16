@@ -3,7 +3,6 @@ import 'package:endy/MainBloc/Parent.dart';
 import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';
-import 'package:endy/streams/notifications.dart';
 import 'package:endy/streams/panel.dart';
 import 'package:endy/types/catalog.dart';
 import 'package:endy/types/category.dart';
@@ -26,6 +25,8 @@ class GlobalState {
   final String aboutApp;
   final bool internetConnectionLost;
   final bool isAnonymous;
+
+  final bool conditionalSteaming;
 
   final bool isMapDisabled;
   final bool isMostViewedDisabled;
@@ -50,6 +51,7 @@ class GlobalState {
     this.categories = const [],
     this.notifications = const [],
     this.unseenNotificationCount = 0,
+    this.conditionalSteaming = true,
     this.subcategories = const [],
     this.companies = const [],
     this.companyLabels = const [],
@@ -83,6 +85,7 @@ class GlobalState {
       packageStatus: packageStatus ?? this.packageStatus,
       authStatus: authStatus ?? this.authStatus,
       user: user ?? this.user,
+      conditionalSteaming: this.packageStatus != packageStatus,
       userData: userData ?? this.userData,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       notifications: notifications ?? this.notifications,

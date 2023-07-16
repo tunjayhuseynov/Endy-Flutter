@@ -26,6 +26,7 @@ class AnimatedSearchBox extends StatelessWidget {
             } else {
               if (w < 768) {
                 context.read<CategoryGridBarBloc>().changeTitleStatus(true);
+                editingController.text = "";
               }
             }
           },

@@ -1,7 +1,4 @@
-import 'package:async/async.dart';
- 
 import 'package:endy/MainBloc/GlobalBloc.dart';
-import 'package:endy/Pages/main/Home/HomePage/HomePage.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/components/Footer.dart';
@@ -16,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
- 
 class SearchPageRoute extends StatefulWidget {
   final String? categoryId;
   final String? subcategoryId;
@@ -27,10 +23,10 @@ class SearchPageRoute extends StatefulWidget {
   SearchPageRoute({
     super.key,
     this.noTabbar,
-      this.categoryId,
-      this.subcategoryId,
-      this.companyId,
-      this.params = '',
+    this.categoryId,
+    this.subcategoryId,
+    this.companyId,
+    this.params = '',
   });
 
   @override
@@ -38,32 +34,20 @@ class SearchPageRoute extends StatefulWidget {
 }
 
 class _SearchPageRouteState extends State<SearchPageRoute> {
-  late CancelableOperation? _operation;
   final client = Client(typesenseConfig);
   TextEditingController editingController = TextEditingController();
 
   @override
   void dispose() {
-    _operation?.cancel();
     super.dispose();
   }
 
   void onVisible(VisibilityInfo info) {
     if (info.visibleFraction > 0.5) {
-      _operation = CancelableOperation.fromFuture(context
-              .read<SearchPageBloc>()
-              .getSearchResult(widget.params, widget.categoryId,
-                  widget.companyId, widget.subcategoryId, client))
-          .then((hits) {
-        if (hits.length > 0) {
-          final ctx = context.read<SearchPageBloc>();
-          ctx.addProducts(hits);
-          ctx.set(ctx.state.copyWith(
-            currentPage: ctx.state.currentPage + 1,
-            isSearching: false,
-          ));
-        }
-      });
+      context
+          .read<SearchPageBloc>()
+          .getSearchResult(widget.params, widget.categoryId, widget.companyId,
+              widget.subcategoryId, client);
     }
   }
 
@@ -71,20 +55,9 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
   void initState() {
     super.initState();
     editingController.text = widget.params;
-    _operation = CancelableOperation.fromFuture(context
-            .read<SearchPageBloc>()
-            .getSearchResult(widget.params, widget.categoryId, widget.companyId,
-                widget.subcategoryId, client))
-        .then((hits) {
-      var state = context.read<SearchPageBloc>().state;
-      if (hits.length > 0) {
-        context.read<SearchPageBloc>().set(state.copyWith(
-              products: [...state.products, ...hits],
-              currentPage: state.currentPage + 1,
-              isSearching: false,
-            ));
-      }
-    });
+    context.read<SearchPageBloc>().getSearchResult(widget.params,
+        widget.categoryId, widget.companyId, widget.subcategoryId, client,
+        resetListOnEachRequest: true);
   }
 
   @override
@@ -100,33 +73,25 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
           children: [
             if (w >= 1024) const Navbar(),
             Container(
-              constraints: w >= 1024 ? BoxConstraints(minHeight: size.height - 75) : null,
+              constraints: w >= 1024
+                  ? BoxConstraints(minHeight: size.height - 75)
+                  : null,
               padding: EdgeInsets.symmetric(
                   horizontal: getContainerSize(w), vertical: 20),
               child: BlocBuilder<GlobalBloc, GlobalState>(
                   builder: (globalContext, globalState) {
                 return BlocConsumer<SearchPageBloc, SearchPageState>(
                   listener: (ctx, state) {
-                    // if (state.search.length > 0) {
-                    //   _operation = CancelableOperation.fromFuture(context
-                    //           .read<SearchPageBloc>()
-                    //           .getSearchResult(
-                    //               widget.params,
-                    //               widget.categoryId,
-                    //               widget.companyId,
-                    //               widget.subcategoryId,
-                    //               client))
-                    //       .then((hits) {
-                    //     var state = context.read<SearchPageBloc>().state;
-                    //     if (hits.length > 0) {
-                    //       context.read<SearchPageBloc>().set(state.copyWith(
-                    //             products: [...state.products, ...hits],
-                    //             currentPage: state.currentPage + 1,
-                    //             isSearching: false,
-                    //           ));
-                    //     }
-                    //   });
-                    // }
+                    if (state.search.length > 0) {
+                      context.read<SearchPageBloc>().getSearchResult(
+                            widget.params,
+                            widget.categoryId,
+                            widget.companyId,
+                            widget.subcategoryId,
+                            client,
+                            resetListOnEachRequest: true,
+                          );
+                    }
                   },
                   listenWhen: (previous, current) =>
                       previous.search != current.search,
@@ -136,11 +101,11 @@ class _SearchPageRouteState extends State<SearchPageRoute> {
                         children: [
                           if (w < 1024 && widget.noTabbar != true)
                             // TopBar(editingController: editingController),
-                          if (state.products.isEmpty && state.isSearching)
-                            const Center(
-                                child: CircularProgressIndicator(
-                              color: Color(mainColor),
-                            )),
+                            if (state.products.isEmpty && state.isSearching)
+                              const Center(
+                                  child: CircularProgressIndicator(
+                                color: Color(mainColor),
+                              )),
                           if (state.products.isEmpty && !state.isSearching)
                             const Center(
                               child: Text(

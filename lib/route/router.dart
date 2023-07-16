@@ -13,7 +13,7 @@ import 'package:endy/Pages/main/Catalog/CatalogMain.dart';
 import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
 import 'package:endy/Pages/main/Favorite/FavoriteMain.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/CategoryList.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/CompanyLabelList.dart';
+import 'package:endy/Pages/main/Home/Labels/CompanyLabelList.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/SubcategoryAndCompanyList.dart';
 import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Map.dart';
@@ -92,7 +92,6 @@ class CustomRouter {
     final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
     return GoRouter(
-      debugLogDiagnostics: true,
       navigatorKey: _rootNavigatorKey,
       initialLocation: initialPage,
       refreshListenable: GoRouterRefreshStream(streams),
@@ -216,14 +215,14 @@ class CustomRouter {
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) =>
-              SubcategoryListRoute(id: state.pathParameters["categoryId"]),
+              SubcategoryListRoute(id: state.pathParameters["id"]!, type: "subcategory"),
         ),
         GoRoute(
           path: APP_PAGE.COMPANY_LIST.toPath,
           name: APP_PAGE.COMPANY_LIST.toName,
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => SubcategoryListRoute(),
+          builder: (context, state) => SubcategoryListRoute(id: state.pathParameters["id"]!, type: "company"),
         ),
         GoRoute(
           path: APP_PAGE.COMPANY_LABEL_LIST.toPath,

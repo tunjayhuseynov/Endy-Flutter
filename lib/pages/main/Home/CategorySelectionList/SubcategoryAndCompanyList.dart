@@ -1,21 +1,20 @@
- 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
+import 'package:endy/route/router_names.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
 
- 
 class SubcategoryListRoute extends StatefulWidget {
-  final String? id;
+  final String id;
   final String? type;
-  const SubcategoryListRoute(
-      {Key? key,   this.id,   this.type})
+  const SubcategoryListRoute({Key? key, required this.id, this.type})
       : super(key: key);
 
   @override
@@ -24,7 +23,6 @@ class SubcategoryListRoute extends StatefulWidget {
 
 class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
   TextEditingController editingController = TextEditingController();
-  String? id;
 
   @override
   void initState() {
@@ -56,13 +54,13 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
             .read<GlobalBloc>()
             .state
             .categories
-            .firstWhereOrNull((element) => element.id == id);
-        var companies = id != "all"
+            .firstWhereOrNull((element) => element.id == widget.id);
+        var companies = widget.id != "all"
             ? context
                 .read<GlobalBloc>()
                 .state
                 .companies
-                .where((element) => element.label == id)
+                .where((element) => element.label == widget.id)
                 .toList()
             : context.read<GlobalBloc>().state.companies;
         return state.copyWith(
@@ -93,78 +91,68 @@ class _SubcategoryListRouteState extends State<SubcategoryListRoute> {
         );
       },
       builder: (context, state) {
-        return WillPopScope(
-          onWillPop: () async {
-            return true;
-          },
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              surfaceTintColor: Colors.white,
-              toolbarHeight: 80,
-              leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    // if (context.router.stackData.length == 1) {
-                    //   context.router.pushNamed('/');
-                    // } else {
-                    //   context.router.pop(context);
-                    // }
-                  }),
-              title: Text(state.selectedCategory?.name ?? "",
-                  style: const TextStyle(
-                      fontSize: 25, fontWeight: FontWeight.w500)),
-            ),
-            body: Container(
-              padding: w < 768
-                  ? null
-                  : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
-              child: Column(
-                children: [
-                  Container(
-                    width: w < 768 ? null : 300,
-                    padding: const EdgeInsets.all(8.0),
-                    child: CupertinoSearchTextField(
-                      placeholder: "Axtarış",
-                      onChanged: (value) {
-                        context.read<CategorySelectionListBloc>().search(value);
-                      },
-                      controller: editingController,
-                      prefixInsets: const EdgeInsets.only(left: 20),
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    ),
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            surfaceTintColor: Colors.white,
+            toolbarHeight: 80,
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  context.pop();
+                }),
+            title: Text(state.selectedCategory?.name ?? widget.id,
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
+          ),
+          body: Container(
+            padding: w < 768
+                ? null
+                : EdgeInsets.symmetric(horizontal: (w - 768) / 2),
+            child: Column(
+              children: [
+                Container(
+                  width: w < 768 ? null : 300,
+                  padding: const EdgeInsets.all(8.0),
+                  child: CupertinoSearchTextField(
+                    placeholder: "Axtarış",
+                    onChanged: (value) {
+                      context.read<CategorySelectionListBloc>().search(value);
+                    },
+                    controller: editingController,
+                    prefixInsets: const EdgeInsets.only(left: 20),
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
                   ),
-                  state.isSubcategory
-                      ? Expanded(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state.subcategories.isNotEmpty
-                                  ? state.subcategories.length + 1
-                                  : 0,
-                              itemBuilder: (BuildContext context, int index) {
-                                return SubcategoryItem(
-                                  selectAll: index == 0,
-                                  subcategory: state.subcategories[
-                                      index > 0 ? index - 1 : index],
-                                  category: state.selectedCategory!,
-                                );
-                              }),
-                        )
-                      : state.isBrand
-                          ? Expanded(
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: state.companies.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return CompanyItem(
-                                      company: state.companies[index],
-                                    );
-                                  }),
-                            )
-                          : Container()
-                ],
-              ),
+                ),
+                state.isSubcategory
+                    ? Expanded(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.subcategories.isNotEmpty
+                                ? state.subcategories.length + 1
+                                : 0,
+                            itemBuilder: (BuildContext context, int index) {
+                              return SubcategoryItem(
+                                selectAll: index == 0,
+                                subcategory: state.subcategories[
+                                    index > 0 ? index - 1 : index],
+                                category: state.selectedCategory!,
+                              );
+                            }),
+                      )
+                    : state.isBrand
+                        ? Expanded(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: state.companies.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return CompanyItem(
+                                    company: state.companies[index],
+                                  );
+                                }),
+                          )
+                        : Container()
+              ],
             ),
           ),
         );
@@ -183,10 +171,11 @@ class CompanyItem extends StatelessWidget {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () {
-        // context
-        //     .read<CategoryGridBloc>()
-        //     .set(prevPath: context.router.currentPath);
-        // context.router.pushNamed('company/products/${company.id}/all');
+        context
+            .read<CategoryGridBloc>()
+            .setSelectedId("");
+        context.pushNamed(APP_PAGE.COMPANY_PRODUCTS_LIST.toName,
+            pathParameters: {"id": company.id});
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -225,11 +214,11 @@ class SubcategoryItem extends StatelessWidget {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () async {
-        // context
-        //     .read<CategoryGridBloc>()
-        //     .set(prevPath: context.router.currentPath);
-        // context.router.pushNamed(
-        //     'category/products/${category.id}/${selectAll == true ? "all" : subcategory.id}');
+        context
+            .read<CategoryGridBloc>()
+            .setSelectedId(selectAll == true ? "" : subcategory.id);
+        context.pushNamed(APP_PAGE.CATEGORY_PRODUCTS_LIST.toName,
+            pathParameters: {"id": category.id});
       },
       child: Container(
         height: 45,

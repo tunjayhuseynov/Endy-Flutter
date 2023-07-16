@@ -40,11 +40,13 @@ class ProductListFourGrid extends StatelessWidget {
             );
           return ListView.builder(
               shrinkWrap: true,
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.maybeOf(context)?.padding.bottom ?? 80),
               physics: const ScrollPhysics(),
               itemCount: snapshot.data?.length,
               itemBuilder: (ctx, index) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 0),
                   margin: const EdgeInsets.only(bottom: 20),
                   child: Column(
                     children: [

@@ -1,6 +1,7 @@
 import 'package:endy/Pages/main/Home/ProductList/Category_Fetch_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bar_Bloc.dart';
+import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/types/category.dart';
 import 'package:endy/types/company.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +64,7 @@ class _ScrollableListState extends State<ScrollableList> {
                       fn: (Subcategory subcategory) async {
                         try {
                           context.read<CategoryGridBarBloc>().deleteCache();
+                          context.read<SearchPageBloc>().reset();
                           context
                               .read<CategoryGridBloc>()
                               .setSelectedId(curr.id);

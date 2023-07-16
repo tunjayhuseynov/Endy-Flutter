@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 class AppMaterial extends StatefulWidget {
   const AppMaterial({super.key});
@@ -73,7 +72,7 @@ class AppMaterialState extends State<AppMaterial> {
                   bodyColor: const Color.fromARGB(255, 48, 46, 46),
                 ))),
         routerConfig:
-            CustomRouter(streams: [context.read<GlobalBloc>().stream]).router,
+            CustomRouter(streams: [context.read<GlobalBloc>().stream.where((event) => event.conditionalSteaming)]).router,
       ),
     );
   }

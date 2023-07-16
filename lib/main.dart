@@ -3,7 +3,7 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
-import 'package:endy/Pages/main/Home/CategorySelectionList/Company_Label_List_Bloc.dart';
+import 'package:endy/Pages/main/Home/Labels/Company_Label_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';

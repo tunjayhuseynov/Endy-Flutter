@@ -72,7 +72,7 @@ extension APP_PAGE_FEATURES on APP_PAGE {
       case APP_PAGE.COMPANY_LIST:
         return "/company/list/:id";
       case APP_PAGE.COMPANY_LABEL_LIST:
-        return "/company/list/label";
+        return "/company-label/list";
       case APP_PAGE.COMPANY_PRODUCTS_LIST:
         return "/company/products/:id";
       case APP_PAGE.CATEGORY_PRODUCTS_LIST:
@@ -151,7 +151,7 @@ extension APP_PAGE_FEATURES on APP_PAGE {
       case APP_PAGE.COMPANY_LIST:
         return "/company/list/:id";
       case APP_PAGE.COMPANY_LABEL_LIST:
-        return "/company/list/label";
+        return "/company-label/list";
       case APP_PAGE.COMPANY_PRODUCTS_LIST:
         return "/company/products/:id";
       case APP_PAGE.CATEGORY_PRODUCTS_LIST:
