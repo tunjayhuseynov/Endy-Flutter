@@ -2,8 +2,8 @@ import 'package:endy/Pages/main/Home/ProductList/Category_Fetch_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bar_Bloc.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/category.dart';
+import 'package:endy/model/company.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
 import 'package:endy/utils/index.dart';
@@ -68,15 +68,7 @@ class _ScrollableListState extends State<ScrollableList> {
                           context
                               .read<CategoryGridBloc>()
                               .setSelectedId(curr.id);
-                          // context.router.pushNamed(
-                          //     '/${widget.category != null ? "category" : "company"}/products/${widget.category?.id ?? widget.company?.id}/${curr.id == "" ? "all" : curr.id}');
-                          CategoryFetchBloc.fetch(
-                              context: context,
-                              client: widget.client,
-                              categoryId: widget.category?.id,
-                              companyId: widget.company?.id,
-                              subcategoryId: curr.id,
-                              resetProduct: true);
+
                         } catch (e) {
                           print(e);
                         }

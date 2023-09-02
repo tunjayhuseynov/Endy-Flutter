@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Fetch_Bloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
+import 'package:endy/model/product.dart';
+import 'package:endy/model/productFetch.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/categoryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:typesense/typesense.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+
+
 
 class GridBody extends StatefulWidget {
   final Client client;
@@ -15,48 +21,64 @@ class GridBody extends StatefulWidget {
   late final String? categoryId;
   late final String? subcategoryId;
 
-  GridBody({
-    Key? key,
-    required this.client,
-    this.companyId,
-    this.subcategoryId,
-    this.categoryId
-  }) : super(key: key);
+  GridBody(
+      {Key? key,
+      required this.client,
+      this.companyId,
+      this.subcategoryId,
+      this.categoryId})
+      : super(key: key);
 
   @override
   State<GridBody> createState() => _GridBodyState();
 }
 
 class _GridBodyState extends State<GridBody> {
-  Future<void> fetch() async {
-    await CategoryFetchBloc.fetch(
-        context: context,
-        client: widget.client,
-        categoryId: widget.categoryId,
-        companyId: widget.companyId,
-        subcategoryId: context.read<CategoryGridBloc>().state.selectedId,
-        resetProduct: true);
+  final PagingController<int, Product> _pagingController =
+      PagingController(firstPageKey: 1);
+  StreamSubscription<ProductFetch>? _cancelableOperation;
+
+  Stream<ProductFetch> fetch(
+      {required int page,
+      required FilterPageState filter,
+      required PagingController<int, Product> pagingController}) {
+    return CategoryFetchBloc.fetch(
+            context: context,
+            client: widget.client,
+            categoryId: widget.categoryId,
+            companyId: widget.companyId,
+            filter: filter,
+            subcategoryId: context.read<CategoryGridBloc>().state.selectedId,
+            currentPage: page)
+        .asStream();
+  }
+
+  void listener(pageKey) {
+    _cancelableOperation = fetch(
+            page: pageKey,
+            filter: context.read<FilterPageBloc>().state,
+            pagingController: _pagingController)
+        .listen((productFetch) {
+      if (!mounted) return;
+      final isLastPage = productFetch.isLastPage;
+      if (isLastPage) {
+        _pagingController.appendLastPage(productFetch.products);
+      } else {
+        _pagingController.appendPage(productFetch.products, pageKey + 1);
+      }
+    });
   }
 
   @override
   void initState() {
-    fetch();
+    _pagingController.addPageRequestListener(listener);
     super.initState();
-  }
-
-  void onVisible(VisibilityInfo info, String subcategoryId) {
-    if (info.visibleFraction > 0.5) {
-      CategoryFetchBloc.fetch(
-          context: context,
-          client: widget.client,
-          categoryId: widget.categoryId,
-          companyId: widget.companyId,
-          subcategoryId: subcategoryId);
-    }
   }
 
   @override
   void dispose() {
+    _pagingController.dispose();
+    _cancelableOperation?.cancel();
     super.dispose();
   }
 
@@ -68,76 +90,48 @@ class _GridBodyState extends State<GridBody> {
 
     return Container(
       constraints: BoxConstraints(minHeight: size.height - 175),
-      child: BlocListener<FilterPageBloc, FilterPageState>(
-        listener: (context, state) {
-          fetch();
-        },
-        listenWhen: (previous, current) => previous != current,
-        child: BlocBuilder<CategoryGridBloc, CategoryGridState>(
-          builder: (context, state) {
-            return BlocBuilder<CategoryFetchBloc, CategoryFetchState>(
-              builder: (cacheContext, cacheState) {
-                if (cacheState.isSearching && cacheState.products.isEmpty) {
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Color(mainColor),
-                  ));
-                }
-                if (!cacheState.isSearching && cacheState.products.isEmpty)
-                  return const Center(
-                    child: Text(
-                      'Məhsul tapılmadı',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+      child: BlocBuilder<CategoryFetchBloc, CategoryFetchState>(
+        builder: (cacheContext, cacheState) {
+          // if (!cacheState.isSearching && cacheState.products.isEmpty)
+          //   return const Center(
+          //     child: Text(
+          //       'Məhsul tapılmadı',
+          //       style: TextStyle(
+          //         fontSize: 20,
+          //         fontWeight: FontWeight.bold,
+          //       ),
+          //     ),
+          //   );
+          return PagedGridView<int, Product>(
+              pagingController: _pagingController,
+              // physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: gridCount,
+                  childAspectRatio: (200 / 350),
+                  mainAxisSpacing: 15,
+                  crossAxisSpacing: 15),
+              builderDelegate: PagedChildBuilderDelegate(
+                itemBuilder: (context, item, index) {
+                  return DiscountCard(
+                    product: item,
                   );
-                return Column(
-                  children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      primary: true,
-                      physics: ScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: gridCount,
-                          childAspectRatio: (200 / 350),
-                          mainAxisSpacing: 15,
-                          crossAxisSpacing: 15),
-                      itemCount: cacheState.products.length,
-                      itemBuilder: (context, index) {
-                        if (index == cacheState.products.length - 1)
-                          return VisibilityDetector(
-                            onVisibilityChanged: (info) =>
-                                onVisible(info, state.selectedId),
-                            key: Key('item $index'),
-                            child: DiscountCard(
-                              product: cacheState.products[index],
-                            ),
-                          );
-
-                        return DiscountCard(
-                          product: cacheState.products[index],
-                        );
-                      },
+                },
+                noItemsFoundIndicatorBuilder: (context) => const Center(
+                  child: Text(
+                    'Məhsul tapılmadı',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    if (cacheState.isLastPage == false &&
-                        cacheState.products.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: const Center(
-                            child: CircularProgressIndicator(
-                          color: Color(mainColor),
-                        )),
-                      ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+                  ),
+                ),
+                firstPageProgressIndicatorBuilder: (_) => Center(
+                    child: CircularProgressIndicator(color: Color(mainColor))),
+                newPageProgressIndicatorBuilder: (_) => Center(
+                    child: CircularProgressIndicator(color: Color(mainColor))),
+              ));
+        },
       ),
     );
   }

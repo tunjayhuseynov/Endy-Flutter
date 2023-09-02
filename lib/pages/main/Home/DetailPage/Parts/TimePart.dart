@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:endy/types/company.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/company.dart';
+import 'package:endy/model/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';

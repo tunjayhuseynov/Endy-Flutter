@@ -9,7 +9,7 @@ import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Loader.dart';
 import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
-import 'package:endy/types/category.dart';
+import 'package:endy/model/category.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +37,7 @@ class _CategoryGridState extends State<CategoryGrid> {
   final client = Client(typesenseConfig);
   var focusNode = FocusNode();
   Subcategory? subcategory = null;
+  late Category category;
 
   Future<Map<String, dynamic>> fetchData(
       {required String categoryId,
@@ -56,10 +57,15 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   @override
   void initState() {
-    print(widget.categoryId);
     // if (context.router.stackData.length > 1) {
     //   context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
     // }
+
+    category = context
+        .read<GlobalBloc>()
+        .state
+        .categories
+        .firstWhere((element) => element.id == widget.categoryId);
     super.initState();
   }
 
@@ -74,42 +80,25 @@ class _CategoryGridState extends State<CategoryGrid> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    return FutureBuilder<Map<String, dynamic>>(
-        future: fetchData(
-          categoryId: widget.categoryId,
-          state: context.read<GlobalBloc>().state,
-        ),
-        builder: (context, snapshot) {
-          print(snapshot);
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Loader();
-          }
-          if (snapshot.hasData == false || snapshot.error != null) {
-            return Center(
-              child: Text("Nəsə düzgün getmədi"),
-            );
-          }
-          var category = snapshot.data!["category"];
-          return ScaffoldWrapper(
-            hPadding: 0,
-            appBar: tab.AppBarCategoryList(
-                category: category,
-                subcategory: subcategory,
-                focusNode: focusNode,
-                editingController: editingController,
-                w: w),
-            backgroundColor: Colors.white,
-            body: w < 1024
-                ? Column(
-                    children: buildBody(w: w, category: category),
-                  )
-                : SingleChildScrollView(
-                    child: Column(
-                      children: buildBody(w: w, category: category),
-                    ),
-                  ),
-          );
-        });
+    return ScaffoldWrapper(
+      hPadding: 0,
+      appBar: tab.AppBarCategoryList(
+          category: category,
+          subcategory: subcategory,
+          focusNode: focusNode,
+          editingController: editingController,
+          w: w),
+      backgroundColor: Colors.white,
+      body: w < 1024
+          ? Column(
+              children: buildBody(w: w, category: category),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: buildBody(w: w, category: category),
+              ),
+            ),
+    );
   }
 
   List<Widget> buildBody({required double w, required Category? category}) {
@@ -130,9 +119,8 @@ class _CategoryGridState extends State<CategoryGrid> {
   }
 
   Widget body({required double w, required Category? category}) {
-    return ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+    return Column(
+      // padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
       children: [
         if (w >= 1024) const Padding(padding: EdgeInsets.only(top: 50)),
         Visibility(
@@ -145,26 +133,30 @@ class _CategoryGridState extends State<CategoryGrid> {
             )),
         const Padding(padding: EdgeInsets.only(top: 20)),
         TopBody(company: null),
-        BlocBuilder<SearchPageBloc, SearchPageState>(
-            buildWhen: (previous, current) => previous.search != current.search,
-            builder: (context, searchState) {
-              return searchState.search.isNotEmpty
-                  ? BlocBuilder<CategoryGridBloc, CategoryGridState>(
+        Expanded(
+            child: BlocBuilder<SearchPageBloc, SearchPageState>(
+                buildWhen: (previous, current) =>
+                    previous.search != current.search,
+                builder: (context, searchState) {
+                  return BlocBuilder<CategoryGridBloc, CategoryGridState>(
                       builder: (context, gridState) {
-                        return SearchPageRoute(
-                          categoryId: widget.categoryId,
-                          noTabbar: true,
-                          subcategoryId: gridState.selectedId,
-                          params: searchState.search,
-                        );
-                      },
-                    )
-                  : GridBody(
-                      client: client,
-                      categoryId: widget.categoryId,
-                      subcategoryId: widget.subcategoryId,
-                    );
-            })
+                    return searchState.search.isNotEmpty
+                        ? SearchPageRoute(
+                            categoryId: widget.categoryId,
+                            noTabbar: true,
+                            subcategoryId: gridState.selectedId,
+                            params: searchState.search,
+                          )
+                        : GridBody(
+                            key: Key(gridState.selectedId.isEmpty
+                                ? "ALL"
+                                : gridState.selectedId),
+                            client: client,
+                            categoryId: widget.categoryId,
+                            subcategoryId: widget.subcategoryId,
+                          );
+                  });
+                }))
       ],
     );
   }

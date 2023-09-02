@@ -5,7 +5,7 @@ import 'package:endy/components/Navbar.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
 import 'package:endy/Pages/main/Setting/Profile_Bloc.dart';
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/cupertino.dart';

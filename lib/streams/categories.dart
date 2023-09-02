@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:endy/streams/subcategories.dart';
-import 'package:endy/types/category.dart';
+import 'package:endy/model/category.dart';
 
 class CategoryCrud {
   static Future<List<Category>> getCategories() async {

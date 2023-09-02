@@ -1,7 +1,7 @@
  
 import 'package:endy/Pages/main/Catalog/CatalogSingleBody.dart';
 import 'package:endy/streams/catalogs.dart';
-import 'package:endy/types/catalog.dart';
+import 'package:endy/model/catalog.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 

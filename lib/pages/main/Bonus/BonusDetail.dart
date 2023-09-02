@@ -5,7 +5,7 @@ import 'package:endy/components/tools/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 

@@ -13,6 +13,7 @@ import 'package:endy/Pages/main/Catalog/CatalogMain.dart';
 import 'package:endy/Pages/main/Catalog/CatalogSingle.dart';
 import 'package:endy/Pages/main/Favorite/FavoriteMain.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/CategoryList.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/Labels/CompanyLabelList.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/SubcategoryAndCompanyList.dart';
 import 'package:endy/Pages/main/Home/DetailPage/DetailPageContainer.dart';
@@ -30,6 +31,7 @@ import 'package:endy/Pages/main/Setting/AboutUs.dart';
 import 'package:endy/Pages/main/Setting/Notification.dart';
 import 'package:endy/Pages/main/Setting/Profile.dart';
 import 'package:endy/Pages/main/Setting/Setting.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/route/router_names.dart';
 import 'package:endy/services/goRouterRefreshStream.dart';
 import 'package:flutter/material.dart';
@@ -151,15 +153,16 @@ class CustomRouter {
           name: APP_PAGE.FILTER.toName,
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => const FilterPageScaffoldRoute(),
+          builder: (context, state) => FilterPageScaffoldRoute(),
         ),
         GoRoute(
           path: APP_PAGE.PRODUCT_DETAIL.toPath,
           name: APP_PAGE.PRODUCT_DETAIL.toName,
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) =>
-              DetailPageContainerRoute(id: state.pathParameters["id"] ?? ""),
+          builder: (context, state) => DetailPageContainerRoute(
+              id: state.pathParameters["id"] ?? "",
+              product: state.extra as Product?),
         ),
         GoRoute(
           path: APP_PAGE.PRODUCT_MAP.toPath,
@@ -214,15 +217,16 @@ class CustomRouter {
           name: APP_PAGE.SUBCATEGORY_LIST.toName,
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) =>
-              SubcategoryListRoute(id: state.pathParameters["id"]!, type: "subcategory"),
+          builder: (context, state) => SubcategoryListRoute(
+              id: state.pathParameters["id"]!, type: "subcategory"),
         ),
         GoRoute(
           path: APP_PAGE.COMPANY_LIST.toPath,
           name: APP_PAGE.COMPANY_LIST.toName,
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => SubcategoryListRoute(id: state.pathParameters["id"]!, type: "company"),
+          builder: (context, state) => SubcategoryListRoute(
+              id: state.pathParameters["id"]!, type: "company"),
         ),
         GoRoute(
           path: APP_PAGE.COMPANY_LABEL_LIST.toPath,
@@ -237,7 +241,7 @@ class CustomRouter {
           redirect: AuthRedirector,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) => ProductListPage(
-              type: "company", id: state.pathParameters["id"] ?? ""),
+              type: "company", id: state.pathParameters["id"] ?? "all"),
         ),
         GoRoute(
           path: APP_PAGE.CATEGORY_PRODUCTS_LIST.toPath,
@@ -358,12 +362,20 @@ class CustomRouter {
   Future<String?> AuthRedirector(
       BuildContext context, GoRouterState state) async {
     var global = context.read<GlobalBloc>().state;
-    print(global.packageStatus);
+    print(global.userData?.id);
     if (global.packageStatus == GlobalStatus.loading) {
       return APP_PAGE.LOADING.toFullPath;
     }
     if (global.packageStatus == GlobalStatus.loaded &&
         state.fullPath == APP_PAGE.LOADING.toFullPath) {
+      return initialPage;
+    }
+
+    if (global.userData == null && state.fullPath?.contains("/auth") == false) {
+      return APP_PAGE.SIGN_MAIN.toFullPath;
+    }
+
+    if (global.userData != null && state.fullPath?.contains("/auth") == true) {
       return initialPage;
     }
     return null;

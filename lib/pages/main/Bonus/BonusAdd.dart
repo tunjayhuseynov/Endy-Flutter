@@ -6,7 +6,7 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/Pages/main/bonus/Bonus_Add_Bloc.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

@@ -7,7 +7,7 @@ import 'package:endy/Pages/main/Home/DetailPage/Parts/ImagePart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/MapButtonPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/PricePart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/TimePart.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/foundation.dart';

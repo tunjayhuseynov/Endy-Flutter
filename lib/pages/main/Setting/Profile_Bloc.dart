@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';

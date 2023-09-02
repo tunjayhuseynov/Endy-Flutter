@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/types/notification.dart';
+import 'package:endy/model/notification.dart';
 
 class NotificationCrud {
   static Future<NotificationMessage> getNotification(String id) async {

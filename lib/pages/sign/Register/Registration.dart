@@ -3,7 +3,7 @@ import 'package:endy/Pages/Sign/Register/Register_Bloc.dart';
 import 'package:endy/components/tools/button.dart';
 import 'package:endy/components/tools/input.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

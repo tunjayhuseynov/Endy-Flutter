@@ -1,7 +1,7 @@
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/main.dart';
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:typesense/typesense.dart';

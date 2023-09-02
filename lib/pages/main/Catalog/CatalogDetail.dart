@@ -2,7 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Catalog/CatalogCard.dart';
 import 'package:endy/components/Navbar.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/company.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';

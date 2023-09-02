@@ -4,13 +4,13 @@ import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';
 import 'package:endy/streams/panel.dart';
-import 'package:endy/types/catalog.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
-import 'package:endy/types/notification.dart';
-import 'package:endy/types/panel.dart';
-import 'package:endy/types/product.dart';
-import 'package:endy/types/user.dart';
+import 'package:endy/model/catalog.dart';
+import 'package:endy/model/category.dart';
+import 'package:endy/model/company.dart';
+import 'package:endy/model/notification.dart';
+import 'package:endy/model/panel.dart';
+import 'package:endy/model/product.dart';
+import 'package:endy/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum GlobalStatus { loading, loaded, error }
@@ -85,7 +85,7 @@ class GlobalState {
       packageStatus: packageStatus ?? this.packageStatus,
       authStatus: authStatus ?? this.authStatus,
       user: user ?? this.user,
-      conditionalSteaming: this.packageStatus != packageStatus,
+      conditionalSteaming: this.packageStatus != (packageStatus ?? this.packageStatus) || ((userData != null && this.userData == null) || (userData == null && this.userData != null)),
       userData: userData ?? this.userData,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       notifications: notifications ?? this.notifications,
@@ -201,7 +201,6 @@ class GlobalBloc extends Parent {
 
   void addFavorite(Product product) {
     var data = UserData.fromInstance(state.userData!);
-    print(data.liked);
     data.liked.add(state.isAnonymous
         ? product.id
         : FirebaseFirestore.instance.collection("products").doc(product.id));

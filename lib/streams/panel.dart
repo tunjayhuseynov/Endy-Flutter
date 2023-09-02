@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/types/panel.dart';
+import 'package:endy/model/panel.dart';
 
 class PanelCrud {
   static Future<Panel> getPanel(String id) async {

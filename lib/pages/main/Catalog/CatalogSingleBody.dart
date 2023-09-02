@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
-import 'package:endy/types/catalog.dart';
+import 'package:endy/model/catalog.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

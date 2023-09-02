@@ -1,4 +1,5 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/components/GridBody.dart';
 import 'package:endy/Pages/main/Home/ProductList/components/TopBody.dart';
 import 'package:endy/Pages/main/Home/SearchPage/Search.dart';
@@ -7,9 +8,8 @@ import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Loader.dart';
 import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/company.dart';
 import 'package:endy/utils/index.dart';
-import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';
@@ -47,7 +47,6 @@ class _CompanyGridState extends State<CompanyGrid> {
     // if (context.router.stackData.length > 1) {
     //   context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
     // }
-
     super.initState();
   }
 
@@ -120,27 +119,34 @@ class _CompanyGridState extends State<CompanyGrid> {
   }
 
   Widget body({required double w, required Company company}) {
-    return ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
+    return Column(
+      // padding: EdgeInsets.symmetric(horizontal: getContainerSize(w)),
       children: [
         if (w >= 1024) const Padding(padding: EdgeInsets.only(top: 50)),
         const Padding(padding: EdgeInsets.only(top: 20)),
         TopBody(company: company),
-        BlocBuilder<SearchPageBloc, SearchPageState>(
-            buildWhen: (previous, current) => previous.search != current.search,
-            builder: (context, searchState) {
-              return searchState.search.isNotEmpty
-                  ? SearchPageRoute(
-                      companyId: widget.companyId,
-                      noTabbar: true,
-                      params: searchState.search,
-                    )
-                  : GridBody(
-                      client: client,
-                      companyId: company.id,
-                    );
-            })
+        Expanded(
+            child: BlocBuilder<SearchPageBloc, SearchPageState>(
+                buildWhen: (previous, current) =>
+                    previous.search != current.search,
+                builder: (context, searchState) {
+                  return BlocBuilder<CategoryGridBloc, CategoryGridState>(
+                      builder: (context, gridState) {
+                    return searchState.search.isNotEmpty
+                        ? SearchPageRoute(
+                            companyId: widget.companyId,
+                            noTabbar: true,
+                            params: searchState.search,
+                          )
+                        : GridBody(
+                            key: Key(gridState.selectedId.isEmpty
+                                ? "ALL"
+                                : gridState.selectedId),
+                            client: client,
+                            companyId: widget.companyId,
+                          );
+                  });
+                }))
       ],
     );
   }

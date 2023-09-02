@@ -1,7 +1,7 @@
 import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/category.dart';
+import 'package:endy/model/product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePageNavBloc extends Cubit<int> {

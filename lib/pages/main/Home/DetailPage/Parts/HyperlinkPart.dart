@@ -1,5 +1,5 @@
 import 'package:endy/components/tools/button.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';

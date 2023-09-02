@@ -1,4 +1,4 @@
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:endy/utils/index.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

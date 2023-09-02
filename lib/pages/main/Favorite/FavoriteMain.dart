@@ -1,17 +1,15 @@
- 
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/DiscountCard/DiscountCard.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/searchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
- 
 class FavoriteMainRoute extends StatelessWidget {
   const FavoriteMainRoute({Key? key}) : super(key: key);
 
@@ -74,11 +72,12 @@ class Body extends StatelessWidget {
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: getSearchCardCount(w),
-                              childAspectRatio: (200 / 350),
-                              mainAxisSpacing: 15,
-                              crossAxisSpacing: 15),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: getSearchCardCount(w),
+                                  childAspectRatio: (200 / 350),
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 15),
                           itemCount: snapshot.data?.length ?? 0,
                           itemBuilder: (context, index) => DiscountCard(
                             product: snapshot.data![index],

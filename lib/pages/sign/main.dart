@@ -21,7 +21,7 @@ class _SignRouteState extends State<SignRoute> {
       await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
       context.read<GlobalBloc>().setAuthLoading(GlobalAuthStatus.loggedIn);
-      context.pushNamed(APP_PAGE.HOME.toName);
+      context.goNamed(APP_PAGE.HOME.toName);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":

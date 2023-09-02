@@ -11,7 +11,7 @@ import 'package:endy/Pages/main/Home/DetailPage/Parts/SimilarProductsPart.dart';
 import 'package:endy/Pages/main/Home/DetailPage/Parts/TimePart.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/material.dart';

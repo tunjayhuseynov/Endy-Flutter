@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:endy/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../MainBloc/GlobalBloc.dart';
 import '../streams/notifications.dart';
-import '../types/user.dart';
 
 class AuthStream {
   static Future<void> initiateStream(BuildContext context) async {
@@ -55,7 +55,7 @@ class AuthStream {
           data = UserData.fromJson(json.decode(prefs.getString("userData")!));
         } else {
           data = UserData(
-              id: "anonymous",
+              id: user.uid,
               role: "user",
               name: "Anonim istifadəçi",
               phone: "anonymous",

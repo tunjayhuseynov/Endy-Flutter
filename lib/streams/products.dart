@@ -4,9 +4,9 @@ import 'package:endy/streams/categories.dart';
 import 'package:endy/streams/companies.dart';
 import 'package:endy/streams/places.dart';
 import 'package:endy/streams/subcategories.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/category.dart';
+import 'package:endy/model/company.dart';
+import 'package:endy/model/product.dart';
 import 'package:typesense/typesense.dart';
 
 class ProductsCrud {

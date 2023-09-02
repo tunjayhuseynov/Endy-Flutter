@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/MainBloc/GlobalBloc.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_Selection_List_Bloc.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/category.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/category.dart';
+import 'package:endy/model/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,9 +172,8 @@ class CompanyItem extends StatelessWidget {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () {
-        context
-            .read<CategoryGridBloc>()
-            .setSelectedId("");
+        context.read<CategoryGridBloc>().setSelectedId("");
+        context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
         context.pushNamed(APP_PAGE.COMPANY_PRODUCTS_LIST.toName,
             pathParameters: {"id": company.id});
       },
@@ -217,6 +217,7 @@ class SubcategoryItem extends StatelessWidget {
         context
             .read<CategoryGridBloc>()
             .setSelectedId(selectAll == true ? "" : subcategory.id);
+        context.read<FilterPageBloc>().changeFilter(FilterPageState.none);
         context.pushNamed(APP_PAGE.CATEGORY_PRODUCTS_LIST.toName,
             pathParameters: {"id": category.id});
       },

@@ -1,5 +1,5 @@
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:flutter/foundation.dart' as f;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:typesense/typesense.dart';

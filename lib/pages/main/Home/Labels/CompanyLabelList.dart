@@ -1,7 +1,7 @@
 import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/Labels/Company_Label_List_Bloc.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/company.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,10 +35,6 @@ class _CompanyLabelListRouteState extends State<CompanyLabelListRoute> {
     return BlocSelector<CompanyLabelListBloc, CompanyLabelListState,
         List<CompanyLabel>>(
       selector: (state) {
-        print(context
-            .read<GlobalBloc>()
-            .state
-            .companyLabels);
         return context
             .read<GlobalBloc>()
             .state

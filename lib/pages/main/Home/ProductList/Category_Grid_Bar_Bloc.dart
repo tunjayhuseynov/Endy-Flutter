@@ -1,4 +1,4 @@
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryGridBarState {

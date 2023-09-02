@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/types/place.dart';
+import 'package:endy/model/place.dart';
 
 class PlaceCrud {
   static Future<Place?> getPlace(String id) async {

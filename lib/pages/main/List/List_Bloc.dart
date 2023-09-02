@@ -1,4 +1,4 @@
-import 'package:endy/types/user.dart';
+import 'package:endy/model/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListState {

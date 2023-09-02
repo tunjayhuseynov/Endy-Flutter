@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:endy/types/catalog.dart';
+import 'package:endy/model/catalog.dart';
 
 class CatalogsCrud {
   static Future<List<Catalog>> getCatalogs(

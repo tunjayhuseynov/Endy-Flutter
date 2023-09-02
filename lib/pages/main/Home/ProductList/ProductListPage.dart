@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
-
 class ProductListPage extends StatelessWidget {
   final String id;
   final String? subcategoryId;
@@ -56,7 +55,8 @@ class ProductListPage extends StatelessWidget {
           child: type == "category"
               ? CategoryGrid(
                   categoryId: type == "category" ? id : "",
-                  subcategoryId: context.read<CategoryGridBloc>().state.selectedId,
+                  subcategoryId:
+                      context.read<CategoryGridBloc>().state.selectedId,
                 )
               : CompanyGrid(
                   companyId: type == 'company' ? id : "",

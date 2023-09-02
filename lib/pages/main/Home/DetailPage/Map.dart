@@ -4,7 +4,7 @@ import 'package:async/async.dart';
 import 'package:endy/route/router_names.dart';
 
 import 'package:endy/streams/products.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';

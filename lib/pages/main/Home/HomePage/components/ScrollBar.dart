@@ -4,7 +4,7 @@ import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/Pages/main/Home/CategorySelectionList/Category_List_Bloc.dart';
 import 'package:endy/Pages/main/Home/ProductList/Category_Grid_Bloc.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/category.dart';
+import 'package:endy/model/category.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:endy/Pages/main/Home/FilterPage/FilterPage.dart';
+import 'package:endy/Pages/main/Home/FilterPage/Filter_Page_Bloc.dart';
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/company.dart';
+import 'package:endy/model/company.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:go_router/go_router.dart';
@@ -22,9 +23,9 @@ class _TopBodyState extends State<TopBody> {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       hoverColor: Colors.transparent,
-      onTap: () {
+      onTap: () async {
         if (w < 1024) {
-          context.pushNamed(APP_PAGE.FILTER.toName);
+          await context.pushNamed<FilterPageState>(APP_PAGE.FILTER.toName);
         } else {
           setState(() {
             isFilterOpened = !isFilterOpened;
@@ -43,7 +44,7 @@ class _TopBodyState extends State<TopBody> {
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
           margin: const EdgeInsets.only(bottom: 10),
           child: Row(
@@ -92,11 +93,11 @@ class _TopBodyState extends State<TopBody> {
                 const SizedBox(
                   width: 20,
                 ),
-              if (widget.company != null)
-                CachedNetworkImage(
-                  imageUrl: widget.company?.logo ?? "",
-                  width: 40,
-                ),
+              // if (widget.company != null)
+              //   CachedNetworkImage(
+              //     imageUrl: widget.company?.logo ?? "",
+              //     width: 40,
+              //   ),
             ],
           )),
     );

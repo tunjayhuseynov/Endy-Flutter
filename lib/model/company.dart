@@ -1,4 +1,4 @@
-import 'package:endy/types/category.dart';
+import 'package:endy/model/category.dart';
 
 class Company {
   late String id;

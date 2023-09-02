@@ -1,5 +1,5 @@
 import 'package:endy/route/router_names.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -4,7 +4,7 @@ import 'package:endy/Pages/main/Home/SearchPage/Search_Page_Bloc.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
 import 'package:endy/main.dart';
-import 'package:endy/types/product.dart';
+import 'package:endy/model/product.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
 import 'package:endy/utils/responsivness/searchCard.dart';

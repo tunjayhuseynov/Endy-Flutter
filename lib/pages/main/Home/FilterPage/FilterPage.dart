@@ -130,7 +130,7 @@ class _FilterPageState extends State<FilterPage> {
                               .read<FilterPageBloc>()
                               .changeFilter(selectedInput);
                           if (widget.isModal != true) {
-                            context.pop();
+                            context.pop(selectedInput);
                           }
                         },
                         child: Text("Təsdiqlə",
