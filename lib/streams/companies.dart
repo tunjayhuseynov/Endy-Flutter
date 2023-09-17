@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:endy/model/story.dart';
 import 'package:endy/streams/catalogs.dart';
 import 'package:endy/streams/places.dart';
 import 'package:endy/streams/products.dart';
@@ -23,6 +24,15 @@ class CompanyCrud {
           await ProductsCrud.getProduct((element as DocumentReference).id);
       element = product;
     }
+    final storiesData = await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(id)
+        .collection("stories")
+        .get();
+
+    final stories =
+        storiesData.docs.map((e) => Story.fromJson(e.data())).toList();
+    company.stories = stories;
     return company;
   }
 
@@ -56,6 +66,18 @@ class CompanyCrud {
               company.catalogs.map((e) => CatalogsCrud.getCatalog(e.id))))
           .where((element) => element != null)
           .toList();
+
+      final storiesData = await FirebaseFirestore.instance
+          .collection('companies')
+          .doc(company.id)
+          .collection("stories")
+          .get();
+
+      final stories = storiesData.docs
+          .where((element) => element.exists)
+          .map((e) => Story.fromJson(e.data()))
+          .toList();
+      company.stories = stories;
 
       myCompanies.add(company);
     }

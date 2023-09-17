@@ -1,9 +1,13 @@
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:endy/MainBloc/GlobalBloc.dart';
 import 'package:endy/components/AdSlider.dart';
 import 'package:endy/Pages/main/Home/HomePage/Home_Page_Bloc.dart';
 import 'package:endy/Pages/main/Home/HomePage/components/ScrollBar.dart';
 import 'package:endy/Pages/main/Home/HomePage/components/Body.dart';
 import 'package:endy/components/Footer.dart';
 import 'package:endy/components/Navbar.dart';
+import 'package:endy/components/Story.dart';
 import 'package:endy/main.dart';
 import 'package:endy/utils/index.dart';
 import 'package:endy/utils/responsivness/container.dart';
@@ -35,40 +39,94 @@ class _HomePageState extends State<HomePage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: RefreshIndicator(
-      color: const Color(mainColor),
-      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-      onRefresh: () async => setState(() =>
-          {context.read<HomePageCacheBloc>().deleteCache(), bodyUpdate++}),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            if (size.width >= 1024) const Navbar(),
-            SizedBox(height: 30),
-            // if (size.width < 1024)
-            //   TopBar(editingController: editingController),
-            Container(
-              constraints: BoxConstraints(minHeight: size.height),
-              padding: EdgeInsets.symmetric(
-                  horizontal: getContainerSize(size.width)),
-              child: Column(
-                children: [
-                  const Padding(padding: EdgeInsets.only(top: 5)),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: const AdSlider(),
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20)),
-                  ScrollBar(),
-                  // const Padding(padding: EdgeInsets.only(top: 15)),
-                  Body(
-                    key: Key(bodyUpdate.toString()),
-                  )
-                ],
+        body: SafeArea(
+      child: RefreshIndicator(
+        color: const Color(mainColor),
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        onRefresh: () async => setState(() =>
+            {context.read<HomePageCacheBloc>().deleteCache(), bodyUpdate++}),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (size.width >= 1024) const Navbar(),
+              if (size.width < 1024)
+                BlocBuilder<GlobalBloc, GlobalState>(
+                  builder: (context, state) {
+                    var storyCompanies = state.companies
+                        .where((element) => element.stories.length > 0)
+                        .toList();
+                    return Container(
+                      height: 70,
+                      margin:
+                          const EdgeInsets.only(top: 40, left: 10, right: 10),
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 10,
+                        ),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: storyCompanies.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {},
+                            child: OpenContainer(
+                              useRootNavigator: true,
+                              openBuilder: (context, action) {
+                                return StoryBoard(
+                                    image: storyCompanies[index]
+                                        .stories[0]
+                                        .mediaLink);
+                              },
+                              closedBuilder: (context, action) {
+                                return Container(
+                                  width: 75,
+                                  height: 75,
+                                  child: CachedNetworkImage(
+                                    imageUrl: storyCompanies[index].logo,
+                                    fit: BoxFit.cover,
+                                    width: 100,
+                                    height: 100,
+                                    imageBuilder: (context, imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundImage: imageProvider,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              SizedBox(height: 30),
+              // if (size.width < 1024)
+              //   TopBar(editingController: editingController),
+              Container(
+                constraints: BoxConstraints(minHeight: size.height),
+                padding: EdgeInsets.symmetric(
+                    horizontal: getContainerSize(size.width)),
+                child: Column(
+                  children: [
+                    const Padding(padding: EdgeInsets.only(top: 5)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: const AdSlider(),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 20)),
+                    ScrollBar(),
+                    // const Padding(padding: EdgeInsets.only(top: 15)),
+                    Body(
+                      key: Key(bodyUpdate.toString()),
+                    )
+                  ],
+                ),
               ),
-            ),
-            if (size.width >= 1024) const Footer(),
-          ],
+              if (size.width >= 1024) const Footer(),
+            ],
+          ),
         ),
       ),
     ));

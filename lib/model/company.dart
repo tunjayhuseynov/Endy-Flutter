@@ -1,4 +1,5 @@
 import 'package:endy/model/category.dart';
+import 'package:endy/model/story.dart';
 
 class Company {
   late String id;
@@ -10,6 +11,7 @@ class Company {
   late List<dynamic> products;
   List<Subcategory> subcategories = [];
   List<dynamic> catalogs = [];
+  late List<Story> stories = [];
   late int createdAt;
   late bool isCustomPassword;
 

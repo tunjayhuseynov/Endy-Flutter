@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import "package:story_view/story_view.dart";
 
 class StoryBoard extends StatefulWidget {
-  const StoryBoard({super.key});
+  final String image;
+  const StoryBoard({super.key, required this.image});
 
   @override
   State<StoryBoard> createState() => _StoryBoardState();
@@ -14,7 +15,7 @@ class _StoryBoardState extends State<StoryBoard> {
   @override
   Widget build(BuildContext context) {
     List<StoryItem> storyItems = [
-      StoryItem.pageImage(controller: controller, url: ""),
+      StoryItem.pageImage(controller: controller, url: widget.image),
       // StoryItem.pageVideo(controller: controller)
     ]; // your list of stories
 
